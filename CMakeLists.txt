@@ -4,8 +4,8 @@ list(APPEND CMAKE_MODULE_PATH "${p}") #For old Imagine++
 list(APPEND CMAKE_SYSTEM_FRAMEWORK_PATH /Library/Frameworks) #Mac, why not auto?
 find_package(Imagine REQUIRED)
 
-project(Superpixels)
+project(AtelierProg)
 
-add_executable(Superpixels
+add_executable(AtelierProg
                main.cpp)
-ImagineUseModules(Superpixels Images)
+ImagineUseModules(AtelierProg Images)
