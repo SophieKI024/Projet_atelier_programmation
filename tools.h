@@ -11,7 +11,7 @@ using namespace std;
 
 #include "vector.h"
 
-const double dt = 1;
+const double dt = 0.003;
 const double g = 1;
 const int h_sol = 20;
 
