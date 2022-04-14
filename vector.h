@@ -7,15 +7,15 @@
 #include <Imagine/Graphics.h>
 using namespace Imagine;
 
-struct Vecteur {
+struct Vector {
     double x, y;
 
-    Vecteur (double x_, double y_){
+    Vector (double x_, double y_){
         x= x_;
         y= y_;
     }
 
-    Vecteur () {
+    Vector () {
         x = 0; y=0;
     }
 
@@ -27,26 +27,26 @@ struct Vecteur {
         return pow(x, 2) + pow(y, 2);
     }
 
-    Vecteur operator+ (Vecteur autre) {
-        return Vecteur (x + autre.x, y + autre.y);
+    Vector operator+ (Vector autre) {
+        return Vector (x + autre.x, y + autre.y);
     }
 
-    void operator += (Vecteur autre) {
+    void operator += (Vector autre) {
         x = x + autre.x;
         y = y + autre.y;
     }
 
-    Vecteur operator- (Vecteur autre) {
-        return Vecteur (x - autre.x, y - autre.y);
+    Vector operator- (Vector autre) {
+        return Vector (x - autre.x, y - autre.y);
     }
 
-    void operator -= (Vecteur autre) {
+    void operator -= (Vector autre) {
         x = x - autre.x;
         y = y - autre.y;
     }
 
-    Vecteur operator* (double a){
-        return Vecteur (x*a, y*a);
+    Vector operator* (double a){
+        return Vector (x*a, y*a);
     }
 
     void operator*= (double a){
@@ -55,4 +55,4 @@ struct Vecteur {
     }
 };
 
-Vecteur operator* (double a, Vecteur u);
+Vector operator* (double a, Vector u);

@@ -11,19 +11,23 @@ using namespace std;
 
 #include "vector.h"
 
+const double dt = 1;
+const double g = 1;
+const int h_sol = 20;
+
 struct Ball {
-    Vecteur pos;
-    Vecteur vitesse;
+    Vector pos;
+    Vector vitesse;
     double rayon;
     Color col;
     double masse;
 
-    Ball (Vecteur pos_, Vecteur vitesse_, double rayon_, Color col_, double masse_){
+    Ball (Vector pos_, Vector vitesse_, double rayon_, Color col_, double masse_){
         pos = pos_; vitesse = vitesse_; rayon = rayon_; col = col_; masse = masse_;
     }
 
     Ball () {
-        Ball(Vecteur(), Vecteur(), 0, WHITE, 0);
+        Ball(Vector(), Vector(), 0, WHITE, 0);
     }
 
     void display(){

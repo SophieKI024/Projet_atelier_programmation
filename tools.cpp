@@ -58,13 +58,13 @@ bool collision(Ball &D, Ball &S, float dt){
 }
 
 void Gravitation(Ball sun, Ball &D, int G, double dt){
-    Vecteur r = D.pos - sun.pos;
+    Vector r = D.pos - sun.pos;
     double comp_acc_sur_r = - G * sun.masse / pow(r.norme(), 3);
     D.vitesse += (r * comp_acc_sur_r) * dt;
 }
 
 void Gravitation_bis(Ball &sun, Ball &D, int G, double dt){
-    Vecteur r = D.pos - sun.pos;
+    Vector r = D.pos - sun.pos;
     double comp_acc_sur_r = - G * sun.masse / pow(r.norme(), 3);
     D.vitesse += (r * comp_acc_sur_r) * dt;
     sun.vitesse -= (r * comp_acc_sur_r) * dt;
@@ -87,30 +87,30 @@ void Soleils(int nbSoleils, Ball soleils[], Ball super_sun, Ball Joueur_1, Ball 
             double rayon = 0;
             while (not found){
                 rayon = 5 + rand()%10;
-                soleils[i] = Ball(Vecteur(rand()%width, rand()%height), Vecteur(), rayon, YELLOW, rayon / 20);
+                soleils[i] = Ball(Vector(rand()%width, rand()%height), Vector(), rayon, YELLOW, rayon / 20);
                 int compteur = 0;
 
-                Vecteur vecteur_distance = soleils[i].pos - super_sun.pos;
-                double ecart = vecteur_distance.norme() - soleils[i].rayon - super_sun.rayon;
+                Vector Vector_distance = soleils[i].pos - super_sun.pos;
+                double ecart = Vector_distance.norme() - soleils[i].rayon - super_sun.rayon;
                 if (ecart > 0){
                     compteur ++;
                 }
 
-                vecteur_distance = soleils[i].pos - Joueur_1.pos;
-                ecart = vecteur_distance.norme() - soleils[i].rayon - Joueur_1.rayon;
+                Vector_distance = soleils[i].pos - Joueur_1.pos;
+                ecart = Vector_distance.norme() - soleils[i].rayon - Joueur_1.rayon;
                 if (ecart > 100){
                     compteur ++;
                 }
 
-                vecteur_distance = soleils[i].pos - Joueur_2.pos;
-                ecart = vecteur_distance.norme() - soleils[i].rayon - Joueur_2.rayon;
+                Vector_distance = soleils[i].pos - Joueur_2.pos;
+                ecart = Vector_distance.norme() - soleils[i].rayon - Joueur_2.rayon;
                 if (ecart > 100){
                     compteur ++;
                 }
 
                 for (int j=0; j<i; j++){
-                    vecteur_distance = soleils[i].pos - soleils[j].pos;
-                    ecart = vecteur_distance.norme() - soleils[i].rayon - soleils[j].rayon;
+                    Vector_distance = soleils[i].pos - soleils[j].pos;
+                    ecart = Vector_distance.norme() - soleils[i].rayon - soleils[j].rayon;
                     if (ecart > 0){
                         compteur ++;
                     }

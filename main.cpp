@@ -1,10 +1,12 @@
 #include <iostream>
 using namespace std;
+#include "vector.h"
+#include "box.h"
 
 int main() {
-    cout<<"hello world Projet de prog"<<endl;
-    cout<<"non"<<endl;
-    cout<<"si"<<endl;
-    cout<<"Reda"<<endl;
+    openWindow(300,300);
+    Box b(Vector(80,80),20,20,1,BLACK,1);
+    b.Display();
+    endGraphics();
     return 0;
 }
