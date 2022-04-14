@@ -36,6 +36,7 @@ void Box::Display(){
 
 void Box::Move(){
     pos = pos + dt*v;
+    angle  = angle + dt*rot;
 }
 
 void Box::Accelerate(){

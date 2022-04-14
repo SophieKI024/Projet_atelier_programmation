@@ -13,4 +13,5 @@ public :
     void Accelerate();
     void Collide(Box b);
     Box(Vector pos_,double w_,double h_,double m_, Color Col_, double angle_=0);
+    void Erase();
 };
