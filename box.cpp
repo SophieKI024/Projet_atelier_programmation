@@ -3,7 +3,7 @@
 #include "tools.h"
 #include <Imagine/Graphics.h>
 using namespace Imagine;
-#include <cmath>;
+#include <cmath>
 using namespace std;
 
 Box::Box(Vector pos_,double w_,double h_,double m_, Color Col_, double angle_){
@@ -23,14 +23,14 @@ void Box::Display(){
            x2 = w/2.*sin(angle),
            y1 = h/2.*sin(angle),
            y2 = w/2.*cos(angle);
-    x[0] = x1+x2+pos.x;
-    x[1] = x1-x2+pos.x;
-    x[2] = -x1-x2+pos.x;
-    x[3] = -x1+x2+pos.x;
-    y[0] = y1-y2+pos.y;
-    y[1] = y1+y2+pos.y;
-    y[2] = -y1+y2+pos.y;
-    y[3] = -y1-y2+pos.y;
+    x[0] = int(x1+x2+pos.x);
+    x[1] = int(x1-x2+pos.x);
+    x[2] = int(-x1-x2+pos.x);
+    x[3] = int(-x1+x2+pos.x);
+    y[0] = int(y1-y2+pos.y);
+    y[1] = int(y1+y2+pos.y);
+    y[2] = int(-y1+y2+pos.y);
+    y[3] = int(-y1-y2+pos.y);
     fillPoly(x,y,4,Col);
 }
 
