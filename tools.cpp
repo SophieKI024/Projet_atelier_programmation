@@ -2,6 +2,10 @@ using namespace std;
 
 #include "tools.h"
 
+void drawGround(){
+    fillRect(0,height-h_ground,width,h_ground,GREEN);
+}
+
 // Fonction Tp3 (Mastermind)
 
 void InitRandom(){

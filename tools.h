@@ -13,7 +13,10 @@ using namespace std;
 
 const double dt = 0.003;
 const double g = 1;
-const int h_sol = 20;
+const int h_ground = 50;
+const int width = 512;
+const int height = 512;
+const int periodDisplay =100;
 
 struct Ball {
     Vector pos;
@@ -46,6 +49,7 @@ struct Ball {
 
 //Déclaration
 
+void drawGround();
 void InitRandom();
 void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, double y2, double &vx2, double &vy2, double m2);
 void shock(Ball &D, Ball &S);

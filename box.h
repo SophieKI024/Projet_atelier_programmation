@@ -16,4 +16,6 @@ public :
     void Erase();
     Box copy();
     Box();
+    void groundBounce();
+    void corners(int x[4], int y[4]);
 };
