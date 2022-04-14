@@ -7,5 +7,5 @@ find_package(Imagine REQUIRED)
 project(AtelierProg)
 
 add_executable(AtelierProg
-               main.cpp)
+               square.cpp square.h main.cpp)
 ImagineUseModules(AtelierProg Images)
