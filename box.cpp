@@ -62,7 +62,7 @@ void Box::groundBounce(){
         if(abs(fmod(angle+1000*M_PI+M_PI/4,M_PI/2)-M_PI/4)<=1e-4) //cas ou l'oblet tombe tout droit
             omega_y=0;
         double omega_x =  2*v.x/pow(R,2)*abs(cos(fmodf(angle+1000*M_PI,M_PI))*h-sin(fmodf(angle+1000*M_PI+M_PI/2,M_PI)-M_PI/2)*w);
-        pos.y -= v.y*dt;    // permet de ne pas avoir de probleme de bloc coincee dans le sol
+        pos.y -= abs(v.y)*dt;    // permet de ne pas avoir de probleme de bloc coincee dans le sol
         v.y = (-v.y +0.1*(omega_y-omega)*sgn(fmodf(angle+1000*M_PI+M_PI/2,M_PI)-M_PI/2)*R)*coeff;  //coeff mis un peu au pif pour que ca fasse realiste
         v.x = (v.x - 0.2*(omega_x-omega)*R)*coeff;
         omega =omega_x+omega_y;
