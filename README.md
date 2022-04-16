@@ -1,2 +1,2 @@
-# PIR-Superpixels-2022
-Research Initiation Project in École des Ponts et Chaussées about SEEDS's algorithm for Superpixels
+# Atelier de Programmation : Pontstructor ?
+Un besiege en 2D mais en mieux !
