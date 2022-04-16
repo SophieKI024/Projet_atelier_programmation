@@ -3,10 +3,13 @@ using namespace std;
 #include "tools.h"
 
 void drawGround(){
-    fillRect(0,height-h_ground,width,h_ground,GREEN);
+    fillRect(0,height-h_ground,width,h_ground,Color(88,41,0));
+    fillRect(0,height-h_ground,width,h_ground/3,Color(107,202,35));
 }
 
-// Fonction Tp3 (Mastermind)
+int sgn(double a){
+    return (a>0)-(a<0);
+}
 
 void InitRandom(){
     srand((unsigned int) time(0));

@@ -4,11 +4,11 @@
 using namespace Imagine;
 
 class Box{
-public :
     Vector pos, v;
     double w, h, omega, angle, m;
     Color Col;
-    void Display(bool erase=false);
+public :
+    void Display();
     void Move();
     void Accelerate();
     void Collide(Box b);
@@ -16,6 +16,7 @@ public :
     void Erase();
     Box copy();
     Box();
-    void groundBounce();
-    void corners(int x[4], int y[4]);
+    void groundBounce();    // rebond contre le sol
+    void corners(double x[4], double y[4]); //position exacte des coins
+    void corners(int x[4], int y[4]);       //position arrondie des coins
 };

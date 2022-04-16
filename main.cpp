@@ -8,10 +8,11 @@ int main() {
     openWindow(width,height);
 
     // INITIALIZATION
-    Box b(Vector(80,80),20,20,1,BLACK,1,Vector(1,0),0.1);
+    Box b(Vector(400,100),40,60,100,BLACK,1,Vector(20,-25),0.8);
     Box old_b = b.copy();
     b.Display();
     drawGround();
+
     // MAIN LOOP
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
 
@@ -22,7 +23,7 @@ int main() {
             b.Display();
             old_b = b.copy();
             noRefreshEnd();
-            milliSleep(50);
+            milliSleep(20);
         }
 
         b.Accelerate();

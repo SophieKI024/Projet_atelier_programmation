@@ -11,12 +11,12 @@ using namespace std;
 
 #include "vector.h"
 
-const double dt = 0.003;
-const double g = 1;
+const double dt = 0.006;
+const double g = 10;
 const int h_ground = 50;
-const int width = 512;
+const int width = 1024;
 const int height = 512;
-const int periodDisplay =100;
+const int periodDisplay =50;
 
 struct Ball {
     Vector pos;
@@ -50,6 +50,7 @@ struct Ball {
 //Déclaration
 
 void drawGround();
+int sgn(double a);
 void InitRandom();
 void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, double y2, double &vx2, double &vy2, double m2);
 void shock(Ball &D, Ball &S);
