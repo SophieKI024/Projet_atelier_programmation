@@ -1,7 +1,3 @@
-#ifndef TOOLS_H
-#define TOOLS_H
-
-#endif // TOOLS_H
 #pragma once
 
 #include <Imagine/Graphics.h>
@@ -17,6 +13,7 @@ const int h_ground = 50;
 const int width = 1024;
 const int height = 512;
 const int periodDisplay =50;
+const int eps=1e-2;
 
 struct Ball {
     Vector pos;

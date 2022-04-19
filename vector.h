@@ -53,6 +53,10 @@ struct Vector {
         x = x*a;
         y = y*a;
     }
+
+    double operator*(Vector u){
+        return x*u.x+y*u.y;
+    }
 };
 
 Vector operator* (double a, Vector u);

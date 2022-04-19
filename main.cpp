@@ -8,9 +8,12 @@ int main() {
     openWindow(width,height);
 
     // INITIALIZATION
-    Box b(Vector(400,100),40,60,100,BLACK,1,Vector(20,-25),0.8);
+    Box b(Vector(400,height-h_ground-150),100,300,1,Color(140,108,66));
+    Box b2(Vector(0,height-h_ground-150),20,20,10,Color(50,50,50),0,Vector(50,-40),0);
     Box old_b = b.copy();
+    Box old_b2= b2.copy();
     b.Display();
+    b2.Display();
     drawGround();
 
     // MAIN LOOP
@@ -20,16 +23,26 @@ int main() {
         if(timeStep%periodDisplay==0){
             noRefreshBegin();
             old_b.Erase();
+            old_b2.Erase();
             b.Display();
+            b2.Display();
             old_b = b.copy();
+            old_b2 = b2.copy();
             noRefreshEnd();
             milliSleep(20);
         }
 
         b.Accelerate();
+        b2.Accelerate();
         b.Move();
+        b2.Move();
+        b.Collide(b2);
+        b.groundBounce();
+        b2.groundBounce();
+        if(b.stabile and b2.stabile) // plus rien ne bouge
+            break;
     }
-
+    cout<<"landing sucessfull"<<endl;
     endGraphics();
     return 0;
 }

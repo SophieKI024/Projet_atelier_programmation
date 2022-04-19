@@ -1,4 +1,3 @@
-using namespace std;
 
 #include "tools.h"
 
@@ -7,7 +6,7 @@ void drawGround(){
     fillRect(0,height-h_ground,width,h_ground/3,Color(107,202,35));
 }
 
-int sgn(double a){
+int sgn(double a){  // renvoie +1 si a>0, -1 si a<0 et 0 si a=0
     return (a>0)-(a<0);
 }
 
@@ -30,6 +29,7 @@ void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, 
     vx2 += scal * deltax;
     vy2 += scal * deltay;
 }
+
 
 void shock(Ball &D, Ball &S){
     shock(D.pos.x, D.pos.y, D.vitesse.x, D.vitesse.y, D.masse, S.pos.x, S.pos.y, S.vitesse.x, S.vitesse.y, S.masse);
