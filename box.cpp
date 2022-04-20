@@ -77,9 +77,9 @@ bool Box::Collide(Box& b){
         t2 = 1/(c-b.pos).norme()*(c-b.pos);
         n2 = Vector(-t2.y,t2.x);
         v += coeff*(delta_v1*t1*t1 +transfert*delta_v1*n1*n1);
-        omega += 2*coeff*(1-transfert)/(c-pos).norme()*delta_v1*n1;
+        omega += coeff*(1-transfert)/(c-pos).norme()*delta_v1*n1;
         b.v += coeff*(delta_v2*t2*t2+transfert*delta_v2*n2*n2);
-        b.omega += 2*coeff*(1-transfert)/(c-b.pos).norme()*delta_v2*n2;
+        b.omega += coeff*(1-transfert)/(c-b.pos).norme()*delta_v2*n2;
         Move();
         b.Move();
         stabile = false;
