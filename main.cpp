@@ -8,8 +8,8 @@ int main() {
     openWindow(width,height);
 
     // INITIALIZATION
-    Box b(Vector(400,height-h_ground-150),100,300,1,Color(140,108,66));
-    Box b2(Vector(0,height-h_ground-150),20,20,10,Color(50,50,50),0,Vector(50,-40),0);
+    Box b(Vector(800,height-h_ground-150),100,300,1,Color(140,108,66));
+    Box b2(Vector(0,height-h_ground-150),20,20,10,Color(50,50,50),0,Vector(150,-40),0);
     Box old_b = b.copy();
     Box old_b2= b2.copy();
     b.Display();

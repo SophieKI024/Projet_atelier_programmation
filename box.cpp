@@ -19,6 +19,10 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
     stabile = false;
 }
 
+Box::Box(){
+    //Box(Vector(0,0),0,0,0,WHITE);
+}
+
 void Box::Display(){
     int x[4], y[4];
     corners(x,y);
