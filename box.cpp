@@ -173,12 +173,8 @@ bool Box::groundBounce(){
             Move();
             // condition pour qu'un objet reste collé au sol
             if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
-<<<<<<< HEAD
                 stable = true;
                 grounded = true;
-=======
-                stable = true;
->>>>>>> a4a9f3ffc4bafd69575a46d90e849168bc52f26b
                 v=Vector(0,0);
                 omega =0;
             }
