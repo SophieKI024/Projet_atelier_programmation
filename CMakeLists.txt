@@ -7,5 +7,5 @@ find_package(Imagine REQUIRED)
 project(AtelierProg)
 
 add_executable(AtelierProg
-               box.cpp box.h main.cpp tools.cpp tools.h vector.cpp vector.h vehicle.h vehicle.cpp)
+               box.cpp box.h main.cpp tools.cpp tools.h vector.cpp vector.h vehicle.h vehicle.cpp weapon.h weapon.cpp)
 ImagineUseModules(AtelierProg Images)

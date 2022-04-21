@@ -5,22 +5,26 @@ using namespace std;
 #include "tools.h"
 #include "vehicle.h"
 
+//Projectile Template
+
 int main() {
     openWindow(width,height);
 
     // INITIALIZATION
-    Box wall(Vector(800,height-h_ground-150),100,300,1,Color(140,108,66));
-    Box projectile(Vector(150+20,height-h_ground-150),20,20,10,Color(50,50,50));
+    Box wall(Vector(800,height-h_ground-150),100,300,3,Color(140,108,66));
+    Box projectile(Vector(150+20,height-h_ground-150),20,20,10,Color(50,50,50), 0, Vector(150,-40),0);
+    Weapon cannon;
     Box body(Vector(85,height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body);
 
     Box old_wall = wall.copy();
-    Box old_projectile= projectile.copy();
+    Weapon old_cannon = cannon.copy();
     Vehicle old_car = car.copy();
 
     wall.Display();
-    projectile.Display();
+    cannon.Display();
     car.Display();
+
     drawGround();
 
     // MAIN LOOP
@@ -31,36 +35,41 @@ int main() {
             noRefreshBegin();
 
             old_wall.Erase();
-            old_projectile.Erase();
+            old_cannon.Erase();
             old_car.Erase();
 
             wall.Display();
-            projectile.Display();
+            cannon.Display();
             car.Display();
 
             old_wall = wall.copy();
-            old_projectile = projectile.copy();
+            old_cannon = cannon.copy();
             old_car = car.copy();
 
             noRefreshEnd();
             milliSleep(20);
+            cout <<"nombre de projectiles : "<<cannon.ammunition.size()<<endl;
         }
+        cannon.set_fire();
+
         wall.Accelerate();
-        projectile.Accelerate();
+        cannon.Accelerate();
         car.Accelerate();
 
         wall.Move();
-        projectile.Move();
+        cannon.Move();
         car.Move();
 
-        wall.Collide(projectile);
+        cannon.Collide(wall);
 
         wall.groundBounce();
-        projectile.groundBounce();
+        cannon.groundBounce();
         car.groundBounce();
 
-        if(wall.stable and projectile.stable and car.stable()) // plus rien ne bouge
-            break;
+        cannon.stable();
+
+        //if(wall.stable and cannon.stable() and car.stable()) // plus rien ne bouge
+            //break;
     }
     cout<<"landing sucessfull"<<endl;
     endGraphics();

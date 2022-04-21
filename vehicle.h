@@ -2,22 +2,9 @@
 
 #include "box.h"
 #include "tools.h"
+#include "weapon.h"
 
-/// **** Weapon ****
-
-class Weapon{
-public:
-    vector<Box> ammunition;
-
-    // Constructeur
-    Weapon();
-    Weapon(Box projectile_);
-
-    // Fonctions
-    bool set_fire();
-    void fire();
-};
-
+int keyboard();
 
 /// **** Vehicle ****
 
