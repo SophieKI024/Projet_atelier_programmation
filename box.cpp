@@ -16,7 +16,7 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
     angle = angle_;
     m = rho_*w*h;
     Col = Col_;
-    stabile = false;
+    stable = false;
     grounded = false;
 }
 
@@ -41,13 +41,13 @@ void Box::stepBack(){
 }
 
 void Box::Accelerate(){
-    if(!stabile)
+    if(!stable)
     v.y = v.y + dt*g;   // effet de la gravité
 }
 
 bool Box::Collide(Box& b){
     // si tout est stable,pas de choc
-    if(stabile and b.stabile)
+    if(stable and b.stable)
         return false;
 
     // on recupere les coins de chaque Box
@@ -117,15 +117,15 @@ bool Box::Collide(Box& b){
 
         // tests pour mettre à jour les Boxs stables
         if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold)
-            stabile = true;
+            stable = true;
         else{
-            stabile = false;
+            stable = false;
             grounded = false;
         }
         if(b.v.norme()<treshold and omega<treshold and abs(fmod(b.angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(b.w,b.h)<treshold)
-            b.stabile = true;
+            b.stable = true;
         else{
-            b.stabile = false;
+            b.stable = false;
             b.grounded = false;
         }
         return true;
@@ -144,7 +144,7 @@ Box Box::copy(){
 }
 
 bool Box::groundBounce(){
-    if(stabile)
+    if(stable)
         return false;
     else{
         double coeff = 0.6; // sorte de coefficient de rebond, coeff=1 <=> pas de perte d'énergie
@@ -173,8 +173,12 @@ bool Box::groundBounce(){
             Move();
             // condition pour qu'un objet reste collé au sol
             if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
-                stabile = true;
+<<<<<<< HEAD
+                stable = true;
                 grounded = true;
+=======
+                stable = true;
+>>>>>>> a4a9f3ffc4bafd69575a46d90e849168bc52f26b
                 v=Vector(0,0);
                 omega =0;
             }
