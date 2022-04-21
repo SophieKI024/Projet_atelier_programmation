@@ -7,9 +7,14 @@
 
 class Weapon{
 public:
-    Box* projectile;
+    vector<Box> ammunition;
+
+    // Constructeur
+    Weapon();
+    Weapon(Box projectile_);
 
     // Fonctions
+    bool set_fire();
     void fire();
 };
 
