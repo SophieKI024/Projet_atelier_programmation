@@ -33,4 +33,7 @@ public:
     Vehicle copy();
     void groundBounce();
     bool stable();
+    bool move_right();
+    bool move_left();
+    void movement_vehicle();
 };
