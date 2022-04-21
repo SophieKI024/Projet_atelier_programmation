@@ -17,6 +17,7 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
     m = rho_*w*h;
     Col = Col_;
     stabile = false;
+    grounded = false;
 }
 
 Box::Box(){
@@ -45,11 +46,19 @@ void Box::Accelerate(){
 }
 
 bool Box::Collide(Box& b){
+    // si tout est stable,pas de choc
+    if(stabile and b.stabile)
+        return false;
+
+    // on recupere les coins de chaque Box
     double x1[4],y1[4],x2[4],y2[4];
     corners(x1,y1);
     b.corners(x2,y2);
-    double treshold=1e-2;
-    vector<Vector> lst; // on stocke tous les coins qui sont rentres dans l'autre rectangle
+
+    double treshold=1e-2; // limite pour la stabilite
+    vector<Vector> lst; // on stocke tous les coins qui sont rentres dans l'autre Box
+
+    // on teste si les coins des boxs sont contenus dans les autres Box
     for(int i=0; i<4; i++){
         if(abs(cos(angle)*(x2[i]-pos.x)+sin(angle)*(y2[i]-pos.y))<=w/2. and abs(-sin(angle)*(x2[i]-pos.x)+cos(angle)*(y2[i]-pos.y))<=h/2.)
             lst.push_back(Vector(x2[i],y2[i]));
@@ -58,24 +67,40 @@ bool Box::Collide(Box& b){
         if(abs(cos(b.angle)*(x1[i]-b.pos.x)+sin(b.angle)*(y1[i]-b.pos.y))<=b.w/2. and abs(-sin(b.angle)*(x1[i]-b.pos.x)+cos(b.angle)*(y1[i]-b.pos.y))<=b.h/2.)
             lst.push_back(Vector(x1[i],y1[i]));
     }
+
+    // si un des coins d'une Box est dans l'autre Box
     if(!lst.empty()){
         double coeff = 0.6;
-        Vector c;
+        Vector c;   // position du point de contact
+
         // disjonction de cas pour eviter des pb dans des cas particuliers
-        if(lst.size()==1)
+        if(lst.size()==1)   // 1 seul point touche = c'est le point de contact
             c=lst[0];
         else if(lst.size()==2 or (lst[0]-lst[1]).norme()>dt*max(v.norme(),b.v.norme()))
             c=0.5*(lst[1]+lst[0]);
         else
             c=0.5*(lst[0]+lst[2]);
+
+        // on revient à l'étape d'avant ou il n'y avait pas encore de contact
         stepBack();
         b.stepBack();
+
+        // calcul des nouvelles vitesses et vitesses de rotation
         double transfert1 = (pos-c).norme()/sqrt(w*w+h*h);
         double transfert2 = (b.pos-c).norme()/sqrt(b.w*b.w+b.h*b.h);
         Vector w1 = v + omega*Vector(-c.y+pos.y,c.x-pos.x);
         Vector w2 = b.v + b.omega*Vector(-c.y+b.pos.y,c.x-b.pos.x);
         Vector delta_v1 = 2.*b.m/(m+b.m)*(w2-w1);
         Vector delta_v2 = 2.*m/(m+b.m)*(w1-w2);
+        //exceptions lorsqu'un element est au sol
+        if(grounded){
+            delta_v1.y = 0;
+            delta_v2.y = -2.*w2.y;
+        }
+        if(b.grounded){
+            delta_v1.y = -2.*w1.y;
+            delta_v2.y = 0;
+        }
         Vector t1,t2,n1,n2;
         t1 = 1/(c-pos).norme()*(c-pos);
         n1 = Vector(-t1.y,t1.x);
@@ -85,10 +110,24 @@ bool Box::Collide(Box& b){
         omega += coeff*transfert1/(c-pos).norme()*delta_v1*n1;
         b.v += coeff*(delta_v2*t2*t2+(1-transfert2)*delta_v2*n2*n2);
         b.omega += coeff*transfert2/(c-b.pos).norme()*delta_v2*n2;
+
+        // on applique ces vitesses
         Move();
         b.Move();
-        stabile = false;
-        b.stabile = false;
+
+        // tests pour mettre à jour les Boxs stables
+        if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold)
+            stabile = true;
+        else{
+            stabile = false;
+            grounded = false;
+        }
+        if(b.v.norme()<treshold and omega<treshold and abs(fmod(b.angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(b.w,b.h)<treshold)
+            b.stabile = true;
+        else{
+            b.stabile = false;
+            b.grounded = false;
+        }
         return true;
     }
     return false;
@@ -135,6 +174,7 @@ bool Box::groundBounce(){
             // condition pour qu'un objet reste collé au sol
             if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
                 stabile = true;
+                grounded = true;
                 v=Vector(0,0);
                 omega =0;
             }
