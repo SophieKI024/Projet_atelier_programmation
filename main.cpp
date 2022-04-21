@@ -11,7 +11,6 @@ int main() {
     // INITIALIZATION
     Box wall(Vector(800,height-h_ground-150),100,300,1,Color(140,108,66));
     Box projectile(Vector(150+20,height-h_ground-150),20,20,10,Color(50,50,50));
-    bool fire = false;
     Box body(Vector(85,height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body);
 
@@ -20,9 +19,7 @@ int main() {
     Vehicle old_car = car.copy();
 
     wall.Display();
-    if (fire){
-        projectile.Display();
-    }
+    projectile.Display();
     car.Display();
     drawGround();
 
@@ -34,49 +31,35 @@ int main() {
             noRefreshBegin();
 
             old_wall.Erase();
-            if (fire){
-                old_projectile.Erase();
-            }
+            old_projectile.Erase();
             old_car.Erase();
 
             wall.Display();
-            if (fire){
-               projectile.Display();
-            }
-
+            projectile.Display();
             car.Display();
 
             old_wall = wall.copy();
-            if (fire){
-               old_projectile = projectile.copy();
-            }
+            old_projectile = projectile.copy();
             old_car = car.copy();
 
             noRefreshEnd();
             milliSleep(20);
         }
-        if (timeStep > 100*periodDisplay){
-            fire = true;
-        }
-        if (fire){
-            projectile.v=Vector(150,-20);
-        }
-
         wall.Accelerate();
-        if (fire) projectile.Accelerate();
+        projectile.Accelerate();
         car.Accelerate();
 
         wall.Move();
-        if (fire) projectile.Move();
+        projectile.Move();
         car.Move();
 
         wall.Collide(projectile);
 
         wall.groundBounce();
-        if (fire) projectile.groundBounce();
+        projectile.groundBounce();
         car.groundBounce();
 
-        if(wall.stable and projectile.stable and car.stable() and fire) // plus rien ne bouge
+        if(wall.stable and projectile.stable and car.stable()) // plus rien ne bouge
             break;
     }
     cout<<"landing sucessfull"<<endl;

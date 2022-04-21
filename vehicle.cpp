@@ -1,6 +1,20 @@
 #include "vehicle.h"
 #include "box.h"
 
+// -------------- Gestion clavier ----------------------------------------------------------------------------------
+
+char keyboard() {
+    Event e;
+    do {
+        getEvent(0,e);
+        if(e.type==EVT_KEY_ON)
+            return e.key;
+    } while(e.type!=EVT_NONE);
+    return 0;
+}
+
+// ===================== Vehicle ====================================================================================
+
 // Constructeur
 
 
@@ -39,17 +53,6 @@ void Vehicle::groundBounce(){
 bool Vehicle::stable(){
     return body.stable;
 }
-// -------------- Gestion clavier ----------------------------------------------------------------------------------
-
-char keyboard() {
-    Event e;
-    do {
-        getEvent(0,e);
-        if(e.type==EVT_KEY_ON)
-            return e.key;
-    } while(e.type!=EVT_NONE);
-    return 0;
-}
 
 
 
@@ -78,3 +81,26 @@ void Vehicle::movement_vehicle(){
     }
 }
 
+
+// ================================== Weapon ===========================================================
+
+
+Weapon::Weapon(Box projectile_){
+    ammunition.push_back(projectile_);
+}
+
+bool Weapon::set_fire(){
+    int set_fire = keyboard();
+    if (set_fire == KEY_BACK){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+void Weapon::fire(){
+    if (set_fire()){
+
+    }
+}
