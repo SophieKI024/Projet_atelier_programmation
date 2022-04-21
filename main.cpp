@@ -48,7 +48,6 @@ int main() {
 
             noRefreshEnd();
             milliSleep(20);
-            cout <<"nombre de projectiles : "<<cannon.ammunition.size()<<endl;
         }
         cannon.set_fire();
 
@@ -66,9 +65,10 @@ int main() {
         cannon.groundBounce();
         car.groundBounce();
 
+
         cannon.stable();
 
-        //if(wall.stable and cannon.stable() and car.stable()) // plus rien ne bouge
+        //if(wall.stable and car.stable()) // plus rien ne bouge
             //break;
     }
     cout<<"landing sucessfull"<<endl;

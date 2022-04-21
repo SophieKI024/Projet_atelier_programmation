@@ -49,13 +49,15 @@ struct Ball {
 void drawGround();
 int sgn(double a);
 void InitRandom();
-void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, double y2, double &vx2, double &vy2, double m2);
-void shock(Ball &D, Ball &S);
-void shockSimple(double x,  double y,  double &vx, double &vy, double m, double x2, double y2, double vx2, double vy2);
-void shockSimple(Ball &D, Ball S);
-bool collision(double x1, double y1, double vx1, double vy1, double r1, double x2, double y2, double vx2, double vy2, double r2, float dt);
-bool collision(Ball &D, Ball &S, float dt);
-void Gravitation(Ball sun, Ball &D, int G, double dt);
-void Gravitation_bis(Ball &sun, Ball &D, int G, double dt);
-void Display_tour(int tour, string nom_joueur_1, string nom_joueur_2, int width, int height);
-void Soleils(int nbSoleils, Ball soleils[], Ball super_sun, Ball Joueur_1, Ball Joueur_2, int width, int height);
+
+
+//void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, double y2, double &vx2, double &vy2, double m2);
+//void shock(Ball &D, Ball &S);
+//void shockSimple(double x,  double y,  double &vx, double &vy, double m, double x2, double y2, double vx2, double vy2);
+//void shockSimple(Ball &D, Ball S);
+//bool collision(double x1, double y1, double vx1, double vy1, double r1, double x2, double y2, double vx2, double vy2, double r2, float dt);
+//bool collision(Ball &D, Ball &S, float dt);
+//void Gravitation(Ball sun, Ball &D, int G, double dt);
+//void Gravitation_bis(Ball &sun, Ball &D, int G, double dt);
+//void Display_tour(int tour, string nom_joueur_1, string nom_joueur_2, int width, int height);
+//void Soleils(int nbSoleils, Ball soleils[], Ball super_sun, Ball Joueur_1, Ball Joueur_2, int width, int height);
