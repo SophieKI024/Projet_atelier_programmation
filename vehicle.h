@@ -33,4 +33,7 @@ public:
     void Erase();
     void Move();
     void Accelerate();
+    bool move_right();
+    bool move_left();
+    void movement_vehicle();
 };
