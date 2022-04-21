@@ -14,7 +14,7 @@ public:
     Weapon(Box projectile_);
 
     // Fonctions
-    bool set_fire();
+    bool set_fire(int key);
 
     void Display();
     void Erase();

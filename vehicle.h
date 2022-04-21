@@ -25,7 +25,7 @@ public:
     Vehicle copy();
     void groundBounce();
     bool stable();
-    bool move_right();
-    bool move_left();
-    void movement_vehicle();
+    bool move_right(int key);
+    bool move_left(int key);
+    void movement_vehicle(int key);
 };

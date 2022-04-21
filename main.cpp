@@ -11,7 +11,7 @@ int main() {
     openWindow(width,height);
 
     // INITIALIZATION
-    Box wall(Vector(800,height-h_ground-150),100,300,3,Color(140,108,66));
+    Box wall(Vector(800,height-h_ground-150),100,300,20,Color(140,108,66));
     Box projectile(Vector(150+20,height-h_ground-150),20,20,10,Color(50,50,50), 0, Vector(150,-40),0);
     Weapon cannon;
     Box body(Vector(85,height-h_ground-50),150,75,1,Color(50,50,50));
@@ -26,10 +26,11 @@ int main() {
     car.Display();
 
     drawGround();
+    int key;
 
     // MAIN LOOP
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
-
+        key = keyboard();
         // DISPLAY
         if(timeStep%periodDisplay==0){
             noRefreshBegin();
@@ -49,12 +50,13 @@ int main() {
             noRefreshEnd();
             milliSleep(20);
         }
-        cannon.set_fire();
+        cannon.set_fire(key);
 
         wall.Accelerate();
         cannon.Accelerate();
         car.Accelerate();
-
+        car.movement_vehicle(key);
+        car.body.Move();
         wall.Move();
         cannon.Move();
         car.Move();
