@@ -1,7 +1,7 @@
 #include "tools.h"
 #include "box.h"
 #include "vehicle.h"
-
+#include "skin.h"
 #include "weapon.h"
 
 // ================================== Weapon ===========================================================
@@ -15,9 +15,15 @@ Weapon::Weapon(Box projectile_){
     ammunition.push_back(projectile_);
 }
 
-bool Weapon::set_fire(int key){
+Weapon::Weapon(Skin machine_, double length_, Vector pos_){
+    machine = machine_;
+    length = length_;
+    pos = pos_;
+}
+
+bool Weapon::set_fire(int key, Vector vehicle_pos){
     if (key == KEY_UP){
-        Box projectile(Vector(150+20,height-h_ground-150),20,20,6,Color(50,50,50), 0, Vector(150,-40),0);
+        Box projectile(pos+vehicle_pos+length*Vector(cos(machine.angle),sin(machine.angle)),4,4,6,BLUE, machine.angle, 180*Vector(cos(machine.angle),sin(machine.angle)),0);
         ammunition.push_back(projectile);
         cout <<"nombre de projectiles : "<<ammunition.size()<<endl;
         return true;
@@ -31,6 +37,7 @@ void Weapon::Display(){
     for (unsigned long i = 0; i < ammunition.size(); i++){
         ammunition[i].Display();
     }
+    machine.Display(pos);
 }
 void Weapon::Erase(){
     for (unsigned long i = 0; i < ammunition.size(); i++){

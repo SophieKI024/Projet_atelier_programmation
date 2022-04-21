@@ -4,6 +4,7 @@ using namespace std;
 #include "box.h"
 #include "tools.h"
 #include "vehicle.h"
+#include "liste_des_skins.h"
 
 //Projectile Template
 
@@ -12,10 +13,12 @@ int main() {
 
     // INITIALIZATION
     Box wall(Vector(800,height-h_ground-150),100,300,20,Color(140,108,66));
-    Box projectile(Vector(150+20,height-h_ground-150),20,20,10,Color(50,50,50), 0, Vector(150,-40),0);
-    Weapon cannon;
+    Box projectile(Vector(150+20,height-h_ground-150),20,5,10,BLUE, 0, Vector(150,-40),0);
+    Weapon cannon(Canon_standard(),30,Vector(0,-50));
+    Weapon* arsenal = new Weapon[1];
+    arsenal[0]=cannon;
     Box body(Vector(85,height-h_ground-50),150,75,1,Color(50,50,50));
-    Vehicle car(body);
+    Vehicle car(body,1,arsenal);
 
     Box old_wall = wall.copy();
     Weapon old_cannon = cannon.copy();
@@ -50,7 +53,7 @@ int main() {
             noRefreshEnd();
             milliSleep(20);
         }
-        cannon.set_fire(key);
+        cannon.set_fire(key,car.body.pos);
 
         wall.Accelerate();
         cannon.Accelerate();

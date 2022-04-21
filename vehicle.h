@@ -12,10 +12,11 @@ class Vehicle{
 public:
     Box body;
     Weapon* arsenal;
+    int nb_weapons;
 
     // Constructeur
     Vehicle();
-    Vehicle(Box body_);
+    Vehicle(Box body_, int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0]);
 
     // Fonctions
     void Display();

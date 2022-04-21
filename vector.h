@@ -1,7 +1,3 @@
-#ifndef VECTOR_H
-#define VECTOR_H
-
-#endif // VECTOR_H
 #pragma once
 
 #include <Imagine/Graphics.h>

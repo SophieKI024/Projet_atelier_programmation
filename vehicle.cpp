@@ -19,8 +19,10 @@ int keyboard() {
 // Constructeur
 
 
-Vehicle::Vehicle(Box body_){
+Vehicle::Vehicle(Box body_, int nb_weapons_, Weapon* arsenal_){
     body = body_.copy();
+    nb_weapons = nb_weapons_;
+    arsenal = arsenal_;
 }
 
 Vehicle::Vehicle(){
@@ -32,9 +34,15 @@ Vehicle::Vehicle(){
 
 void Vehicle::Display(){
     body.Display();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].machine.Display(arsenal[i].pos + body.pos);
+    }
 }
 void Vehicle::Erase(){
     body.Erase();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].machine.Erase(arsenal[i].pos + body.pos);
+    }
 }
 void Vehicle::Move(){
     body.Move();
@@ -44,7 +52,7 @@ void Vehicle::Accelerate(){
 }
 
 Vehicle Vehicle::copy(){
-    return Vehicle(body);
+    return Vehicle(body,nb_weapons,arsenal);
 }
 
 void Vehicle::groundBounce(){
@@ -66,6 +74,6 @@ bool Vehicle::move_left(int key){
 }
 void Vehicle::movement_vehicle(int key){
     body.v.x += (move_right(key)-move_left(key));
-
+    body.v.x *= 0.9985; //frotements fluides
 }
 
