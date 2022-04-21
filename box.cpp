@@ -56,7 +56,6 @@ bool Box::Collide(Box& b){
     }
     if(!lst.empty()){
         double coeff = 0.6;
-        double transfert = 0.5;
         Vector c;
         // disjonction de cas pour eviter des pb dans des cas particuliers
         if(lst.size()==1)
@@ -67,6 +66,8 @@ bool Box::Collide(Box& b){
             c=0.5*(lst[0]+lst[2]);
         stepBack();
         b.stepBack();
+        double transfert1 = (pos-c).norme()/sqrt(w*w+h*h);
+        double transfert2 = (b.pos-c).norme()/sqrt(b.w*b.w+b.h*b.h);
         Vector w1 = v + omega*Vector(-c.y+pos.y,c.x-pos.x);
         Vector w2 = b.v + b.omega*Vector(-c.y+b.pos.y,c.x-b.pos.x);
         Vector delta_v1 = 2.*b.m/(m+b.m)*(w2-w1);
@@ -76,10 +77,10 @@ bool Box::Collide(Box& b){
         n1 = Vector(-t1.y,t1.x);
         t2 = 1/(c-b.pos).norme()*(c-b.pos);
         n2 = Vector(-t2.y,t2.x);
-        v += coeff*(delta_v1*t1*t1 +transfert*delta_v1*n1*n1);
-        omega += coeff*(1-transfert)/(c-pos).norme()*delta_v1*n1;
-        b.v += coeff*(delta_v2*t2*t2+transfert*delta_v2*n2*n2);
-        b.omega += coeff*(1-transfert)/(c-b.pos).norme()*delta_v2*n2;
+        v += coeff*(delta_v1*t1*t1 +(1-transfert1)*delta_v1*n1*n1);
+        omega += coeff*transfert1/(c-pos).norme()*delta_v1*n1;
+        b.v += coeff*(delta_v2*t2*t2+(1-transfert2)*delta_v2*n2*n2);
+        b.omega += coeff*transfert2/(c-b.pos).norme()*delta_v2*n2;
         Move();
         b.Move();
         stabile = false;
