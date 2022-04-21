@@ -4,7 +4,7 @@
 
 // -------------- Gestion clavier ----------------------------------------------------------------------------------
 
-char keyboard() {
+int keyboard() {
     Event e;
     do {
         getEvent(0,e);
@@ -82,29 +82,6 @@ void Vehicle::movement_vehicle(){
     }
 }
 
-
-// ================================== Weapon ===========================================================
-
-
-Weapon::Weapon(Box projectile_){
-    ammunition.push_back(projectile_);
-}
-
-bool Weapon::set_fire(){
-    int set_fire = keyboard();
-    if (set_fire == KEY_BACK){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-void Weapon::fire(){
-    if (set_fire()){
-
-    }
-}
 
 // ==================================== Skin =============================================================
 

@@ -7,5 +7,11 @@ find_package(Imagine REQUIRED)
 project(AtelierProg)
 
 add_executable(AtelierProg
-               box.cpp box.h main.cpp tools.cpp tools.h vector.cpp vector.h vehicle.h vehicle.cpp liste_des_skins.h liste_des_skins.cpp)
+               box.cpp box.h
+               main.cpp
+               tools.cpp tools.h
+               vector.cpp vector.h
+               vehicle.cpp vehicle.h
+               liste_des_skins.cpp liste_des_skins.h
+               weapon.cpp weapon.h)
 ImagineUseModules(AtelierProg Images)
