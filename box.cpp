@@ -16,7 +16,7 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
     angle = angle_;
     m = rho_*w*h;
     Col = Col_;
-    stabile = false;
+    stable = false;
 }
 
 Box::Box(){
@@ -40,7 +40,7 @@ void Box::stepBack(){
 }
 
 void Box::Accelerate(){
-    if(!stabile)
+    if(!stable)
     v.y = v.y + dt*g;   // effet de la gravité
 }
 
@@ -87,8 +87,8 @@ bool Box::Collide(Box& b){
         b.omega += coeff*transfert2/(c-b.pos).norme()*delta_v2*n2;
         Move();
         b.Move();
-        stabile = false;
-        b.stabile = false;
+        stable = false;
+        b.stable = false;
         return true;
     }
     return false;
@@ -105,7 +105,7 @@ Box Box::copy(){
 }
 
 bool Box::groundBounce(){
-    if(stabile)
+    if(stable)
         return false;
     else{
         double coeff = 0.6; // sorte de coefficient de rebond, coeff=1 <=> pas de perte d'énergie
@@ -134,7 +134,7 @@ bool Box::groundBounce(){
             Move();
             // condition pour qu'un objet reste collé au sol
             if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
-                stabile = true;
+                stable = true;
                 v=Vector(0,0);
                 omega =0;
             }

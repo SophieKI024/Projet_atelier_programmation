@@ -8,7 +8,7 @@ public :
     Vector pos, v;
     double w, h, omega, angle, m;
     Color Col;
-    bool stabile;
+    bool stable;
     void Display();
     void Move();
     void stepBack();
