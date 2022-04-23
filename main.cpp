@@ -65,7 +65,6 @@ int main() {
         cannon.groundBounce();
         car.groundBounce();
 
-
         cannon.stable();
 
         //if(wall.stable and car.stable()) // plus rien ne bouge

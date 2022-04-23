@@ -55,30 +55,22 @@ bool Vehicle::stable(){
     return body.stable;
 }
 
-
-
 bool Vehicle::move_right(){
     int go_right = keyboard();
-    if (go_right == KEY_RIGHT){
-        return true;
-    }
-    return false;
+    return (go_right == KEY_RIGHT);
 }
 
 bool Vehicle::move_left(){
     int go_left = keyboard();
-    if (go_left == KEY_LEFT){
-        return true;
-    }
-    return false;
+    return (go_left == KEY_LEFT);
 }
 
 void Vehicle::movement_vehicle(){
-    if (move_right() == true){
-        body.v.x+=0.1*dt;
+    if(move_right()){
+        body.pos.x+=10;
     }
-    if (move_left() == true){
-        body.v.x-=0.1*dt;
+    if(move_left()){
+        body.pos.x-=10;
     }
 }
 

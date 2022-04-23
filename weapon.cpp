@@ -17,15 +17,13 @@ Weapon::Weapon(Box projectile_){
 
 bool Weapon::set_fire(){
     int set_fire = keyboard();
-    if (set_fire == KEY_SHIFT){
+    if (set_fire == KEY_UP){
         Box projectile(Vector(150+20,height-h_ground-150),20,20,6,Color(50,50,50), 0, Vector(150,-40),0);
         ammunition.push_back(projectile);
         cout <<"nombre de projectiles : "<<ammunition.size()<<endl;
         return true;
     }
-    else{
-        return false;
-    }
+    return false;
 }
 
 void Weapon::Display(){
