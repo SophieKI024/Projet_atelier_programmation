@@ -12,10 +12,11 @@ class Vehicle{
 public:
     Box body;
     Weapon* arsenal;
+    int nb_weapons;
 
     // Constructeur
     Vehicle();
-    Vehicle(Box body_);
+    Vehicle(Box body_, int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0]);
 
     // Fonctions
     void Display();
@@ -25,7 +26,11 @@ public:
     Vehicle copy();
     void groundBounce();
     bool stable();
-    bool move_right();
-    bool move_left();
-    void movement_vehicle();
+    bool move_right(int key);
+    bool move_left(int key);
+    void movement_vehicle(int key);
+
+    void arsenal_collide(Box &b);
+    void angle_machine(int key);
+    void fire(int key);
 };

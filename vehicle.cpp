@@ -19,8 +19,13 @@ int keyboard() {
 // Constructeur
 
 
-Vehicle::Vehicle(Box body_){
+Vehicle::Vehicle(Box body_, int nb_weapons_, Weapon* arsenal_){
     body = body_.copy();
+    nb_weapons = nb_weapons_;
+    arsenal = new Weapon[nb_weapons_];
+    for (int i = 0; i < nb_weapons; i++){
+        arsenal[i]=arsenal_[i];
+    }
 }
 
 Vehicle::Vehicle(){
@@ -32,45 +37,73 @@ Vehicle::Vehicle(){
 
 void Vehicle::Display(){
     body.Display();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].machine.Display(arsenal[i].pos + body.pos);
+        arsenal[i].Display(body.pos);
+    }
 }
 void Vehicle::Erase(){
     body.Erase();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].machine.Erase(arsenal[i].pos + body.pos);
+        arsenal[i].Erase(body.pos);
+    }
 }
 void Vehicle::Move(){
     body.Move();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].Move();
+    }
 }
 void Vehicle::Accelerate(){
     body.Accelerate();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].Accelerate();
+    }
 }
 
 Vehicle Vehicle::copy(){
-    return Vehicle(body);
+    return Vehicle(body,nb_weapons,arsenal);
 }
 
 void Vehicle::groundBounce(){
     body.groundBounce();
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].groundBounce();
+    }
 }
 
 bool Vehicle::stable(){
     return body.stable;
 }
 
-bool Vehicle::move_right(){
-    int go_right = keyboard();
-    return (go_right == KEY_RIGHT);
+bool Vehicle::move_right(int key){
+    return key == KEY_RIGHT;
 }
 
-bool Vehicle::move_left(){
-    int go_left = keyboard();
-    return (go_left == KEY_LEFT);
+bool Vehicle::move_left(int key){
+    return key == KEY_LEFT;
+}
+void Vehicle::movement_vehicle(int key){
+    body.v.x += (move_right(key)-move_left(key));
+    body.v.x *= 0.9985; //frotements fluides
 }
 
-void Vehicle::movement_vehicle(){
-    if(move_right()){
-        body.pos.x+=10;
+void Vehicle::arsenal_collide(Box &b){
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].Collide(b);
     }
-    if(move_left()){
-        body.pos.x-=10;
+}
+
+void Vehicle::angle_machine(int key){
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].angle_machine(key);
     }
 }
 
+void Vehicle::fire(int key){
+    for(int i=0; i<nb_weapons; i++){
+        arsenal[i].set_fire(key,body.pos);
+        arsenal[i].stable(); //Effacer les projectiles stables
+    }
+}

@@ -18,5 +18,6 @@ Skin Canon_standard(){
     border_[5] = Vector(4,0.5);
     border_[6] = Vector(4.5,0.5);
     Symmetry(border_,14);
-    return Skin(border_,14,Color(50,50,50),Vector(500,100));
+
+    return Skin(border_,14,Color(50,50,50),20,-0.4);
 }

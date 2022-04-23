@@ -21,7 +21,7 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
 }
 
 Box::Box(){
-    //Box(Vector(0,0),0,0,0,WHITE);
+    //Box(Vector(0,0),0,0,0,backgroundColor);
 }
 
 void Box::Display(){
@@ -136,7 +136,7 @@ bool Box::Collide(Box& b){
 void Box::Erase(){
     int x[4], y[4];
     corners(x,y);
-    fillPoly(x,y,4,WHITE);
+    fillPoly(x,y,4,backgroundColor);
 }
 
 Box Box::copy(){
@@ -153,7 +153,7 @@ bool Box::groundBounce(){
         corners(x,y);
         vector<Vector> lst;
         for(int i=0; i<4; i++){
-            if(y[i]>height-h_ground)
+            if(y[i]>window_height-h_ground)
                 lst.push_back(Vector(x[i],y[i]));
         }
         // rebond "simple"

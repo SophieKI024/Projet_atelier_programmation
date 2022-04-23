@@ -10,39 +10,42 @@ using namespace std;
 const double dt = 0.006;
 const double g = 10;
 const int h_ground = 50;
-const int width = 1024;
-const int height = 512;
+const int window_width = 1024;
+const int window_height = 512;
 const int periodDisplay =50;
-const int eps=1e-2;
+const double eps=1e-2;
 
-struct Ball {
-    Vector pos;
-    Vector vitesse;
-    double rayon;
-    Color col;
-    double masse;
+const Color backgroundColor = Color(216,242, 255); // Light Blue
 
-    Ball (Vector pos_, Vector vitesse_, double rayon_, Color col_, double masse_){
-        pos = pos_; vitesse = vitesse_; rayon = rayon_; col = col_; masse = masse_;
-    }
 
-    Ball () {
-        Ball(Vector(), Vector(), 0, WHITE, 0);
-    }
+//struct Ball {
+//    Vector pos;
+//    Vector vitesse;
+//    double rayon;
+//    Color col;
+//    double masse;
 
-    void display(){
-        fillCircle(int(pos.x), int(pos.y), int(rayon), col);
-    }
+//    Ball (Vector pos_, Vector vitesse_, double rayon_, Color col_, double masse_){
+//        pos = pos_; vitesse = vitesse_; rayon = rayon_; col = col_; masse = masse_;
+//    }
 
-    void erase(){
-        fillCircle(int(pos.x), int(pos.y), int(rayon), WHITE);
-    }
+//    Ball () {
+//        Ball(Vector(), Vector(), 0, WHITE, 0);
+//    }
 
-    Ball copy() {
-        return Ball(pos, vitesse, rayon, col, masse);
-    }
+//    void display(){
+//        fillCircle(int(pos.x), int(pos.y), int(rayon), col);
+//    }
 
-};
+//    void erase(){
+//        fillCircle(int(pos.x), int(pos.y), int(rayon), WHITE);
+//    }
+
+//    Ball copy() {
+//        return Ball(pos, vitesse, rayon, col, masse);
+//    }
+
+//};
 
 //Déclaration
 
