@@ -27,12 +27,9 @@ int main() {
     house.add(wall3);
 
     Weapon* arsenal = new Weapon[1];
-<<<<<<< HEAD
-    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.));
-=======
-    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50));
 
->>>>>>> cd9a7cebafe57cc3c9bb9be5a420e50e8c16a41b
+    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.));
+
     Box body(Vector(85,window_height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body,1,arsenal);
 
