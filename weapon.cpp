@@ -4,6 +4,16 @@
 #include "skin.h"
 #include "weapon.h"
 
+// ===================== Convertir les angles =======================================================================
+
+//Convertir les angles de degrés dans le sens trigo à rad dans le sens horaire
+//Origine l'axe des x
+double convert_angle(double angle){
+    return -angle*M_PI/180.;
+}
+
+
+
 // ================================== Weapon ===========================================================
 
 
@@ -15,10 +25,12 @@ Weapon::Weapon(Box projectile_){
     ammunition.push_back(projectile_);
 }
 
-Weapon::Weapon(Skin machine_, double length_, Vector pos_){
+Weapon::Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_){
     machine = machine_;
     length = length_;
     pos = pos_;
+    angle_min = angle_min_;
+    angle_max = angle_max_;
 }
 
 bool Weapon::set_fire(vector<int> keys, Vector vehicle_pos){
@@ -90,4 +102,6 @@ bool Weapon::lower(int key){
 }
 void Weapon::angle_machine(int key){
     machine.angle += 0.03*(lower(key)-raise(key));
+    if (!(machine.angle > angle_max && machine.angle < angle_min))
+        machine.angle -= 0.03*(lower(key)-raise(key));
 }

@@ -5,6 +5,7 @@ using namespace std;
 #include "tools.h"
 #include "vehicle.h"
 #include "liste_des_skins.h"
+#include "structure.h"
 
 
 int main() {
@@ -15,16 +16,27 @@ int main() {
     cout <<"Utiliser les flèches directionnelles pour bouger le véhicule et controler l'angle du canon, et Z pour tirer"<<endl;
 
     // INITIALIZATION
-    Box wall(Vector(800,window_height-h_ground-150),100,300,20,Color(140,108,66));
+
+
+    Box wall(Vector(800,window_height-h_ground-150),50,300,20,Color(140,108,66));
+    Box wall2(Vector(700,window_height-h_ground-150),50,300,20,Color(140,108,66));
+    Box wall3(Vector(750,window_height-h_ground-150-250),150,50,5,Color(140,108,66));
+
+    Structure house(wall);
+    house.add(wall2);
+    house.add(wall3);
+
     Weapon* arsenal = new Weapon[1];
-    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50));
+
+    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.));
+
     Box body(Vector(85,window_height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body,1,arsenal);
 
-    Box old_wall = wall.copy();
+    Structure old_house = house.copy();
     Vehicle old_car = car.copy();
 
-    wall.Display();
+    house.Display();
     car.Display();
 
     drawGround();
@@ -37,13 +49,13 @@ int main() {
         if(timeStep%periodDisplay==0){
             noRefreshBegin();
 
-            old_wall.Erase();
+            old_house.Erase();
             old_car.Erase();
 
-            wall.Display();
+            house.Display();
             car.Display();
 
-            old_wall = wall.copy();
+            old_house = house.copy();
             old_car = car.copy();
 
             noRefreshEnd();
@@ -51,20 +63,20 @@ int main() {
         }
         car.fire(keys);
 
-        wall.Accelerate();
+        house.Accelerate();
         car.Accelerate();
 
         car.movement_vehicle(keys);
         //car.angle_machine(key);
 
-        wall.Move();
+        house.Move();
         car.Move();
 
-        car.arsenal_collide(wall);
+        car.arsenal_collide(house);
+        house.AutoCollide();
 
-        wall.groundBounce();
+        house.groundBounce();
         car.groundBounce();
-
     }
     endGraphics();
     return 0;

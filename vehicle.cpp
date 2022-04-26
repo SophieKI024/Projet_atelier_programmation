@@ -2,6 +2,7 @@
 #include "box.h"
 #include "liste_des_skins.h"
 
+
 // ===================== Vehicle ====================================================================================
 
 // Constructeur
@@ -70,9 +71,11 @@ void Vehicle::movement_vehicle(vector<int> keys){
     body.v.x = (1-frottements_fluides*dt)*sgn(body.v.x)*max(0.,abs(body.v.x)-body.m*frottements_secs*dt); //frotements fluides
 }
 
-void Vehicle::arsenal_collide(Box &b){
+void Vehicle::arsenal_collide(Structure &S){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].Collide(b);
+        for (unsigned long j = 0; j < S.boxes.size(); j++){
+            arsenal[i].Collide(S.boxes[j]);
+        }
     }
 }
 

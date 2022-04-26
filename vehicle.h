@@ -3,6 +3,7 @@
 #include "box.h"
 #include "tools.h"
 #include "weapon.h"
+#include "structure.h"
 
 
 /// **** Vehicle ****
@@ -27,7 +28,7 @@ public:
     bool stable();
     void movement_vehicle(vector<int> key);
 
-    void arsenal_collide(Box &b);
+    void arsenal_collide(Structure &S);
     void angle_machine(int key);
     void fire(vector<int> keys);
 };
