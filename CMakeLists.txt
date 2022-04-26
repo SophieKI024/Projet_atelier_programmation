@@ -14,5 +14,6 @@ add_executable(AtelierProg
                vehicle.cpp vehicle.h
                liste_des_skins.cpp liste_des_skins.h
                skin.h skin.cpp
-               weapon.cpp weapon.h)
+               weapon.cpp weapon.h
+               structure.cpp structure.h)
 ImagineUseModules(AtelierProg Images)

@@ -90,9 +90,11 @@ void Vehicle::movement_vehicle(int key){
     body.v.x *= 0.9985; //frotements fluides
 }
 
-void Vehicle::arsenal_collide(Box &b){
+void Vehicle::arsenal_collide(Structure &S){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].Collide(b);
+        for (unsigned long j = 0; j < S.boxes.size(); j++){
+            arsenal[i].Collide(S.boxes[j]);
+        }
     }
 }
 
