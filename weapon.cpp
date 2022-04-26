@@ -18,25 +18,27 @@ double convert_angle(double angle){
 
 
 Weapon::Weapon(){
-
 }
 
 Weapon::Weapon(Box projectile_){
     ammunition.push_back(projectile_);
 }
 
-Weapon::Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_){
+Weapon::Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_,double reload_time_){
     machine = machine_;
     length = length_;
     pos = pos_;
     angle_min = angle_min_;
     angle_max = angle_max_;
+    reload_time = reload_time_;
+    t0 =0;
 }
 
-bool Weapon::set_fire(vector<int> keys, Vector vehicle_pos){
-    if (isPressed(keys,'z')){
+bool Weapon::set_fire(vector<int> keys, Vector vehicle_pos, double t){
+    if (isPressed(keys,'z') and  (t-t0)>reload_time){
         Box projectile(pos+vehicle_pos+length*Vector(cos(machine.angle),sin(machine.angle)),10,10,100,BLACK, machine.angle, 180*Vector(cos(machine.angle),sin(machine.angle)),0);
         ammunition.push_back(projectile);
+        t0=t;
         return true;
     }
     return false;
@@ -93,15 +95,9 @@ void Weapon::stable(){
     }
 }
 
-bool Weapon::raise(int key){
-    return key == KEY_UP;
-}
 
-bool Weapon::lower(int key){
-    return key == KEY_DOWN;
-}
-void Weapon::angle_machine(int key){
-    machine.angle += 0.03*(lower(key)-raise(key));
+void Weapon::angle_machine(vector<int> keys){
+    machine.angle += 0.002*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
     if (!(machine.angle > angle_max && machine.angle < angle_min))
-        machine.angle -= 0.03*(lower(key)-raise(key));
+        machine.angle -= 0.002*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
 }

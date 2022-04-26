@@ -29,6 +29,6 @@ public:
     void movement_vehicle(vector<int> key);
 
     void arsenal_collide(Structure &S);
-    void angle_machine(int key);
-    void fire(vector<int> keys);
+    void angle_machine(vector<int> keys);
+    void fire(vector<int> keys, double t);
 };
