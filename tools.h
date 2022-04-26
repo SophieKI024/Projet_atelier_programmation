@@ -17,8 +17,8 @@ const double eps=1e-2;
 
 const Color backgroundColor = Color(216,242, 255); // Light Blue
 
-const double frottements_fluides = 1e-3;
-const double frottements_secs = 1;
+const double frottements_fluides = 0.1;
+const double frottements_secs = 3e-8;
 
 
 void keyboard(vector<int> &keys);

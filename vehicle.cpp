@@ -67,7 +67,7 @@ bool Vehicle::stable(){
 
 void Vehicle::movement_vehicle(vector<int> keys){
     body.v.x += 0.05*(isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT));
-    body.v.x = (1-frottements_fluides*dt)*sgn(body.v.x)*max(0.,abs(body.v.x)-frottements_secs*dt); //frotements fluides
+    body.v.x = (1-frottements_fluides*dt)*sgn(body.v.x)*max(0.,abs(body.v.x)-body.m*frottements_secs*dt); //frotements fluides
 }
 
 void Vehicle::arsenal_collide(Box &b){
