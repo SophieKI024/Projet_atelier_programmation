@@ -21,3 +21,19 @@ Skin Canon_standard(){
 
     return Skin(border_,14,Color(50,50,50),20,-0.4);
 }
+
+Skin Gros_canon(){
+    Vector* border_=new Vector[16];
+
+    border_[0] = Vector(-1.5,1.5);
+    border_[1] = Vector(-0.25,2.5);
+    border_[2] = Vector(0.25,2.5);
+    border_[3] = Vector(1.5,1.5);
+    border_[4] = Vector(3,1.5);
+    border_[5] = Vector(3.5,2);
+    border_[6] = Vector(4,1.5);
+    border_[7] = Vector(4.5,1.5);
+    Symmetry(border_,16);
+
+    return Skin(border_,16,Color(220,20,60),20,-0.4);
+}

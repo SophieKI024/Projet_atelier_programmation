@@ -8,3 +8,4 @@ void Symmetry(Vector* border, int nb_points); // nb points tjrs pair
 
 
 Skin Canon_standard();
+Skin Gros_canon();
