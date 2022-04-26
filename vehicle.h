@@ -3,6 +3,7 @@
 #include "box.h"
 #include "tools.h"
 #include "weapon.h"
+#include "structure.h"
 
 int keyboard();
 
@@ -30,7 +31,7 @@ public:
     bool move_left(int key);
     void movement_vehicle(int key);
 
-    void arsenal_collide(Box &b);
+    void arsenal_collide(Structure &S);
     void angle_machine(int key);
     void fire(int key);
 };
