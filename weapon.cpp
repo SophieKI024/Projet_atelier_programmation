@@ -21,11 +21,10 @@ Weapon::Weapon(Skin machine_, double length_, Vector pos_){
     pos = pos_;
 }
 
-bool Weapon::set_fire(int key, Vector vehicle_pos){
-    if (key == 'z'){
+bool Weapon::set_fire(vector<int> keys, Vector vehicle_pos){
+    if (isPressed(keys,'z')){
         Box projectile(pos+vehicle_pos+length*Vector(cos(machine.angle),sin(machine.angle)),10,10,100,BLACK, machine.angle, 180*Vector(cos(machine.angle),sin(machine.angle)),0);
         ammunition.push_back(projectile);
-        cout <<"nombre de projectiles : "<<ammunition.size()<<endl;
         return true;
     }
     return false;
@@ -77,7 +76,6 @@ void Weapon::stable(){
     for (unsigned long i = 0; i < ammunition.size(); i++){
         if (ammunition[i].stable){
             ammunition.erase(ammunition.begin()+i);
-            cout <<"nombre de projectiles : "<<ammunition.size()<<endl;
             ammunition[i].Erase();
         }
     }

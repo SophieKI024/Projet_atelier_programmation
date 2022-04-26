@@ -14,6 +14,50 @@ void InitRandom(){
     srand((unsigned int) time(0));
 }
 
+/////////////////////////////// GESTION CLAVIER///////////////////////////////////
+
+void keyboard(vector<int>& keys){
+        Event e;
+        do {
+            bool deja_vu;
+            int j;
+            getEvent(0,e);
+
+            if(e.type==EVT_KEY_ON){
+                deja_vu = false;
+                for(unsigned long i=0; i<keys.size() and !deja_vu;i++){
+                    deja_vu = keys[i]==e.key;
+                }
+                if(!deja_vu)
+                    keys.push_back(e.key);
+             }
+
+            if(e.type==EVT_KEY_OFF){
+
+                j=0;
+                while(j<keys.size()){
+                    if (keys[j]==e.key){
+                        swap(keys[j],keys.back());
+                        keys.pop_back();
+                    }
+                    else
+                        j++;
+                }
+            }
+
+        } while(e.type!=EVT_NONE);
+}
+
+bool isPressed(vector<int> keys, int key){
+    for(unsigned long i=0; i<keys.size();i++){
+        if(keys[i]==key){
+            return true;
+        }
+    }
+    return false;
+}
+
+
 //// Fonctions Tp4
 
 //void shock(double x,  double y,  double &vx,  double &vy,  double m, double x2, double y2, double &vx2, double &vy2, double m2) {

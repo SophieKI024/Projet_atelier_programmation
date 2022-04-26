@@ -2,18 +2,6 @@
 #include "box.h"
 #include "liste_des_skins.h"
 
-// -------------- Gestion clavier ----------------------------------------------------------------------------------
-
-int keyboard() {
-    Event e;
-    do {
-        getEvent(0,e);
-        if(e.type==EVT_KEY_ON)
-            return e.key;
-    } while(e.type!=EVT_NONE);
-    return 0;
-}
-
 // ===================== Vehicle ====================================================================================
 
 // Constructeur
@@ -77,16 +65,9 @@ bool Vehicle::stable(){
     return body.stable;
 }
 
-bool Vehicle::move_right(int key){
-    return key == KEY_RIGHT;
-}
-
-bool Vehicle::move_left(int key){
-    return key == KEY_LEFT;
-}
-void Vehicle::movement_vehicle(int key){
-    body.v.x += (move_right(key)-move_left(key));
-    body.v.x *= 0.9985; //frotements fluides
+void Vehicle::movement_vehicle(vector<int> keys){
+    body.v.x += 0.05*(isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT));
+    body.v.x = (1-frottements_fluides*dt)*sgn(body.v.x)*max(0.,abs(body.v.x)-frottements_secs*dt); //frotements fluides
 }
 
 void Vehicle::arsenal_collide(Box &b){
@@ -101,9 +82,9 @@ void Vehicle::angle_machine(int key){
     }
 }
 
-void Vehicle::fire(int key){
+void Vehicle::fire(vector<int> keys){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].set_fire(key,body.pos);
+        arsenal[i].set_fire(keys,body.pos);
         arsenal[i].stable(); //Effacer les projectiles stables
     }
 }

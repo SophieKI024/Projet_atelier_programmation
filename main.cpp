@@ -28,11 +28,11 @@ int main() {
     car.Display();
 
     drawGround();
-    int key;
+    vector<int> keys;
 
     // MAIN LOOP
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
-        key = keyboard();
+        keyboard(keys);
         // DISPLAY
         if(timeStep%periodDisplay==0){
             noRefreshBegin();
@@ -49,13 +49,13 @@ int main() {
             noRefreshEnd();
             milliSleep(20);
         }
-        car.fire(key);
+        car.fire(keys);
 
         wall.Accelerate();
         car.Accelerate();
 
-        car.movement_vehicle(key);
-        car.angle_machine(key);
+        car.movement_vehicle(keys);
+        //car.angle_machine(key);
 
         wall.Move();
         car.Move();

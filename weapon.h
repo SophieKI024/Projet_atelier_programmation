@@ -20,7 +20,7 @@ public:
     Weapon(Skin machine_, double length_, Vector pos_);
 
     // Fonctions
-    bool set_fire(int key, Vector vehicle_pos);
+    bool set_fire(vector<int> key, Vector vehicle_pos);
 
     void Display(Vector vehicle_pos);
     void Erase(Vector vehicle_pos);
