@@ -79,15 +79,15 @@ void Vehicle::arsenal_collide(Structure &S){
     }
 }
 
-void Vehicle::angle_machine(int key){
+void Vehicle::angle_machine(vector<int> keys){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].angle_machine(key);
+        arsenal[i].angle_machine(keys);
     }
 }
 
-void Vehicle::fire(vector<int> keys){
+void Vehicle::fire(vector<int> keys, double t){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].set_fire(keys,body.pos);
+        arsenal[i].set_fire(keys,body.pos,t);
         arsenal[i].stable(); //Effacer les projectiles stables
     }
 }

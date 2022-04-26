@@ -28,7 +28,7 @@ int main() {
 
     Weapon* arsenal = new Weapon[1];
 
-    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.));
+    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.),1);
 
     Box body(Vector(85,window_height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body,1,arsenal);
@@ -41,6 +41,7 @@ int main() {
 
     drawGround();
     vector<int> keys;
+    double t=0;
 
     // MAIN LOOP
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
@@ -61,13 +62,13 @@ int main() {
             noRefreshEnd();
             milliSleep(20);
         }
-        car.fire(keys);
+        car.fire(keys,t);
 
         house.Accelerate();
         car.Accelerate();
 
         car.movement_vehicle(keys);
-        //car.angle_machine(key);
+        car.angle_machine(keys);
 
         house.Move();
         car.Move();
@@ -77,6 +78,8 @@ int main() {
 
         house.groundBounce();
         car.groundBounce();
+
+        t+=dt;
     }
     endGraphics();
     return 0;

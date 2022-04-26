@@ -18,13 +18,15 @@ public:
     Vector pos;
     double angle_min;
     double angle_max;
+    double reload_time;
+    double t0;
     // Constructeur
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_);
+    Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_, double reload_time_);
 
     // Fonctions
-    bool set_fire(vector<int> key, Vector vehicle_pos);
+    bool set_fire(vector<int> key, Vector vehicle_pos, double t);
 
     void Display(Vector vehicle_pos);
     void Erase(Vector vehicle_pos);
@@ -37,6 +39,6 @@ public:
 
     bool raise(int key);
     bool lower(int key);
-    void angle_machine(int key);
+    void angle_machine(vector<int> key);
 
 };
