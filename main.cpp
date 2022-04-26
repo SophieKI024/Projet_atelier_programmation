@@ -17,7 +17,7 @@ int main() {
     // INITIALIZATION
     Box wall(Vector(800,window_height-h_ground-150),100,300,20,Color(140,108,66));
     Weapon* arsenal = new Weapon[1];
-    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50));
+    arsenal[0]= Weapon(Canon_standard(),30,Vector(0,-50), convert_angle(0.),convert_angle(180.));
     Box body(Vector(85,window_height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body,1,arsenal);
 

@@ -6,6 +6,8 @@
 #include "skin.h"
 
 
+double convert_angle(double angle);
+
 /// **** Weapon **** ///
 
 class Weapon{
@@ -14,10 +16,12 @@ public:
     Skin machine;
     double length;
     Vector pos;
+    double angle_min;
+    double angle_max;
     // Constructeur
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector pos_);
+    Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_);
 
     // Fonctions
     bool set_fire(int key, Vector vehicle_pos);
