@@ -5,12 +5,12 @@
 
 class Skin{
 public:
-    Vector* border;
+    Vector2D* border;
     Color Col;
     double angle, scale_factor;
     int nb_points;
     Skin();
-    Skin(Vector* border_,int nb_points_, Color Col_,double scale_factor_ =20, double angle_ = 0);
-    void Display(Vector pos);
-    void Erase(Vector pos);
+    Skin(Vector2D* border_,int nb_points_, Color Col_,double scale_factor_ =20, double angle_ = 0);
+    void Display(Vector2D pos);
+    void Erase(Vector2D pos);
 };

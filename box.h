@@ -5,16 +5,17 @@ using namespace Imagine;
 
 class Box{
 public :
-    Vector pos, v;
+    Vector2D pos, v;
     double w, h, omega, angle, m;
     Color Col;
     bool stable, grounded;
+    double I();
     void Display();
     void Move();
     void stepBack();
     void Accelerate();
     bool Collide(Box& b);
-    Box(Vector pos_,double w_,double h_,double m_, Color Col_, double angle_=0, Vector v_ = Vector(0,0), double omega_=0);
+    Box(Vector2D pos_,double w_,double h_,double m_, Color Col_, double angle_=0, Vector2D v_ = Vector2D(0,0), double omega_=0);
     void Erase();
     Box copy();
     Box();

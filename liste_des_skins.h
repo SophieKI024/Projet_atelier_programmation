@@ -2,7 +2,7 @@
 
 #include "skin.h"
 
-void Symmetry(Vector* border, int nb_points); // nb points tjrs pair
+void Symmetry(Vector2D* border, int nb_points); // nb points tjrs pair
 
 // ================================ Canon standard ===========================================
 

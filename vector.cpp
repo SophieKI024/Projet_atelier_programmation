@@ -3,6 +3,6 @@
 using namespace std;
 #include "vector.h"
 
-Vector operator* (double a, Vector u){
+Vector2D operator* (double a, Vector2D u){
     return u * a;
 }

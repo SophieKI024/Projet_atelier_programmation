@@ -5,7 +5,7 @@
 
 Skin::Skin(){}
 
-Skin::Skin(Vector* border_, int nb_points_, Color Col_, double scale_factor_, double angle_){
+Skin::Skin(Vector2D* border_, int nb_points_, Color Col_, double scale_factor_, double angle_){
     border = border_;
     Col = Col_;
     angle = angle_;
@@ -13,10 +13,10 @@ Skin::Skin(Vector* border_, int nb_points_, Color Col_, double scale_factor_, do
     scale_factor = scale_factor_;
 }
 
-void Skin::Display(Vector pos){
+void Skin::Display(Vector2D pos){
     int x[nb_points], y[nb_points];
-    Vector rotX = Vector(cos(angle), -sin(angle));
-    Vector rotY = Vector(sin(angle),cos(angle));
+    Vector2D rotX = Vector2D(cos(angle), -sin(angle));
+    Vector2D rotY = Vector2D(sin(angle),cos(angle));
     for(int i=0; i<nb_points; i++){
         x[i] = int(pos.x + scale_factor*border[i]*rotX);
         y[i] = int(pos.y + scale_factor*border[i]*rotY);
@@ -24,10 +24,10 @@ void Skin::Display(Vector pos){
     fillPoly(x,y,nb_points,Col);
 }
 
-void Skin::Erase(Vector pos){
+void Skin::Erase(Vector2D pos){
     int x[nb_points], y[nb_points];
-    Vector rotX = Vector(cos(angle), -sin(angle));
-    Vector rotY = Vector(sin(angle),cos(angle));
+    Vector2D rotX = Vector2D(cos(angle), -sin(angle));
+    Vector2D rotY = Vector2D(sin(angle),cos(angle));
     for(int i=0; i<nb_points; i++){
         x[i] = int(pos.x + scale_factor*border[i]*rotX);
         y[i] = int(pos.y + scale_factor*border[i]*rotY);

@@ -15,7 +15,7 @@ public:
     vector<Box> ammunition;
     Skin machine;
     double length;
-    Vector pos;
+    Vector2D pos;
     double angle_min;
     double angle_max;
     double reload_time;
@@ -23,13 +23,13 @@ public:
     // Constructeur
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector pos_, double angle_min_, double angle_max_, double reload_time_);
+    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_);
 
     // Fonctions
-    bool set_fire(vector<int> key, Vector vehicle_pos, double t);
+    bool set_fire(vector<int> key, Vector2D vehicle_pos, double t);
 
-    void Display(Vector vehicle_pos);
-    void Erase(Vector vehicle_pos);
+    void Display(Vector2D vehicle_pos);
+    void Erase(Vector2D vehicle_pos);
     void Move();
     void Accelerate();
     void Collide(Box& b);

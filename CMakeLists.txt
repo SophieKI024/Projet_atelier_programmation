@@ -8,6 +8,8 @@ project(AtelierProg)
 
 add_executable(AtelierProg
                box.cpp box.h
+               ball.cpp ball.h
+               joint.cpp joint.h
                main.cpp
                tools.cpp tools.h
                vector.cpp vector.h
@@ -16,4 +18,4 @@ add_executable(AtelierProg
                skin.h skin.cpp
                weapon.cpp weapon.h
                structure.cpp structure.h)
-ImagineUseModules(AtelierProg Images)
+ImagineUseModules(AtelierProg Images LinAlg)

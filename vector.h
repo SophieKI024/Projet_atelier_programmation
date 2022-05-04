@@ -3,15 +3,15 @@
 #include <Imagine/Graphics.h>
 using namespace Imagine;
 
-struct Vector {
+struct Vector2D {
     double x, y;
 
-    Vector (double x_, double y_){
+    Vector2D (double x_, double y_){
         x= x_;
         y= y_;
     }
 
-    Vector () {
+    Vector2D () {
         x = 0; y=0;
     }
 
@@ -23,26 +23,26 @@ struct Vector {
         return pow(x, 2) + pow(y, 2);
     }
 
-    Vector operator+ (Vector autre) {
-        return Vector (x + autre.x, y + autre.y);
+    Vector2D operator+ (Vector2D autre) {
+        return Vector2D (x + autre.x, y + autre.y);
     }
 
-    void operator += (Vector autre) {
+    void operator += (Vector2D autre) {
         x = x + autre.x;
         y = y + autre.y;
     }
 
-    Vector operator- (Vector autre) {
-        return Vector (x - autre.x, y - autre.y);
+    Vector2D operator- (Vector2D autre) {
+        return Vector2D (x - autre.x, y - autre.y);
     }
 
-    void operator -= (Vector autre) {
+    void operator -= (Vector2D autre) {
         x = x - autre.x;
         y = y - autre.y;
     }
 
-    Vector operator* (double a){
-        return Vector (x*a, y*a);
+    Vector2D operator* (double a){
+        return Vector2D (x*a, y*a);
     }
 
     void operator*= (double a){
@@ -50,9 +50,12 @@ struct Vector {
         y = y*a;
     }
 
-    double operator*(Vector u){
+    double operator*(Vector2D u){
         return x*u.x+y*u.y;
+    }
+    Vector2D normalize(){
+        return Vector2D(x,y)*(1/norme());
     }
 };
 
-Vector operator* (double a, Vector u);
+Vector2D operator* (double a, Vector2D u);

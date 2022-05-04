@@ -25,6 +25,7 @@ public:
     void Accelerate();
     Vehicle copy();
     void groundBounce();
+    void Collide(Structure &S);
     bool stable();
     void movement_vehicle(vector<int> key);
 

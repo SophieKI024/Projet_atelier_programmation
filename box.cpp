@@ -7,7 +7,7 @@ using namespace Imagine;
 using namespace std;
 
 
-Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_, Vector v_, double omega_){
+Box::Box(Vector2D pos_,double w_,double h_,double rho_, Color Col_, double angle_, Vector2D v_, double omega_){
     pos=pos_;
     v = v_;
     w = w_;
@@ -21,7 +21,11 @@ Box::Box(Vector pos_,double w_,double h_,double rho_, Color Col_, double angle_,
 }
 
 Box::Box(){
-    //Box(Vector(0,0),0,0,0,backgroundColor);
+    //Box(Vector2D(0,0),0,0,0,backgroundColor);
+}
+
+double Box::I(){
+    return m*(h*h+w*w)/12;
 }
 
 void Box::Display(){
@@ -41,8 +45,9 @@ void Box::stepBack(){
 }
 
 void Box::Accelerate(){
-    if(!stable)
-    v.y = v.y + dt*g;   // effet de la gravité
+    v = (1-frottements_fluides*dt)*v;
+    //if(!stable)
+    //v.y = v.y + dt*g;   // effet de la gravité
 }
 
 bool Box::Collide(Box& b){
@@ -56,22 +61,22 @@ bool Box::Collide(Box& b){
     b.corners(x2,y2);
 
     double treshold=1e-2; // limite pour la stabilite
-    vector<Vector> lst; // on stocke tous les coins qui sont rentres dans l'autre Box
+    vector<Vector2D> lst; // on stocke tous les coins qui sont rentres dans l'autre Box
 
     // on teste si les coins des boxs sont contenus dans les autres Box
     for(int i=0; i<4; i++){
         if(abs(cos(angle)*(x2[i]-pos.x)+sin(angle)*(y2[i]-pos.y))<=w/2. and abs(-sin(angle)*(x2[i]-pos.x)+cos(angle)*(y2[i]-pos.y))<=h/2.)
-            lst.push_back(Vector(x2[i],y2[i]));
+            lst.push_back(Vector2D(x2[i],y2[i]));
     }
     for(int i=0; i<4; i++){
         if(abs(cos(b.angle)*(x1[i]-b.pos.x)+sin(b.angle)*(y1[i]-b.pos.y))<=b.w/2. and abs(-sin(b.angle)*(x1[i]-b.pos.x)+cos(b.angle)*(y1[i]-b.pos.y))<=b.h/2.)
-            lst.push_back(Vector(x1[i],y1[i]));
+            lst.push_back(Vector2D(x1[i],y1[i]));
     }
 
     // si un des coins d'une Box est dans l'autre Box
     if(!lst.empty()){
         double coeff = 0.6;
-        Vector c;   // position du point de contact
+        Vector2D c;   // position du point de contact
 
         // disjonction de cas pour eviter des pb dans des cas particuliers
         if(lst.size()==1)   // 1 seul point touche = c'est le point de contact
@@ -88,10 +93,10 @@ bool Box::Collide(Box& b){
         // calcul des nouvelles vitesses et vitesses de rotation
         double transfert1 = (pos-c).norme()/sqrt(w*w+h*h);
         double transfert2 = (b.pos-c).norme()/sqrt(b.w*b.w+b.h*b.h);
-        Vector w1 = v + omega*Vector(-c.y+pos.y,c.x-pos.x);
-        Vector w2 = b.v + b.omega*Vector(-c.y+b.pos.y,c.x-b.pos.x);
-        Vector delta_v1 = 2.*b.m/(m+b.m)*(w2-w1);
-        Vector delta_v2 = 2.*m/(m+b.m)*(w1-w2);
+        Vector2D w1 = v + omega*Vector2D(-c.y+pos.y,c.x-pos.x);
+        Vector2D w2 = b.v + b.omega*Vector2D(-c.y+b.pos.y,c.x-b.pos.x);
+        Vector2D delta_v1 = 2.*b.m/(m+b.m)*(w2-w1);
+        Vector2D delta_v2 = 2.*m/(m+b.m)*(w1-w2);
         //exceptions lorsqu'un element est au sol
         if(grounded){
             delta_v1.y = 0;
@@ -101,11 +106,11 @@ bool Box::Collide(Box& b){
             delta_v1.y = -2.*w1.y;
             delta_v2.y = 0;
         }
-        Vector t1,t2,n1,n2;
+        Vector2D t1,t2,n1,n2;
         t1 = 1/(c-pos).norme()*(c-pos);
-        n1 = Vector(-t1.y,t1.x);
+        n1 = Vector2D(-t1.y,t1.x);
         t2 = 1/(c-b.pos).norme()*(c-b.pos);
-        n2 = Vector(-t2.y,t2.x);
+        n2 = Vector2D(-t2.y,t2.x);
         v += coeff*(delta_v1*t1*t1 +(1-transfert1)*delta_v1*n1*n1);
         omega += coeff*transfert1/(c-pos).norme()*delta_v1*n1;
         b.v += coeff*(delta_v2*t2*t2+(1-transfert2)*delta_v2*n2*n2);
@@ -151,23 +156,23 @@ bool Box::groundBounce(){
         double x[4], y[4];
         double treshold=1e-2;
         corners(x,y);
-        vector<Vector> lst;
+        vector<Vector2D> lst;
         for(int i=0; i<4; i++){
             if(y[i]>window_height-h_ground)
-                lst.push_back(Vector(x[i],y[i]));
+                lst.push_back(Vector2D(x[i],y[i]));
         }
         // rebond "simple"
         if(!lst.empty()){
             stepBack();
             double coeff = 0.6;
             double transfert = 0.5;
-            Vector c=Vector(0,0);   // point de contact
+            Vector2D c=Vector2D(0,0);   // point de contact
             for(int i=0; i<lst.size(); i++){
                 c += (1/double(lst.size()))*lst[i];
             }
-            Vector delta_v = -2*( v + omega*Vector(-c.y+pos.y,c.x-pos.x));
-            Vector t = 1/(c-pos).norme()*(c-pos);
-            Vector n = Vector(-t.y,t.x);
+            Vector2D delta_v = -2*( v + omega*Vector2D(-c.y+pos.y,c.x-pos.x));
+            Vector2D t = 1/(c-pos).norme()*(c-pos);
+            Vector2D n = Vector2D(-t.y,t.x);
             v += coeff*(delta_v*t*t +transfert*delta_v*n*n);
             omega += coeff*(1-transfert)/(c-pos).norme()*delta_v*n;
             Move();
@@ -175,7 +180,7 @@ bool Box::groundBounce(){
             if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
                 stable = true;
                 grounded = true;
-                v=Vector(0,0);
+                v=Vector2D(0,0);
                 omega =0;
             }
             return true;
