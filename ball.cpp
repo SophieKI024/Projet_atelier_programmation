@@ -33,10 +33,10 @@ bool Ball::Collide(Ball& b){
     return false;
 }
 
-Ball::Ball(Vector2D pos_,double r_,double m_,Color Col_,Vector2D v_, double omega_){
+Ball::Ball(Vector2D pos_,double r_,double rho_,Color Col_,Vector2D v_, double omega_){
     pos=pos_;
     r=r_;
-    m=m_;
+    m=rho_*M_PI*r*r;
     Col=Col_;
     v = v_;
     omega = omega_;

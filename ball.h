@@ -13,7 +13,7 @@ public :
     Color Col;
 
     Ball();
-    Ball(Vector2D pos_,double r_,double m_,Color Col_,Vector2D v_=Vector2D(0,0), double omega_ = 0.);
+    Ball(Vector2D pos_,double r_,double rho_,Color Col_,Vector2D v_=Vector2D(0,0), double omega_ = 0.);
 
     double I();
     void Display();

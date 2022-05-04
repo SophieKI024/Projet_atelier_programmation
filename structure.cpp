@@ -92,12 +92,18 @@ void Structure::Move(){
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Move();
     }
+    for (unsigned long i=0; i<balls.size();i++){
+        balls[i].Move();
+    }
 }
 
 void Structure::Accelerate(){
     // effet gravite
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Accelerate();
+    }
+    for(unsigned long i=0; i<balls.size();i++){
+        balls[i].Accelerate();
     }
     Vector2D pos1,pos2;
     double m1,m2;
