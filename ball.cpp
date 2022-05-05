@@ -30,7 +30,11 @@ void Ball::Accelerate(){
 }
 
 bool Ball::Collide(Ball& b){
-    return false;
+    return (pos-b.pos).norme()<=r+b.r;
+}
+
+double Ball::ballC(Ball b){
+    return max(0.,r+b.r-(pos-b.pos).norme());
 }
 
 Ball::Ball(Vector2D pos_,double r_,double rho_,Color Col_,Vector2D v_, double omega_){

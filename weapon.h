@@ -14,31 +14,67 @@ class Weapon{
 public:
     vector<Box> ammunition;
     Skin machine;
+
+    /// distance entre le centre de rotation et le bout du canon
     double length;
+
     Vector2D pos;
     double angle_min;
     double angle_max;
     double reload_time;
+
+    /// instant du dernier tir
     double t0;
-    // Constructeur
+
+    //////////////////////// CONSTRUCTEURS //////////////////////////
+
+    /// Constructeur vide
     Weapon();
     Weapon(Box projectile_);
     Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_);
 
-    // Fonctions
-    bool set_fire(vector<int> key, Vector2D vehicle_pos, double t);
 
+
+    /////////////////////// AFFICHAGE //////////////////////////////
+
+    /// Affiche les armes et les boulets
     void Display(Vector2D vehicle_pos);
+
+    /// Efface les armes et les boulets
     void Erase(Vector2D vehicle_pos);
+
+
+
+    ////////////////////// PHYSIQUE /////////////////////////////////
+
+    /// Applique les vitesses aux boulets pour les deplacer
     void Move();
+
+    /// Applique les forces exterieures sur les boulets et modifie la vitesse
     void Accelerate();
+
+    /// Effectue les collisions entre les boulets et une Box
     void Collide(Box& b);
-    Weapon copy();
+
+    /// Effectue les collisions entre les boulets et le sol
     void groundBounce();
+
+    /// Efface les boulets stables
     void stable();
 
-    bool raise(int key);
-    bool lower(int key);
+
+
+    /////////////////////// GESTIONS INPUTS /////////////////////////
+
+    /// Effectue un tir en fonction des inputs du joueur
+    bool set_fire(vector<int> key, Vector2D vehicle_pos, double t);
+
+    /// Modifie l'angle de visee en fonction des inputs du joueur
     void angle_machine(vector<int> key);
 
+
+    ////////////////////// AUTRES /////////////////////////////////
+
+    /// Copie l'arme
+    Weapon copy();
 };

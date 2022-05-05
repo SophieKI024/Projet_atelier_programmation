@@ -12,31 +12,37 @@ using namespace std;
 int main() {
     openWindow(window_width,window_height);
     setBackGround(backgroundColor);
-    double angle=-1.2;
+    double angle=-1;
     Ball wall(Vector2D(300,window_height-h_ground-25-300-100),10,10,Color(140,108,66),Vector2D(0,0));
     Ball wall2(Vector2D(300+400*cos(angle),window_height-h_ground-25-300-100+300*sin(angle)),10,10,Color(140,108,66),Vector2D(0,0));
     Ball wall3(Vector2D(300+400*cos(angle),window_height-h_ground-25-100+300*sin(angle)),10,10,Color(140,108,66),Vector2D(0,0));
     Box wall4(Vector2D(300,window_height-h_ground-25-100),50,50,10,Color(140,108,66),0,Vector2D(0,0));
 
+    Ball testColl(Vector2D(300,320),30,10,BLUE,Vector2D(30,0));
+    Ball testColl2(Vector2D(500,300),30,10,BLUE,Vector2D(-30,0));
+
     Structure house;
-    house.add(wall);
-    house.add(wall2);
-    house.add(wall3);
-    house.add(wall4);
+    house.add(testColl);
+    house.add(testColl2);
+    //house.add(wall);
+    //house.add(wall2);
+    //house.add(wall3);
+    //house.add(wall4);
 
     Joint J1(1,0,1,1,400,3,BLACK);
     Joint J2(1,1,1,2,300,3,BLACK);
     Joint J3(1,2,0,0,400,3,BLACK);
     Joint J4(0,0,1,0,300,3,BLACK);
-    Spring S1(1,0,1,2,500,0,1000,3000,4,RED);
-    Spring S2(1,1,0,0,500,0,1000,3000,4,RED);
-
+    Spring S1(1,0,1,2,500,0,1000,1000,4,RED);
+    Spring S2(1,1,0,0,500,0,1000,1000,4,RED);
+/*
     house.add(J1);
     house.add(J2);
     house.add(J3);
     house.add(J4);
     house.add(S1);
     house.add(S2);
+*/
     Structure old_house = house.copy();
     house.Display();
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
