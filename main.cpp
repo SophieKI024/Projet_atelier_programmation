@@ -10,6 +10,7 @@ using namespace std;
 
 
 int main() {
+
     openWindow(window_width,window_height);
     setBackGround(backgroundColor);
     double angle=-1;
@@ -18,12 +19,20 @@ int main() {
     Ball wall3(Vector2D(300+400*cos(angle),window_height-h_ground-25-100+300*sin(angle)),10,10,Color(140,108,66),Vector2D(0,0));
     Box wall4(Vector2D(300,window_height-h_ground-25-100),50,50,10,Color(140,108,66),0,Vector2D(0,0));
 
-    Ball testColl(Vector2D(300,320),30,10,BLUE,Vector2D(30,0));
-    Ball testColl2(Vector2D(500,300),30,10,BLUE,Vector2D(-30,0));
 
     Structure house;
-    house.add(testColl);
-    house.add(testColl2);
+    double r = 15;
+    double x0 = 600;
+    double y0 = window_height-150-r-0.1;
+
+
+    for(int i=0; i<15; i++){
+        for(int j=0; j<3; j++){
+            house.add(Ball(Vector2D(x0-5*r*(j-1)+4*r*(doubleRandom()-0.5),y0-3*r*i-r*doubleRandom()),r,1,BLUE));
+        }
+    }
+
+
     //house.add(wall);
     //house.add(wall2);
     //house.add(wall3);
@@ -45,8 +54,17 @@ int main() {
 */
     Structure old_house = house.copy();
     house.Display();
+    //fillCircle(100,y0,r0,RED);
+    house.add(Box(Vector2D(window_width/2,window_height-50),2000,100,1e100,BLACK));
+    house.add(Box(Vector2D(x0-200,window_height/2-101),100,window_height,1e100,BLACK));
+    house.add(Box(Vector2D(x0+200,window_height/2-101),100,window_height,1e100,BLACK));
+    house.Display();
+    cout<<"nombre d'entites : "<<house.boxes.size()+house.balls.size()+house.joints.size()+house.springs.size()<<endl;
+    Timer t;
+    click();
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
         if(timeStep%periodDisplay==0){
+            int time = t.lap();
             noRefreshBegin();
 
             old_house.Erase();
@@ -56,8 +74,10 @@ int main() {
             old_house = house.copy();
 
             noRefreshEnd();
-            milliSleep(20);
+            milliSleep(max(20-time,1));
+            t.reset();
         }
+
         house.Accelerate();
         house.solveConstraints();
         house.Move();

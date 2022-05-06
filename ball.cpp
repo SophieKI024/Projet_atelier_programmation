@@ -26,11 +26,16 @@ void Ball::stepBack(){
 
 void Ball::Accelerate(){
     v = (1-frottements_fluides*dt)*v;
-    //v.y += g*dt;
+    v.y += g*dt;
 }
 
 bool Ball::Collide(Ball& b){
-    return (pos-b.pos).norme()<=r+b.r;
+    Move();
+    b.Move();
+    bool output = (pos-b.pos).norme()<=r+b.r;
+    stepBack();
+    b.stepBack();
+    return output;
 }
 
 double Ball::ballC(Ball b){

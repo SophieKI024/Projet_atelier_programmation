@@ -14,7 +14,9 @@ public :
 
     ///////////////////////////// CONSTRUCTEURS //////////////////////////
 
+    /// Constructeur vide
     Box();
+
     Box(Vector2D pos_,double w_,double h_,double m_, Color Col_, double angle_=0, Vector2D v_ = Vector2D(0,0), double omega_=0);
 
 
@@ -37,15 +39,16 @@ public :
     /// Applique la vitesse et modifie la position et l'angle
     void Move();
 
+    /// Fonction inverse de Move
     void stepBack();
 
     /// Applique les forces exterieures sur le rectangle
     void Accelerate();
 
-    /// Renvoie un booleen indiquant s'il y a une collision avec une Box
+    /// Renvoie un booleen indiquant s'il y a une collision avec une Box b
     bool Collide(Box& b);
 
-    /// Renvoie un booleen indiquant s'il y a une collision avec une Ball
+    /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
 
     /// Applique les collisions avec le sol

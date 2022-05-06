@@ -10,7 +10,7 @@ using namespace std;
 // simulation physique
 const double dt = 0.006;
 const double g = 10;
-const double frottements_fluides = 0.03;
+const double frottements_fluides = 0.1;
 const double frottements_secs = 3e-8;
 
 // affichage
@@ -20,7 +20,7 @@ const int window_height = 800;
 const int periodDisplay =50;
 const Color backgroundColor = Color(216,242, 255); // Light Blue
 
-const double eps=1e-2;
+const double eps=0.5;
 
 ////////////////////////////// GESTION DU CLAVIER ////////////////////////////
 

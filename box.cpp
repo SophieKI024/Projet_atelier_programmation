@@ -47,7 +47,7 @@ void Box::stepBack(){
 void Box::Accelerate(){
     v = (1-frottements_fluides*dt)*v;
     //if(!stable)
-    //v.y = v.y + dt*g;   // effet de la gravité
+    v.y = v.y + dt*g;   // effet de la gravité
 }
 
 Vector2D Box::minimalDistance(Vector2D p){
@@ -99,9 +99,19 @@ bool Box::Collide(Box& b){
 }
 
 bool Box::Collide(Ball& b){
+    Move();
+    b.Move();
+    bool output;
+    if(max(w,h)+b.r<(pos-b.pos).norme())
+        output=false;
+    else{
     Vector2D v = minimalDistance(b.pos);
     double dist = sgn(v*(pos-b.pos))*v.norme();
-    return dist<=b.r;
+    output = dist<=b.r;
+    }
+    stepBack();
+    b.stepBack();
+    return output;
 }
 
 void Box::Erase(){

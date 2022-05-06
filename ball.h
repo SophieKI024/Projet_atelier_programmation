@@ -41,12 +41,13 @@ public :
     /// Applique la vitesse et modifie la position et l'angle
     void Move();
 
+    /// Fonction inverse de Move
     void stepBack();
 
     /// Applique les forces exterieures sur le disque
     void Accelerate();
 
-    /// Teste les collisions avec un autre disque
+    /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
 
     /// Applique les rebonds avec le sol
