@@ -92,7 +92,7 @@ public:
     Vector<Vector2D> collisionsInfo(const SymMatrix<bool>& Coll);
 
     /// Retourne le vecteur des energies associees au forces de reaction/tension
-    Vector<double> constructC(Vector<Vector2D> &Infos);
+    Vector<double> constructC(Vector<Vector2D> &Infos,SymMatrix<bool>& Coll);
 
     /// Retourne le vecteur des vitesses et vitesses de rotation
     Vector<double> constructQ();

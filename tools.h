@@ -20,7 +20,7 @@ const int window_height = 800;
 const int periodDisplay =50;
 const Color backgroundColor = Color(216,242, 255); // Light Blue
 
-const double eps=0.5;
+const double eps=1;
 
 ////////////////////////////// GESTION DU CLAVIER ////////////////////////////
 

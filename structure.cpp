@@ -109,7 +109,7 @@ void Structure::Move(){
 void Structure::Accelerate(){
     // effet gravite
     for (unsigned long i = 0; i < boxes.size(); i++){
-        //boxes[i].Accelerate();
+        boxes[i].Accelerate();
     }
     for(unsigned long i=0; i<balls.size();i++){
         balls[i].Accelerate();
@@ -198,12 +198,15 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
         }
     }
     Vector<Vector2D> Infos(2*nb_collisions);
+    vector<Vector2D> InfoBoxBox;
     int n = 0;
 
     for(unsigned long i=0; i<boxes.size(); i++){
         for(unsigned long j=i+1; j<boxes.size(); j++){
             if(Coll(i,j)){
-
+                InfoBoxBox = boxes[i].collisionInfos(boxes[j]);
+                Infos[2*n] = InfoBoxBox[0];
+                Infos[2*n+1] = InfoBoxBox[1];
                 n++;
             }
         }
@@ -235,13 +238,38 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
     return Infos;
 }
 
-Vector<double> Structure::constructC(Vector<Vector2D>& Infos){
+Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
+    double seuil;
     for(unsigned long i=0; i<joints.size(); i++){
         C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
-    for(unsigned long i=0; i<Infos.size()/2; i++){
-        C[i+joints.size()] = 0*dt*Infos[2*i+1].norme();
+    int n=0;
+    for(unsigned long i=0; i<boxes.size(); i++){
+        for(unsigned long j=i+1; j<boxes.size(); j++){
+            if(Coll(i,j)){
+                seuil = 0.05;
+                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                n++;
+            }
+        }
+        for(unsigned long j=0; j<balls.size(); j++){
+            if(Coll(i,j+boxes.size())){
+                seuil = 0.5;
+                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                n++;
+            }
+        }
+    }
+
+    for(unsigned long i=0; i<balls.size(); i++){
+        for(unsigned long j=i+1; j<balls.size(); j++){
+            if(Coll(i+boxes.size(),j+boxes.size())){
+                seuil = 2.5;
+                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                n++;
+            }
+        }
     }
     return C;
 }
@@ -267,7 +295,7 @@ Vector<double> Structure::constructQ(){
 
 Matrix<double> Structure::constructJ(Vector<Vector2D>& Infos,SymMatrix<bool>& Coll){
     Matrix<double> J = Matrix<double>::Zero(joints.size()+Infos.size()/2,3*(balls.size()+boxes.size()));
-    Vector2D pos1, pos2, dir,r;
+    Vector2D pos1, pos2, dir,r1,r2;
     int i1,i2;
     for(unsigned long i=0; i<joints.size(); i++){
         pos1 = getPosition(joints[i].type_a,joints[i].a);
@@ -284,18 +312,26 @@ Matrix<double> Structure::constructJ(Vector<Vector2D>& Infos,SymMatrix<bool>& Co
     for(unsigned long i=0; i<boxes.size(); i++){
         for(unsigned long j=i+1; j<boxes.size(); j++){
             if(Coll(i,j)){
-
+                r1 = Infos[2*n]-boxes[i].pos;
+                r2 =Infos[2*n]-boxes[j].pos;
+                dir = Infos[2*n+1].normalize();
+                J(n+joints.size(),3*i)= dir.x;
+                J(n+joints.size(),3*i+1)= dir.y;
+                J(n+joints.size(),3*i+2)= Vector2D(dir.y,-dir.x)*r1;
+                J(n+joints.size(),3*j) = -dir.x;
+                J(n+joints.size(),3*j+1) = -dir.y;
+                J(n+joints.size(),3*j+2)= Vector2D(-dir.y,dir.x)*r2;
                 n++;
             }
         }
         for(unsigned long j=0; j<balls.size(); j++){
             if(Coll(i,j+boxes.size())){
                 i2 = j+boxes.size();
-                r = Infos[2*n]-boxes[i].pos;
+                r1 = Infos[2*n]-boxes[i].pos;
                 dir = Infos[2*n+1].normalize();
                 J(n+joints.size(),3*i)= dir.x;
                 J(n+joints.size(),3*i+1)= dir.y;
-                J(n+joints.size(),3*i+2)= Vector2D(dir.y,-dir.x)*r;
+                J(n+joints.size(),3*i+2)= Vector2D(dir.y,-dir.x)*r1;
                 J(n+joints.size(),3*i2)= -dir.x;
                 J(n+joints.size(),3*i2+1)= -dir.y;
                 n++;
@@ -344,7 +380,7 @@ void Structure::solveConstraints(){
     Vector<Vector2D> Infos(collisionsInfo(Coll));
     if(joints.size()==0 and Infos.size()==0)
         return;
-    Vector<double> C(constructC(Infos));
+    Vector<double> C(constructC(Infos,Coll));
     Vector<double> Q(constructQ());
     Matrix<double> J(constructJ(Infos,Coll));
     Matrix<double> M(constructM());
@@ -372,7 +408,7 @@ void Structure::solveConstraints(){
             }
         }
     }
-    double coeff = 0.9;
+    double coeff = 0.8;
     for(unsigned long i=0; i<boxes.size(); i++){
         boxes[i].v.x += coeff*dV[3*i];
         boxes[i].v.y += coeff*dV[3*i+1];

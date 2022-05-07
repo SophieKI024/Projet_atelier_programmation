@@ -30,12 +30,7 @@ void Ball::Accelerate(){
 }
 
 bool Ball::Collide(Ball& b){
-    Move();
-    b.Move();
-    bool output = (pos-b.pos).norme()<=r+b.r;
-    stepBack();
-    b.stepBack();
-    return output;
+    return (pos-b.pos).norme()<=r+b.r+eps;
 }
 
 double Ball::ballC(Ball b){

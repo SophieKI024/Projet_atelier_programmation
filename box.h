@@ -10,7 +10,7 @@ public :
     Vector2D pos, v;
     double w, h, omega, angle, m;
     Color Col;
-    bool stable, grounded;
+    bool stable, grounded, gravity;
 
     ///////////////////////////// CONSTRUCTEURS //////////////////////////
 
@@ -63,6 +63,9 @@ public :
 
     /// Renvoie le vecteur de distance minimale entre un point et une Box
     Vector2D minimalDistance(Vector2D p);
+
+    /// Renvoie le point de contact et le vecteur de distance minimale entre 2 Box en collision
+    vector<Vector2D> collisionInfos(Box& b);
 
     /// Renvoie la position exacte des coins du rectangle
     void corners(double x[4], double y[4]);

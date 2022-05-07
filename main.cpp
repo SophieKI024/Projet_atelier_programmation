@@ -13,23 +13,17 @@ int main() {
 
     openWindow(window_width,window_height);
     setBackGround(backgroundColor);
-    double angle=-1;
-    Ball wall(Vector2D(300,window_height-h_ground-25-300-100),10,10,Color(140,108,66),Vector2D(0,0));
-    Ball wall2(Vector2D(300+400*cos(angle),window_height-h_ground-25-300-100+300*sin(angle)),10,10,Color(140,108,66),Vector2D(0,0));
-    Ball wall3(Vector2D(300+400*cos(angle),window_height-h_ground-25-100+300*sin(angle)),10,10,Color(140,108,66),Vector2D(0,0));
-    Box wall4(Vector2D(300,window_height-h_ground-25-100),50,50,10,Color(140,108,66),0,Vector2D(0,0));
 
 
     Structure house;
-    double r = 15;
+    double r = 30;
     double x0 = 600;
     double y0 = window_height-150-r-0.1;
 
 
-    for(int i=0; i<15; i++){
-        for(int j=0; j<3; j++){
-            house.add(Ball(Vector2D(x0-5*r*(j-1)+4*r*(doubleRandom()-0.5),y0-3*r*i-r*doubleRandom()),r,1,BLUE));
-        }
+    for(int i=0; i<7; i++){
+            house.add(Box(Vector2D(x0+3*r,y0-3*r*i),2*r-5*i,2*r-5*i,1,Color(rand()%256,rand()%256,rand()%256)));
+            house.add(Ball(Vector2D(x0-6*r+0.01*doubleRandom(),y0-3*r*i),r-2*i,1,Color(rand()%256,rand()%256,rand()%256)));
     }
 
 
@@ -38,12 +32,9 @@ int main() {
     //house.add(wall3);
     //house.add(wall4);
 
-    Joint J1(1,0,1,1,400,3,BLACK);
-    Joint J2(1,1,1,2,300,3,BLACK);
-    Joint J3(1,2,0,0,400,3,BLACK);
-    Joint J4(0,0,1,0,300,3,BLACK);
-    Spring S1(1,0,1,2,500,0,1000,1000,4,RED);
-    Spring S2(1,1,0,0,500,0,1000,1000,4,RED);
+    house.add(Joint(1,5,1,6,3*r,3,BLACK));
+
+    house.add(Spring(1,0,0,2,100,0,1000,300,4,RED));
 /*
     house.add(J1);
     house.add(J2);
@@ -55,9 +46,15 @@ int main() {
     Structure old_house = house.copy();
     house.Display();
     //fillCircle(100,y0,r0,RED);
-    house.add(Box(Vector2D(window_width/2,window_height-50),2000,100,1e100,BLACK));
-    house.add(Box(Vector2D(x0-200,window_height/2-101),100,window_height,1e100,BLACK));
-    house.add(Box(Vector2D(x0+200,window_height/2-101),100,window_height,1e100,BLACK));
+    Box wall1(Vector2D(window_width/2,window_height-50.5),2000,100,1e100,BLACK);
+    Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
+    wall1.gravity=false;
+    wall2.gravity=false;
+    wall3.gravity=false;
+    house.add(wall1);
+    house.add(wall2);
+    house.add(wall3);
     house.Display();
     cout<<"nombre d'entites : "<<house.boxes.size()+house.balls.size()+house.joints.size()+house.springs.size()<<endl;
     Timer t;

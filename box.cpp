@@ -18,6 +18,7 @@ Box::Box(Vector2D pos_,double w_,double h_,double rho_, Color Col_, double angle
     Col = Col_;
     stable = false;
     grounded = false;
+    gravity = true;
 }
 
 Box::Box(){
@@ -46,7 +47,7 @@ void Box::stepBack(){
 
 void Box::Accelerate(){
     v = (1-frottements_fluides*dt)*v;
-    //if(!stable)
+    if(gravity)
     v.y = v.y + dt*g;   // effet de la gravité
 }
 
@@ -81,6 +82,48 @@ Vector2D Box::minimalDistance(Vector2D p){
     return v_min-lambda2*(v_min-v2);
 }
 
+vector<Vector2D> Box::collisionInfos(Box& b){
+    double x1[8],y1[8],x2[8],y2[8];
+    cornersExtended(x1,y1);
+    b.cornersExtended(x2,y2);
+    Vector2D min(0,0);
+    Vector2D potential_min;
+    Vector2D contact_point;
+    vector<Vector2D> output;
+    bool test=true;
+
+    for(int i=0; i<8; i++){
+        if(abs(cos(b.angle)*(x1[i]-b.pos.x)+sin(b.angle)*(y1[i]-b.pos.y))<=b.w/2. and abs(-sin(b.angle)*(x1[i]-b.pos.x)+cos(b.angle)*(y1[i]-b.pos.y))<=b.h/2.){
+            potential_min = b.minimalDistance(Vector2D(x1[i],y1[i]));
+            if(min.norme2()<potential_min.norme2()){ // le -0.1 privilegie les contacts avec le centre d'un segment
+                min = -1*potential_min;
+                contact_point = Vector2D(x1[i],y1[i]);
+            }
+        }
+    }
+    for(int i=0; i<8; i++){
+        if(abs(cos(angle)*(x2[i]-pos.x)+sin(angle)*(y2[i]-pos.y))<=w/2. and abs(-sin(angle)*(x2[i]-pos.x)+cos(angle)*(y2[i]-pos.y))<=h/2.){
+            potential_min = minimalDistance(Vector2D(x2[i],y2[i]));
+            if(min.norme2()<potential_min.norme2()){
+                min = potential_min;
+                contact_point = Vector2D(x2[i],y2[i]);
+                test = false;
+            }
+        }
+    }
+    // pour eviter le vecteur nul synonyme de plantage
+    if(min.norme()<1e-2){
+        if(test)
+            min = -1*b.minimalDistance(contact_point+0.1*(b.pos-contact_point).normalize());
+        else
+            min = minimalDistance(contact_point+0.1*(pos-contact_point).normalize());
+    }
+    output.push_back(contact_point);
+    output.push_back(min);
+    min = 30*min.normalize();
+    return output;
+}
+
 bool Box::Collide(Box& b){
 
     // on recupere les coins de chaque Box
@@ -99,19 +142,12 @@ bool Box::Collide(Box& b){
 }
 
 bool Box::Collide(Ball& b){
-    Move();
-    b.Move();
-    bool output;
     if(max(w,h)+b.r<(pos-b.pos).norme())
-        output=false;
-    else{
+        return false;
+
     Vector2D v = minimalDistance(b.pos);
     double dist = sgn(v*(pos-b.pos))*v.norme();
-    output = dist<=b.r;
-    }
-    stepBack();
-    b.stepBack();
-    return output;
+    return dist<=b.r+eps;
 }
 
 void Box::Erase(){
