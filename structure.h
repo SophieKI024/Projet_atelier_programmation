@@ -30,6 +30,9 @@ public:
     /// Gestion du mouvement du vehicule
     void movement_vehicle(vector<int> keys);
 
+    /// Gestion des tirs
+    void set_fire(vector<int> keys, Vector2D vehicle_pos, double t);
+
     /////////////////////////////// CONSTRUCTEURS ////////////////////////////////////////
 
     /// Constructeur vide

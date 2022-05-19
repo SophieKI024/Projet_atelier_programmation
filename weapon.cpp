@@ -20,7 +20,7 @@ double convert_angle(double angle){
 Weapon::Weapon(){
 }
 
-Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_,double reload_time_){
+Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_){
     machine = machine_;
     length = length_;
     pos = pos_;
@@ -28,6 +28,7 @@ Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, 
     angle_max = angle_max_;
     reload_time = reload_time_;
     t0 =0;
+    fire_speed = fire_speed_;
 }
 
 /*

@@ -26,6 +26,14 @@ void Structure::movement_vehicle(vector<int> keys){
     body.v = (1-frottements_fluides*dt)*body.v; //frotements fluides
 }
 
+void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
+    for (int i=0; i<car.nb_weapons; i++){
+        if (isPressed(keys,'z') and  (t-car.arsenal[i].t0)>car.arsenal[i].reload_time){
+            add(Box(car.arsenal[i].pos+vehicle_pos+car.arsenal[i].length*Vector2D(cos(car.arsenal[i].machine.angle),sin(car.arsenal[i].machine.angle)),10,10,100,BLACK, car.arsenal[i].machine.angle, 180*Vector2D(cos(car.arsenal[i].machine.angle),sin(car.arsenal[i].machine.angle)),0));
+            car.arsenal[i].t0=t;
+        }
+    }
+}
 
 void Structure::add(Box box){
     boxes.push_back(box);
@@ -200,6 +208,7 @@ void Structure::Display(){
     for (unsigned long i = 0; i < springs.size(); i++){
         springs[i].Display(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
     }
+    car.Display(boxes[0].pos);
 }
 
 
@@ -216,6 +225,7 @@ void Structure::Erase(){
     for (unsigned long i = 0; i < springs.size(); i++){
         springs[i].Erase(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
     }
+    car.Erase(boxes[0].pos);
 }
 
 

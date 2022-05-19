@@ -25,14 +25,14 @@ int main() {
     game.Display();
     //fillCircle(100,y0,r0,RED);
     Box wall1(Vector2D(window_width/2,window_height-50),4000,100,1e100,BLACK);
-    //Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
-    //Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
     wall1.gravity=false;
-    //wall2.gravity=false;
-    //wall3.gravity=false;
+    wall2.gravity=false;
+    wall3.gravity=false;
     game.add(wall1);
-    //game.add(wall2);
-    //game.add(wall3);
+    game.add(wall2);
+    game.add(wall3);
 
     game.Display();
     cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;

@@ -21,6 +21,7 @@ public:
     double angle_min;
     double angle_max;
     double reload_time;
+    double fire_speed;
 
     /// instant du dernier tir
     double t0;
@@ -30,7 +31,7 @@ public:
     /// Constructeur vide
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_);
+    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 1000);
 
 
 
