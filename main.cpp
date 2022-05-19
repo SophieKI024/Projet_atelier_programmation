@@ -17,13 +17,15 @@ int main() {
     double y0 = window_height-100;
     //On rajoute le vehicule en 1er
     Structure game(Box(Vector2D(x0,y0-50),300,60,10,BLUE));
-
+    Weapon* arsenal = new Weapon[1];
+    arsenal[0] = Weapon(Canon_standard(),30,Vector2D(0,-50), convert_angle(0.),convert_angle(180.),1);
+    game.car = Vehicle(1,arsenal);
     //game.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
     //game.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
 
-    for(int i=0; i<6; i++){
-        for(int j=0; j<10; j++){
-            game.add(Ball(Vector2D(200+50*j,50*i),20+rand()%5,0.1,Color(rand()%255,rand()%255, rand()%255),Vector2D(rand()%200,rand()%200)));
+    for(int i=0; i<8; i++){
+        for(int j=0; j<12; j++){
+            game.add(Ball(Vector2D(200+60*j,60*i),20+rand()%5,0.1,Color(rand()%255,rand()%255, rand()%255),Vector2D(rand()%200,rand()%200)));
         }
     }
 
@@ -43,13 +45,14 @@ int main() {
     game.Display();
     cout<<"periode d'affichage = "<<periodDisplay<<endl;
     cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
-    Timer t;
+    Timer chrono;
+    double t=0;
     vector<int> keys;
     click();
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
         keyboard(keys);
         if(timeStep%periodDisplay==0){
-            double time = t.lap();
+            double time = chrono.lap();
             noRefreshBegin();
 
             old_game.Erase();
@@ -61,12 +64,13 @@ int main() {
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule a une vitesse coherente
             milliSleep(max(int(1000*(dt*periodDisplay-time)),0));
-            t.reset();
+            chrono.reset();
         }
-
+        game.set_fire(keys,game.boxes[0].pos,t);
         game.Accelerate(keys);
         game.solveConstraints();
         game.Move(keys);
+        t+=dt;
     }
     /*
     // CONTROLS

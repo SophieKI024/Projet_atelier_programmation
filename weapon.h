@@ -17,6 +17,9 @@ public:
     /// distance entre le centre de rotation et le bout du canon
     double length;
 
+    double rot_speed;
+    double r_ball;
+
     Vector2D pos;
     double angle_min;
     double angle_max;
@@ -31,7 +34,7 @@ public:
     /// Constructeur vide
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 1000);
+    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 2200, double rot_speed_=3, double r_ball_ = 10);
 
 
 

@@ -102,12 +102,6 @@ public:
     /// Applique les forces exterieures a tous les objets pour les deplacer
     void Accelerate(vector<int> keys);
 
-    /// Effectue les collisions internes
-    void AutoCollide();
-
-    /// Effectue les collisions avec une autre structure
-    void Collide(Structure& S);
-
     /// Renvoie une matrice de booleen qui indique quels objets sont en collision
     SymMatrix<bool> Collisions();
 

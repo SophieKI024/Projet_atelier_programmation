@@ -29,7 +29,8 @@ void Structure::movement_vehicle(vector<int> keys){
 void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
     for (int i=0; i<car.nb_weapons; i++){
         if (isPressed(keys,'z') and  (t-car.arsenal[i].t0)>car.arsenal[i].reload_time){
-            add(Box(car.arsenal[i].pos+vehicle_pos+car.arsenal[i].length*Vector2D(cos(car.arsenal[i].machine.angle),sin(car.arsenal[i].machine.angle)),10,10,100,BLACK, car.arsenal[i].machine.angle, 180*Vector2D(cos(car.arsenal[i].machine.angle),sin(car.arsenal[i].machine.angle)),0));
+            Weapon& w = car.arsenal[i];
+            add(Ball(w.pos+vehicle_pos+w.length*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),w.r_ball,100,BLACK,w.fire_speed*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),0));
             car.arsenal[i].t0=t;
         }
     }
@@ -265,24 +266,6 @@ void Structure::Accelerate(vector<int> keys){
 }
 
 
-void Structure::AutoCollide(){
-    for (unsigned long i = 0; i < boxes.size(); i++){
-        for (unsigned long j = 0; j < i; j++){ // On parcourt le triangle strict
-            boxes[i].Collide(boxes[j]);
-        }
-    }
-}
-
-
-void Structure::Collide(Structure &S){
-    for (unsigned long i = 0; i < boxes.size(); i++){
-        for (unsigned long j = 0; j < S.boxes.size(); j++){
-            boxes[i].Collide(S.boxes[j]);
-        }
-    }
-}
-
-
 Structure Structure::copy(){
     Structure copy;
     for (unsigned long i = 0; i < boxes.size(); i++){
@@ -297,6 +280,7 @@ Structure Structure::copy(){
     for(unsigned long i=0; i<springs.size();i++){
         copy.springs.push_back(springs[i]);
     }
+    copy.car = car.copy();
     return copy;
 }
 
@@ -384,13 +368,13 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
         for(unsigned long j=i+1; j<boxes.size(); j++){
             seuil = 0.05;
             if(Coll(i,j)){
-                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
         for(unsigned long j=0; j<balls.size(); j++){
             if(Coll(i,j+boxes.size())){
-                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -399,7 +383,7 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
     for(unsigned long i=0; i<balls.size(); i++){
         for(unsigned long j=i+1; j<balls.size(); j++){
             if(Coll(i+boxes.size(),j+boxes.size())){
-                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -508,7 +492,7 @@ Matrix<double> Structure::constructM(){
 
 
 void Structure::solveConstraints(){
-    double beta = 0.5;  // a priori beta=1 ideal mais beta=0.5 limite les potentiels problemes de stabilite
+    double beta = 0.1;  // a priori beta=1 ideal mais beta=0.5 limite les potentiels problemes de stabilite
     SymMatrix<bool> Coll(Collisions());
     Vector<Vector2D> Infos(collisionsInfo(Coll));
     if(joints.size()==0 and Infos.size()==0)
@@ -528,10 +512,10 @@ void Structure::solveConstraints(){
                 v2 = Vector2D(dV[3*j],dV[3*j+1]);
                 dir = Infos[2*n+1].normalize();
                 double correction =(v1-v2)*dir;
-                if(correction<0){
+                if(correction>0){
                     double ratio = 1/M(3*j,3*j)/(1/M(3*i,3*i)+1/M(3*j,3*j));
-                    v1 += ratio*correction*dir;
-                    v2 -= (1-ratio)*correction*dir;
+                    v1 -= ratio*correction*dir;
+                    v2 += (1-ratio)*correction*dir;
                 }
                 dV[3*i]=v1.x;
                 dV[3*i+1]=v1.y;
@@ -541,7 +525,7 @@ void Structure::solveConstraints(){
             }
         }
     }
-    double coeff = 0.8;
+    double coeff = 1.7;
     for(unsigned long i=0; i<boxes.size(); i++){
         boxes[i].v.x += coeff*dV[3*i];
         boxes[i].v.y += coeff*dV[3*i+1];

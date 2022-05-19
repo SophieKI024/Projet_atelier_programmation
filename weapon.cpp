@@ -20,7 +20,7 @@ double convert_angle(double angle){
 Weapon::Weapon(){
 }
 
-Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_){
+Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_, double rot_speed_, double r_ball_){
     machine = machine_;
     length = length_;
     pos = pos_;
@@ -29,6 +29,8 @@ Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, 
     reload_time = reload_time_;
     t0 =0;
     fire_speed = fire_speed_;
+    rot_speed = rot_speed_;
+    r_ball = r_ball_;
 }
 
 /*
@@ -68,7 +70,7 @@ Weapon Weapon::copy(){
 }
 
 void Weapon::angle_machine(vector<int> keys){
-    machine.angle += 0.002*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
+    machine.angle += rot_speed*dt*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
     if (!(machine.angle > angle_max && machine.angle < angle_min))
-        machine.angle -= 0.002*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
+        machine.angle -= rot_speed*dt*(isPressed(keys,KEY_DOWN)-isPressed(keys,KEY_UP));
 }
