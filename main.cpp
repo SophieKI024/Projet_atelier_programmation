@@ -16,17 +16,23 @@ int main() {
     double x0 = 600;
     double y0 = window_height-100;
     //On rajoute le vehicule en 1er
-    Structure game(Box(Vector2D(x0,y0-300),300,60,10,BLUE));
+    Structure game(Box(Vector2D(x0,y0-50),300,60,10,BLUE));
 
-    game.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
-    game.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
+    //game.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
+    //game.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
+
+    for(int i=0; i<6; i++){
+        for(int j=0; j<10; j++){
+            game.add(Ball(Vector2D(200+50*j,50*i),20+rand()%5,0.1,Color(rand()%255,rand()%255, rand()%255),Vector2D(rand()%200,rand()%200)));
+        }
+    }
 
     Structure old_game = game.copy();
     game.Display();
     //fillCircle(100,y0,r0,RED);
     Box wall1(Vector2D(window_width/2,window_height-50),4000,100,1e100,BLACK);
-    Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
-    Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall2(Vector2D(0,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall3(Vector2D(window_width,window_height/2-101),100,window_height,1e100,BLACK);
     wall1.gravity=false;
     wall2.gravity=false;
     wall3.gravity=false;
@@ -35,6 +41,7 @@ int main() {
     game.add(wall3);
 
     game.Display();
+    cout<<"periode d'affichage = "<<periodDisplay<<endl;
     cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
     Timer t;
     vector<int> keys;
@@ -42,7 +49,7 @@ int main() {
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
         keyboard(keys);
         if(timeStep%periodDisplay==0){
-            int time = t.lap();
+            double time = t.lap();
             noRefreshBegin();
 
             old_game.Erase();
@@ -53,7 +60,7 @@ int main() {
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule a une vitesse coherente
-            milliSleep(max(int(1000*(dt*periodDisplay-time)),1));
+            milliSleep(max(int(1000*(dt*periodDisplay-time)),0));
             t.reset();
         }
 

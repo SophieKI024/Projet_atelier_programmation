@@ -345,8 +345,14 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
                 Ball& b2 = balls[j];
                 Vector2D v = b1.minimalDistance(b2.pos);
                 Infos[2*n] = b2.pos+v;
-                double norm = abs(v.norme()-b2.r);
-                Infos[2*n+1] = -max(sgn((b2.pos-b1.pos)*v)*norm,1e-2)*v.normalize();
+                if(v*(b1.pos-b2.pos)>=0){
+                    double norm = abs(v.norme()-b2.r);
+                    Infos[2*n+1] = -norm*v.normalize();
+                }
+                else{
+                    double norm = abs(v.norme()+b2.r);
+                    Infos[2*n+1] = norm*v.normalize();
+                }
                 n++;
             }
         }
@@ -376,16 +382,15 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
     int n=0;
     for(unsigned long i=0; i<boxes.size(); i++){
         for(unsigned long j=i+1; j<boxes.size(); j++){
+            seuil = 0.05;
             if(Coll(i,j)){
-                seuil = 0.05;
-                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
         for(unsigned long j=0; j<balls.size(); j++){
             if(Coll(i,j+boxes.size())){
-                seuil = 0.5;
-                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -394,8 +399,7 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
     for(unsigned long i=0; i<balls.size(); i++){
         for(unsigned long j=i+1; j<balls.size(); j++){
             if(Coll(i+boxes.size(),j+boxes.size())){
-                seuil = 2.5;
-                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 2e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
