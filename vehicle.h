@@ -36,9 +36,6 @@ public:
     /// Applique les forces exterieures et modifie la vitesse du vehicule
     void Accelerate();
 
-    /// Applique les collisions avec le sol
-    void groundBounce();
-
     /// Applique les collisions entre l'arsenal et la structure S
     void arsenal_collide(Structure &S);
 

@@ -7,10 +7,26 @@ using namespace Imagine;
 /// Rectangle
 class Box{
 public :
-    Vector2D pos, v;
-    double w, h, omega, angle, m;
+    /// Position du centre du disque
+    Vector2D pos;
+    /// Vitesse
+    Vector2D v;
+    /// Longueur
+    double w;
+    /// Hauteur
+    double h;
+    /// Vitesse angulaire
+    double omega;
+
+    double angle;
+    /// Masse
+    double m;
+    /// Couleur
     Color Col;
-    bool stable, grounded, gravity;
+    /// Booléen indiquant si l'objet est stable
+    bool stable;
+    /// Booléen indiquant si l'objet subit la gravité
+    bool gravity;
 
     ///////////////////////////// CONSTRUCTEURS //////////////////////////
 
@@ -50,9 +66,6 @@ public :
 
     /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
-
-    /// Applique les collisions avec le sol
-    bool groundBounce();
 
 
 

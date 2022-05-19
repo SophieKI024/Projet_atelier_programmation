@@ -81,11 +81,7 @@ Weapon Weapon::copy(){
     copy.length = length;
     return copy;
 }
-void Weapon::groundBounce(){
-    for (unsigned long i = 0; i < ammunition.size(); i++){
-        ammunition[i].groundBounce();
-    }
-}
+
 void Weapon::stable(){
     for (unsigned long i = 0; i < ammunition.size(); i++){
         if (ammunition[i].stable){

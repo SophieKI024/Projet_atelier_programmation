@@ -8,8 +8,17 @@ using namespace Imagine;
 /// Disque
 class Ball{
 public :
-    Vector2D pos, v;
-    double r, omega, m;
+    /// Position du centre du disque
+    Vector2D pos;
+    /// Vitesse
+    Vector2D v;
+    /// Rayon
+    double r;
+    /// Vitesse angulaire
+    double omega;
+    /// Masse
+    double m;
+    /// Couleur du disque
     Color Col;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////
@@ -50,8 +59,6 @@ public :
     /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
 
-    /// Applique les rebonds avec le sol
-    bool groundBounce();
 
 
 

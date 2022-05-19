@@ -13,9 +13,13 @@ using namespace Imagine;
 /// Permet de gerer tous les elements du jeu
 class Structure{
 public:
+    /// Ensemble des rectangles
     vector<Box> boxes;
+    /// Ensemble des disques
     vector<Ball> balls;
+    /// Ensemble des barres rigides
     vector<Joint> joints;
+    /// Ensemble des ressorts
     vector<Spring> springs;
 
     /////////////////////////////// CONSTRUCTEURS ////////////////////////////////////////
@@ -43,6 +47,17 @@ public:
     /// Ajoute un ressort a la structure
     void add(Spring spring);
 
+    /// Retire un rectangle de la structure
+    void removeBox(int i);
+
+    /// Retire un disque de la structure
+    void removeBall(int i);
+
+    /// Retire une barre rigide de la structure
+    void removeJoint(int i);
+
+    /// Retire un ressort de la structure
+    void removeSpring(int i);
 
 
     ////////////////////////////// ACCESSEURS ////////////////////////////////////////////
@@ -81,9 +96,6 @@ public:
 
     /// Effectue les collisions avec une autre structure
     void Collide(Structure& S);
-
-    /// Effectue les collisions avec le sol
-    void groundBounce();
 
     /// Renvoie une matrice de booleen qui indique quels objets sont en collision
     SymMatrix<bool> Collisions();

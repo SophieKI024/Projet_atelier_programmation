@@ -60,3 +60,12 @@ int sgn(double a){  // renvoie +1 si a>0, -1 si a<0 et 0 si a=0
 void InitRandom(){
     srand((unsigned int) time(0));
 }
+
+bool solve(double a, double b, double c, double d, double alpha, double beta, double& x, double& y){
+    double det = a*d-b*c;
+    if(det==0)
+        return false;
+    x = (alpha*d-b*beta)/det;
+    y = (a*beta-alpha*c)/det;
+    return true;
+}

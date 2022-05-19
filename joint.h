@@ -7,9 +7,19 @@
 /// Barre rigide
 class Joint{
 public:
-    int type_a, type_b, a, b;
+    /// Type du 1er elt : 0=>Box, 1=>Ball
+    int type_a;
+    /// Type du 2e elt : 0=>Box, 1=>Ball
+    int type_b;
+    /// Indice du 1e elt relié
+    int a;
+    /// Indice du 2e elt relié
+    int b;
+    /// Longueur de la barre
     double l;
+    /// Epaisseur de la barre
     int e;
+    /// Couleur
     Color Col;
     //////////////////////////// CONSTRUCTEURS ////////////////////////////
 
@@ -47,8 +57,25 @@ public:
 /// Ressort ideal
 class Spring{
 public:
-    int type_a, type_b, a,b;
-    double lmin,lmax,l0, k, e0;
+    /// Type du 1er elt : 0=>Box, 1=>Ball
+    int type_a;
+    /// Type du 2e elt : 0=>Box, 1=>Ball
+    int type_b;
+    /// Indice du 1e elt relié
+    int a;
+    /// Indice du 2e elt relié
+    int b;
+    /// Taille minimale du ressort
+    double lmin;
+    /// Taille maximale du ressort
+    double lmax;
+    /// Longueur à vide du ressort
+    double l0;
+    /// Constante de raideur
+    double k;
+    /// Epaisseur
+    double e0;
+    /// Couleur
     Color Col;
 
     ////////////////////////// CONSTRUCTEURS ////////////////////////////

@@ -13,40 +13,19 @@ int main() {
 
     openWindow(window_width,window_height);
     setBackGround(backgroundColor);
-
-
     Structure house;
-    double r = 30;
     double x0 = 600;
-    double y0 = window_height-150-r-0.1;
+    double y0 = window_height-100;
 
 
-    for(int i=0; i<7; i++){
-            house.add(Box(Vector2D(x0+3*r,y0-3*r*i),2*r-5*i,2*r-5*i,1,Color(rand()%256,rand()%256,rand()%256)));
-            house.add(Ball(Vector2D(x0-6*r+0.01*doubleRandom(),y0-3*r*i),r-2*i,1,Color(rand()%256,rand()%256,rand()%256)));
-    }
+    house.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
+    house.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
+    house.add(Box(Vector2D(x0,y0-300),300,60,10,BLUE));
 
-
-    //house.add(wall);
-    //house.add(wall2);
-    //house.add(wall3);
-    //house.add(wall4);
-
-    house.add(Joint(1,5,1,6,3*r,3,BLACK));
-
-    house.add(Spring(1,0,0,2,100,0,1000,300,4,RED));
-/*
-    house.add(J1);
-    house.add(J2);
-    house.add(J3);
-    house.add(J4);
-    house.add(S1);
-    house.add(S2);
-*/
     Structure old_house = house.copy();
     house.Display();
     //fillCircle(100,y0,r0,RED);
-    Box wall1(Vector2D(window_width/2,window_height-50.5),2000,100,1e100,BLACK);
+    Box wall1(Vector2D(window_width/2,window_height-50),2000,100,1e100,BLACK);
     Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
     Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
     wall1.gravity=false;
@@ -55,6 +34,7 @@ int main() {
     house.add(wall1);
     house.add(wall2);
     house.add(wall3);
+
     house.Display();
     cout<<"nombre d'entites : "<<house.boxes.size()+house.balls.size()+house.joints.size()+house.springs.size()<<endl;
     Timer t;
@@ -71,7 +51,8 @@ int main() {
             old_house = house.copy();
 
             noRefreshEnd();
-            milliSleep(max(20-time,1));
+            // on attend exactement ce qu'il faut pour que le jeu s'ecoule a une vitesse coherente
+            milliSleep(max(int(1000*(dt*periodDisplay-time)),1));
             t.reset();
         }
 

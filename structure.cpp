@@ -40,6 +40,123 @@ void Structure::add(Spring spring){
     springs.push_back(spring);
 }
 
+void Structure::removeBox(int i){
+    int size = boxes.size();
+
+    if(i>size){
+        cout<<"WARNING : trying to remove a non existent Box"<<endl;
+        return;
+    }
+
+    swap(boxes.back(),boxes[i]);
+    boxes.pop_back();
+    long unsigned j=0;
+    while(j<joints.size()){
+
+        // on supprime les barres qui etaient relies a la boite a supprimer
+        if((joints[j].type_a==0 and joints[j].a==i) or (joints[j].type_b==0 and joints[j].b==i)){
+            removeJoint(j);
+            j--;
+        }
+
+        // on change les indices des barres reliees a la derniere Box
+        else{
+            if((joints[j].type_a==0 and joints[j].a==size))
+                joints[j].a=i;
+            if((joints[j].type_b==0 and joints[j].b==size))
+                joints[j].b=i;
+        }
+        j++;
+    }
+
+    // idem pour les ressorts
+    j=0;
+    while(j<springs.size()){
+
+        // on supprime les ressorts qui etaient relies a la boite a supprimer
+        if((springs[j].type_a==0 and springs[j].a==i) or (springs[j].type_b==0 and springs[j].b==i)){
+            removeSpring(j);
+            j--;
+        }
+
+        // on change les indices des ressorts reliees a la derniere Box
+        else{
+            if((springs[j].type_a==0 and springs[j].a==size-1))
+                springs[j].a=i;
+            if((springs[j].type_b==0 and springs[j].b==size-1))
+                springs[j].b=i;
+        }
+        j++;
+    }
+}
+
+void Structure::removeBall(int i){
+    int size = balls.size();
+
+    if(i>size){
+        cout<<"WARNING : trying to remove a non existent Ball"<<endl;
+        return;
+    }
+
+    swap(balls.back(),balls[i]);
+    balls.pop_back();
+    long unsigned j=0;
+    while(j<joints.size()){
+
+        // on supprime les barres qui etaient relies a la boite a supprimer
+        if((joints[j].type_a==1 and joints[j].a==i) or (joints[j].type_b==1 and joints[j].b==i)){
+            removeJoint(j);
+            j--;
+        }
+
+        // on change les indices des barres reliees a la derniere Box
+        else{
+            if((joints[j].type_a==1 and joints[j].a==size-1))
+                joints[j].a=i;
+            if((joints[j].type_b==1 and joints[j].b==size-1))
+                joints[j].b=i;
+        }
+        j++;
+    }
+
+    // idem pour les ressorts
+    j=0;
+    while(j<springs.size()){
+
+        // on supprime les ressorts qui etaient relies a la boite a supprimer
+        if((springs[j].type_a==1 and springs[j].a==i) or (springs[j].type_b==1 and springs[j].b==i)){
+            removeSpring(j);
+            j--;
+        }
+
+        // on change les indices des ressorts reliees a la derniere Box
+        else{
+            if((springs[j].type_a==1 and springs[j].a==size))
+                springs[j].a=i;
+            if((springs[j].type_b==1 and springs[j].b==size))
+                springs[j].b=i;
+        }
+        j++;
+    }
+}
+
+void Structure::removeJoint(int i){
+    if(i>int(joints.size())){
+        cout<<"WARNING : trying to remove a non existent Joint"<<endl;
+        return;
+    }
+    swap(joints[i],joints.back());
+    joints.pop_back();
+}
+
+void Structure::removeSpring(int i){
+    if(i>int(springs.size())){
+        cout<<"WARNING : trying to remove a non existent Spring"<<endl;
+        return;
+    }
+    swap(springs[i],springs.back());
+    springs.pop_back();
+}
 
 Vector2D& Structure::getPosition(int type_a, int a){
     if(type_a == 0)
@@ -166,12 +283,6 @@ Structure Structure::copy(){
 }
 
 
-void Structure::groundBounce(){
-    for (unsigned long i = 0; i < boxes.size(); i++){
-        boxes[i].groundBounce();
-    }
-}
-
 SymMatrix<bool> Structure::Collisions(){
     SymMatrix<bool> Coll(boxes.size()+balls.size());
     for(unsigned long i=0; i<boxes.size(); i++){
@@ -249,14 +360,14 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
         for(unsigned long j=i+1; j<boxes.size(); j++){
             if(Coll(i,j)){
                 seuil = 0.05;
-                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
         for(unsigned long j=0; j<balls.size(); j++){
             if(Coll(i,j+boxes.size())){
                 seuil = 0.5;
-                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -266,7 +377,7 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
         for(unsigned long j=i+1; j<balls.size(); j++){
             if(Coll(i+boxes.size(),j+boxes.size())){
                 seuil = 2.5;
-                C[n+joints.size()] = 3*dt*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = 1e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -385,7 +496,7 @@ void Structure::solveConstraints(){
     Matrix<double> J(constructJ(Infos,Coll));
     Matrix<double> M(constructM());
     int n=0;
-    Vector2D v1,v2,dir;
+    Vector2D v1,v2,dir,tangente;
     Vector<double> dV(M*transpose(J)*linSolve(J*M*transpose(J),-J*Q-beta/dt*C));
 
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){

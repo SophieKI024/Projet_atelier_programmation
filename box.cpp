@@ -17,7 +17,6 @@ Box::Box(Vector2D pos_,double w_,double h_,double rho_, Color Col_, double angle
     m = rho_*w*h;
     Col = Col_;
     stable = false;
-    grounded = false;
     gravity = true;
 }
 
@@ -83,44 +82,44 @@ Vector2D Box::minimalDistance(Vector2D p){
 }
 
 vector<Vector2D> Box::collisionInfos(Box& b){
-    double x1[8],y1[8],x2[8],y2[8];
-    cornersExtended(x1,y1);
-    b.cornersExtended(x2,y2);
-    Vector2D min(0,0);
-    Vector2D potential_min;
-    Vector2D contact_point;
+    double x1[4],y1[4],x2[4],y2[4];
+    corners(x1,y1);
+    b.corners(x2,y2);
     vector<Vector2D> output;
-    bool test=true;
+    vector<Vector2D> intersections;
+    double alpha,beta;
+    int i2,j2;
+    for(int i=0; i<4; i++){
+        for(int j=0; j<4; j++){
+            i2=(i+1)%4;
+            j2=(j+1)%4;
+            if(solve(x1[i2]-x1[i],x2[j]-x2[j2],y1[i2]-y1[i],y2[j]-y2[j2],x2[j]-x1[i],y2[j]-y1[i],alpha,beta)){
+                if(0<=alpha and alpha<=1 and 0<=beta and beta<=1)
+                intersections.push_back( Vector2D(x1[i]+alpha*(x1[i2]-x1[i]), y1[i]+alpha*(y1[i2]-y1[i])) );
+            }
+        }
+    }
+    Vector2D P,t,n;
+    // cas impossibles en principes mais traités par prudence
+    if(intersections.size()==0){
+        P = 0.5*(pos+b.pos);
+        n = (b.pos-pos).normalize();
+    }
+    //idem
+    else if(intersections.size()==1){
+        P = intersections[0];
+        n = (b.pos-pos).normalize();
+    }
+    // seul cas possible a priori
+    else{
+    P = 0.5*(intersections[0]+intersections[1]);
+    t = (intersections[0]-intersections[1]).normalize();//vecteur tangent de la collision
+    n = Vector2D(-t.y,t.x).normalize();
+    n = sgn(n*(P-pos))*n;
+    }
+    output.push_back(P);
+    output.push_back(n);
 
-    for(int i=0; i<8; i++){
-        if(abs(cos(b.angle)*(x1[i]-b.pos.x)+sin(b.angle)*(y1[i]-b.pos.y))<=b.w/2. and abs(-sin(b.angle)*(x1[i]-b.pos.x)+cos(b.angle)*(y1[i]-b.pos.y))<=b.h/2.){
-            potential_min = b.minimalDistance(Vector2D(x1[i],y1[i]));
-            if(min.norme2()<potential_min.norme2()){ // le -0.1 privilegie les contacts avec le centre d'un segment
-                min = -1*potential_min;
-                contact_point = Vector2D(x1[i],y1[i]);
-            }
-        }
-    }
-    for(int i=0; i<8; i++){
-        if(abs(cos(angle)*(x2[i]-pos.x)+sin(angle)*(y2[i]-pos.y))<=w/2. and abs(-sin(angle)*(x2[i]-pos.x)+cos(angle)*(y2[i]-pos.y))<=h/2.){
-            potential_min = minimalDistance(Vector2D(x2[i],y2[i]));
-            if(min.norme2()<potential_min.norme2()){
-                min = potential_min;
-                contact_point = Vector2D(x2[i],y2[i]);
-                test = false;
-            }
-        }
-    }
-    // pour eviter le vecteur nul synonyme de plantage
-    if(min.norme()<1e-2){
-        if(test)
-            min = -1*b.minimalDistance(contact_point+0.1*(b.pos-contact_point).normalize());
-        else
-            min = minimalDistance(contact_point+0.1*(pos-contact_point).normalize());
-    }
-    output.push_back(contact_point);
-    output.push_back(min);
-    min = 30*min.normalize();
     return output;
 }
 
@@ -158,47 +157,6 @@ void Box::Erase(){
 
 Box Box::copy(){
     return Box(pos,w,h,m, Col, angle);
-}
-
-bool Box::groundBounce(){
-    if(stable)
-        return false;
-    else{
-        double coeff = 0.6; // sorte de coefficient de rebond, coeff=1 <=> pas de perte d'énergie
-        double x[4], y[4];
-        double treshold=1e-2;
-        corners(x,y);
-        vector<Vector2D> lst;
-        for(int i=0; i<4; i++){
-            if(y[i]>window_height-h_ground)
-                lst.push_back(Vector2D(x[i],y[i]));
-        }
-        // rebond "simple"
-        if(!lst.empty()){
-            stepBack();
-            double coeff = 0.6;
-            double transfert = 0.5;
-            Vector2D c=Vector2D(0,0);   // point de contact
-            for(int i=0; i<lst.size(); i++){
-                c += (1/double(lst.size()))*lst[i];
-            }
-            Vector2D delta_v = -2*( v + omega*Vector2D(-c.y+pos.y,c.x-pos.x));
-            Vector2D t = 1/(c-pos).norme()*(c-pos);
-            Vector2D n = Vector2D(-t.y,t.x);
-            v += coeff*(delta_v*t*t +transfert*delta_v*n*n);
-            omega += coeff*(1-transfert)/(c-pos).norme()*delta_v*n;
-            Move();
-            // condition pour qu'un objet reste collé au sol
-            if(v.norme()<treshold and omega<treshold and abs(fmod(angle+1000*M_PI+M_PI/4.,M_PI/2.)-M_PI/4)*max(w,h)<treshold){
-                stable = true;
-                grounded = true;
-                v=Vector2D(0,0);
-                omega =0;
-            }
-            return true;
-        }
-        return false;
-    }
 }
 
 void Box::corners(double x[4], double y[4]){

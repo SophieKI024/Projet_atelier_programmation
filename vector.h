@@ -54,6 +54,8 @@ struct Vector2D {
         return x*u.x+y*u.y;
     }
     Vector2D normalize(){
+        if (norme2()==0)
+            return Vector2D(0,0);
         return Vector2D(x,y)*(1/norme());
     }
 };

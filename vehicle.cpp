@@ -55,12 +55,6 @@ Vehicle Vehicle::copy(){
     return Vehicle(body,nb_weapons,arsenal);
 }
 
-void Vehicle::groundBounce(){
-    body.groundBounce();
-    for(int i=0; i<nb_weapons; i++){
-        arsenal[i].groundBounce();
-    }
-}
 
 bool Vehicle::stable(){
     return body.stable;
