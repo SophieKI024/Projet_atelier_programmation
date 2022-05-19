@@ -12,7 +12,6 @@ double convert_angle(double angle);
 
 class Weapon{
 public:
-    vector<Box> ammunition;
     Skin machine;
 
     /// distance entre le centre de rotation et le bout du canon
@@ -44,30 +43,7 @@ public:
     void Erase(Vector2D vehicle_pos);
 
 
-
-    ////////////////////// PHYSIQUE /////////////////////////////////
-
-    /// Applique les vitesses aux boulets pour les deplacer
-    void Move();
-
-    /// Applique les forces exterieures sur les boulets et modifie la vitesse
-    void Accelerate();
-
-    /// Effectue les collisions entre les boulets et une Box
-    void Collide(Box& b);
-
-    /// Effectue les collisions entre les boulets et le sol
-    void groundBounce();
-
-    /// Efface les boulets stables
-    void stable();
-
-
-
     /////////////////////// GESTIONS INPUTS /////////////////////////
-
-    /// Effectue un tir en fonction des inputs du joueur
-    bool set_fire(vector<int> key, Vector2D vehicle_pos, double t);
 
     /// Modifie l'angle de visee en fonction des inputs du joueur
     void angle_machine(vector<int> key);

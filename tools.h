@@ -15,7 +15,7 @@ const double frottements_fluides = 0.5;
 const double frottements_secs = 100;
 
 // affichage
-const double fps = 20;
+const double fps = 30;
 const int h_ground = 50;
 const int window_width = 1500;
 const int window_height = 800;

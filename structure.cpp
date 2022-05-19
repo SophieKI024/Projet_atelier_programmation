@@ -20,6 +20,12 @@ Structure::Structure(vector<Box> boxes_){
     }
 }
 
+void Structure::movement_vehicle(vector<int> keys){
+    Box& body = boxes[0];
+    body.v.x += car.acceleration*dt*(isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT));
+    body.v = (1-frottements_fluides*dt)*body.v; //frotements fluides
+}
+
 
 void Structure::add(Box box){
     boxes.push_back(box);
@@ -213,17 +219,18 @@ void Structure::Erase(){
 }
 
 
-void Structure::Move(){
+void Structure::Move(vector<int> keys){
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Move();
     }
     for (unsigned long i=0; i<balls.size();i++){
         balls[i].Move();
     }
+    car.angle_machine(keys);
 }
 
 
-void Structure::Accelerate(){
+void Structure::Accelerate(vector<int> keys){
     // effet gravite
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Accelerate();
@@ -244,6 +251,7 @@ void Structure::Accelerate(){
         getSpeed(springs[i].type_a,springs[i].a) += -dt*springs[i].k/m1*((pos1-pos2).norme()-springs[i].l0)*(pos1-pos2).normalize();
         getSpeed(springs[i].type_b,springs[i].b) += -dt*springs[i].k/m2*((pos2-pos1).norme()-springs[i].l0)*(pos2-pos1).normalize();
     }
+    movement_vehicle(keys);
 }
 
 

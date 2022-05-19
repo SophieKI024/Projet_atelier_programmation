@@ -4,6 +4,7 @@
 #include "box.h"
 #include "ball.h"
 #include "joint.h"
+#include "vehicle.h"
 #include <Imagine/LinAlg.h>
 using namespace Imagine;
 
@@ -13,6 +14,8 @@ using namespace Imagine;
 /// Permet de gerer tous les elements du jeu
 class Structure{
 public:
+    /// Vehicule
+    Vehicle car;
     /// Ensemble des rectangles
     vector<Box> boxes;
     /// Ensemble des disques
@@ -21,6 +24,11 @@ public:
     vector<Joint> joints;
     /// Ensemble des ressorts
     vector<Spring> springs;
+
+    ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
+
+    /// Gestion du mouvement du vehicule
+    void movement_vehicle(vector<int> keys);
 
     /////////////////////////////// CONSTRUCTEURS ////////////////////////////////////////
 
@@ -86,10 +94,10 @@ public:
     ///////////////////////////// PHYSIQUE ////////////////////////////////////////////
 
     /// Applique les vitesses a tous les objets pour les deplacer
-    void Move();
+    void Move(vector<int> keys);
 
     /// Applique les forces exterieures a tous les objets pour les deplacer
-    void Accelerate();
+    void Accelerate(vector<int> keys);
 
     /// Effectue les collisions internes
     void AutoCollide();

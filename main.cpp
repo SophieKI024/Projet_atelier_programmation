@@ -13,42 +13,43 @@ int main() {
 
     openWindow(window_width,window_height);
     setBackGround(backgroundColor);
-    Structure house;
     double x0 = 600;
     double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game(Box(Vector2D(x0,y0-300),300,60,10,BLUE));
 
+    game.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
+    game.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
 
-    house.add(Box(Vector2D(x0-100,y0-130),60,200,10,RED));
-    house.add(Box(Vector2D(x0+100,y0-130),60,200,10,RED));
-    house.add(Box(Vector2D(x0,y0-300),300,60,10,BLUE));
-
-    Structure old_house = house.copy();
-    house.Display();
+    Structure old_game = game.copy();
+    game.Display();
     //fillCircle(100,y0,r0,RED);
-    Box wall1(Vector2D(window_width/2,window_height-50),2000,100,1e100,BLACK);
-    Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
-    Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
+    Box wall1(Vector2D(window_width/2,window_height-50),4000,100,1e100,BLACK);
+    //Box wall2(Vector2D(x0-300,window_height/2-101),100,window_height,1e100,BLACK);
+    //Box wall3(Vector2D(x0+300,window_height/2-101),100,window_height,1e100,BLACK);
     wall1.gravity=false;
-    wall2.gravity=false;
-    wall3.gravity=false;
-    house.add(wall1);
-    house.add(wall2);
-    house.add(wall3);
+    //wall2.gravity=false;
+    //wall3.gravity=false;
+    game.add(wall1);
+    //game.add(wall2);
+    //game.add(wall3);
 
-    house.Display();
-    cout<<"nombre d'entites : "<<house.boxes.size()+house.balls.size()+house.joints.size()+house.springs.size()<<endl;
+    game.Display();
+    cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
     Timer t;
+    vector<int> keys;
     click();
     for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
+        keyboard(keys);
         if(timeStep%periodDisplay==0){
             int time = t.lap();
             noRefreshBegin();
 
-            old_house.Erase();
+            old_game.Erase();
 
-            house.Display();
+            game.Display();
 
-            old_house = house.copy();
+            old_game = game.copy();
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule a une vitesse coherente
@@ -56,9 +57,9 @@ int main() {
             t.reset();
         }
 
-        house.Accelerate();
-        house.solveConstraints();
-        house.Move();
+        game.Accelerate(keys);
+        game.solveConstraints();
+        game.Move(keys);
     }
     /*
     // CONTROLS
@@ -71,9 +72,9 @@ int main() {
     Box wall2(Vector2D(700,window_height-h_ground-150),50,300,20,Color(140,108,66));
     Box wall3(Vector2D(750,window_height-h_ground-150-250),150,50,5,Color(140,108,66));
 
-    Structure house(wall);
-    house.add(wall2);
-    house.add(wall3);
+    Structure game(wall);
+    game.add(wall2);
+    game.add(wall3);
 
     Weapon* arsenal = new Weapon[1];
 
@@ -82,10 +83,10 @@ int main() {
     Box body(Vector2D(85,window_height-h_ground-50),150,75,1,Color(50,50,50));
     Vehicle car(body,1,arsenal);
 
-    Structure old_house = house.copy();
+    Structure old_game = game.copy();
     Vehicle old_car = car.copy();
 
-    house.Display();
+    game.Display();
     car.Display();
 
     drawGround();
@@ -99,13 +100,13 @@ int main() {
         if(timeStep%periodDisplay==0){
             noRefreshBegin();
 
-            old_house.Erase();
+            old_game.Erase();
             old_car.Erase();
 
-            house.Display();
+            game.Display();
             car.Display();
 
-            old_house = house.copy();
+            old_game = game.copy();
             old_car = car.copy();
 
             noRefreshEnd();
@@ -113,19 +114,19 @@ int main() {
         }
         car.fire(keys,t);
 
-        house.Accelerate();
+        game.Accelerate();
         car.Accelerate();
 
         car.movement_vehicle(keys);
         car.angle_machine(keys);
 
-        house.Move();
+        game.Move();
         car.Move();
 
-        car.arsenal_collide(house);
-        house.AutoCollide();
+        car.arsenal_collide(game);
+        game.AutoCollide();
 
-        house.groundBounce();
+        game.groundBounce();
         car.groundBounce();
 
         t+=dt;
