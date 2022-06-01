@@ -20,30 +20,22 @@ Vehicle::Vehicle(int nb_weapons_, Weapon* arsenal_, double acceleration_){
 // Fonctions
 
 
-void Vehicle::Display(Vector2D pos){;
+void Vehicle::Display(Vector2D pos, double angle){;
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].machine.Display(arsenal[i].pos + pos);
-        arsenal[i].Display(pos);
+        arsenal[i].Display(pos,angle);
     }
 }
-void Vehicle::Erase(Vector2D pos){
+void Vehicle::Erase(Vector2D pos, double angle){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].machine.Erase(arsenal[i].pos + pos);
-        arsenal[i].Erase(pos);
+        arsenal[i].Erase(pos,angle);
     }
 }
-
 
 Vehicle Vehicle::copy(){
     return Vehicle(nb_weapons,arsenal);
 }
 
-/*
-void Vehicle::movement_vehicle(vector<int> keys){
-    body.v.x += 0.05*(isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT));
-    body.v.x = (1-frottements_fluides*dt)*sgn(body.v.x)*max(0.,abs(body.v.x)-body.m*frottements_secs*dt); //frotements fluides
-}
-*/
+
 
 void Vehicle::angle_machine(vector<int> keys){
     for(int i=0; i<nb_weapons; i++){
@@ -51,11 +43,3 @@ void Vehicle::angle_machine(vector<int> keys){
     }
 }
 
-/*
-void Vehicle::fire(vector<int> keys, double t){
-    for(int i=0; i<nb_weapons; i++){
-        arsenal[i].set_fire(keys,body.pos,t);
-        arsenal[i].stable(); //Effacer les projectiles stables
-    }
-}
-*/

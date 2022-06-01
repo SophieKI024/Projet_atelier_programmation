@@ -46,6 +46,7 @@ void Box::stepBack(){
 
 void Box::Accelerate(){
     v = (1-frottements_fluides*dt)*v;
+    omega = (1-max(w,h)/min(w,h)*frottements_fluides*dt)*omega;
     if(gravity)
     v.y = v.y + dt*g;   // effet de la gravité
 }
@@ -89,6 +90,7 @@ vector<Vector2D> Box::collisionInfos(Box& b){
     vector<Vector2D> intersections;
     double alpha,beta;
     int i2,j2;
+    // on cherche toutes les intersections entre les 2 Box
     for(int i=0; i<4; i++){
         for(int j=0; j<4; j++){
             i2=(i+1)%4;
@@ -114,11 +116,16 @@ vector<Vector2D> Box::collisionInfos(Box& b){
     else{
     P = 0.5*(intersections[0]+intersections[1]);
     t = (intersections[0]-intersections[1]).normalize();//vecteur tangent de la collision
-    n = Vector2D(-t.y,t.x).normalize();
-    n = sgn(n*(P-pos))*n;
+    n = Vector2D(-t.y,t.x);
+    n = sgn(n*(P-pos))*n;   // on oriente n de la box 1 vers la 2
+    }
+    double norme_max = 0;
+    for(int i=0; i<4; i++){
+        norme_max = max(norme_max,(Vector2D(x1[i],y1[i])-P)*n);
+        norme_max = max(norme_max,(P-Vector2D(x2[i],y2[i]))*n);
     }
     output.push_back(P);
-    output.push_back(n);
+    output.push_back(norme_max*n);
 
     return output;
 }

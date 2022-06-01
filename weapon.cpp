@@ -20,7 +20,7 @@ double convert_angle(double angle){
 Weapon::Weapon(){
 }
 
-Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_, double rot_speed_, double r_ball_){
+Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_, double rot_speed_, double r_ball_, double rho){
     machine = machine_;
     length = length_;
     pos = pos_;
@@ -31,35 +31,22 @@ Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, 
     fire_speed = fire_speed_;
     rot_speed = rot_speed_;
     r_ball = r_ball_;
+    m_ball = rho*M_PI*r_ball*r_ball;
 }
 
-/*
-bool Weapon::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
-    if (isPressed(keys,'z') and  (t-t0)>reload_time){
-        Box projectile(pos+vehicle_pos+length*Vector2D(cos(machine.angle),sin(machine.angle)),10,10,100,BLACK, machine.angle, 180*Vector2D(cos(machine.angle),sin(machine.angle)),0);
-        ammunition.push_back(projectile);
-        t0=t;
-        return true;
-    }
-    return false;
-}
-*/
 
-void Weapon::Display(Vector2D vehicle_pos){
-    machine.Display(vehicle_pos + pos);
+void Weapon::Display(Vector2D vehicle_pos,double angle){
+    machine.angle += angle;
+    machine.Display(rotation(pos,angle) + vehicle_pos);
+    machine.angle -= angle;
 }
 
-void Weapon::Erase(Vector2D vehicle_pos){
-    machine.Erase(vehicle_pos + pos);
+void Weapon::Erase(Vector2D vehicle_pos,double angle){
+    machine.angle += angle;
+    machine.Erase(rotation(pos,angle) + vehicle_pos);
+    machine.angle -= angle;
 }
 
-/*
-void Weapon::Collide(Box &b){
-    for (unsigned long i = 0; i < ammunition.size(); i++){
-        ammunition[i].Collide(b);
-    }
-}
-*/
 
 Weapon Weapon::copy(){
     Weapon copy;

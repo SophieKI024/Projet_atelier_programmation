@@ -19,6 +19,7 @@ public:
 
     double rot_speed;
     double r_ball;
+    double m_ball;
 
     Vector2D pos;
     double angle_min;
@@ -34,17 +35,17 @@ public:
     /// Constructeur vide
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 2200, double rot_speed_=3, double r_ball_ = 10);
+    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 1800, double rot_speed_=2, double r_ball_ = 10, double rho=10);
 
 
 
     /////////////////////// AFFICHAGE //////////////////////////////
 
     /// Affiche les armes et les boulets
-    void Display(Vector2D vehicle_pos);
+    void Display(Vector2D vehicle_pos, double angle);
 
     /// Efface les armes et les boulets
-    void Erase(Vector2D vehicle_pos);
+    void Erase(Vector2D vehicle_pos, double angle);
 
 
     /////////////////////// GESTIONS INPUTS /////////////////////////

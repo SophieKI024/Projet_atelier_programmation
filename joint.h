@@ -94,3 +94,21 @@ public:
     /// Efface le ressort
     void Erase(Vector2D pos1, Vector2D pos2);
 };
+
+/// Amortisseur (généralement associé à un ressort)
+class Damper{
+public:
+    /// Type du 1er elt : 0=>Box, 1=>Ball
+    int type_a;
+    /// Type du 2e elt : 0=>Box, 1=>Ball
+    int type_b;
+    /// Indice du 1e elt relié
+    int a;
+    /// Indice du 2e elt relié
+    int b;
+    /// Coefficient d'ammortissement
+    double lambda;
+
+    Damper();
+    Damper(int type_a_, int a_, int type_b_, int b_,double lambda_);
+};

@@ -24,6 +24,8 @@ public:
     vector<Joint> joints;
     /// Ensemble des ressorts
     vector<Spring> springs;
+    /// Ensemble des amortisseurs
+    vector<Damper> dampers;
 
     ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
 
@@ -58,6 +60,9 @@ public:
     /// Ajoute un ressort a la structure
     void add(Spring spring);
 
+    /// Ajoute un amortisseur
+    void add(Damper damp);
+
     /// Retire un rectangle de la structure
     void removeBox(int i);
 
@@ -70,6 +75,8 @@ public:
     /// Retire un ressort de la structure
     void removeSpring(int i);
 
+    /// Retire un amortisseur de la structure
+    void removeDamper(int i);
 
     ////////////////////////////// ACCESSEURS ////////////////////////////////////////////
 

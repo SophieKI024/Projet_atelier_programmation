@@ -21,10 +21,10 @@ public:
     //////////////////// AFFICHAGE /////////////////////////////////////////
 
     /// Affiche le vehicule
-    void Display(Vector2D pos);
+    void Display(Vector2D pos, double angle);
 
     /// Efface le vehicule
-    void Erase(Vector2D pos);
+    void Erase(Vector2D pos, double angle);
 
 
     ///////////////////////// GESTIONS INPUTS ///////////////////////////////

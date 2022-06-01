@@ -61,3 +61,5 @@ struct Vector2D {
 };
 
 Vector2D operator* (double a, Vector2D u);
+
+Vector2D rotation(Vector2D v, double angle);

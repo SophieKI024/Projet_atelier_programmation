@@ -66,3 +66,15 @@ void Spring::Erase(Vector2D pos1, Vector2D pos2){
     int e = e0*l0/(pos1-pos2).norme()+0.5;
     drawLine(pos1.x,pos1.y,pos2.x,pos2.y,backgroundColor,e);
 }
+
+////////////////////////////////////// DAMPER //////////////////////////
+
+Damper::Damper(){};
+
+Damper::Damper(int type_a_, int a_, int type_b_, int b_,double lambda_){
+    type_a = type_a_;
+    a = a_;
+    type_b = type_b_;
+    b = b_;
+    lambda = lambda_;
+}

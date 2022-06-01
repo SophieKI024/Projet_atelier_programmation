@@ -8,14 +8,14 @@ using namespace std;
 #include "vector.h"
 
 // simulation physique
-const double dt = 0.004;
+const double dt = 0.003;
 /// Constante gravitationelle de pesanteur
 const double g = 600;
 const double frottements_fluides = 0.5;
-const double frottements_secs = 100;
+const double frottements_secs = 2000;
 
 // affichage
-const double fps = 30;
+const double fps = 24;
 const int h_ground = 50;
 const int window_width = 1500;
 const int window_height = 800;
@@ -34,9 +34,6 @@ void keyboard(vector<int> &keys);
 bool isPressed(vector<int> keys, int key);
 
 ////////////////////////////// AUTRES ////////////////////////////////////////
-
-/// Dessine le sol
-void drawGround();
 
 /// Renvoie 1 si a>0, -1 si a<0, et 0 si a=0
 int sgn(double a);

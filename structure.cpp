@@ -27,11 +27,17 @@ void Structure::movement_vehicle(vector<int> keys){
 }
 
 void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
+    Vector2D v,pos;
     for (int i=0; i<car.nb_weapons; i++){
         if (isPressed(keys,'z') and  (t-car.arsenal[i].t0)>car.arsenal[i].reload_time){
             Weapon& w = car.arsenal[i];
-            add(Ball(w.pos+vehicle_pos+w.length*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),w.r_ball,100,BLACK,w.fire_speed*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),0));
+            v = w.fire_speed*rotation(Vector2D(cos(w.machine.angle),sin(w.machine.angle)),boxes[0].angle);
+            pos = rotation(w.pos+w.length*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),boxes[0].angle)+vehicle_pos;
+            add(Ball(pos,w.r_ball,w.m_ball/(M_PI*w.r_ball*w.r_ball),BLACK,v,0));
             car.arsenal[i].t0=t;
+            boxes[0].v -= w.m_ball/boxes[0].m*v;
+            // pas forcement interessant etant donne la forme des vehicule
+            // boxes[0].omega -= rotation(v,-M_PI/2)*(pos-vehicle_pos)*w.m_ball/boxes[0].I();
         }
     }
 }
@@ -53,6 +59,10 @@ void Structure::add(Joint joint){
 
 void Structure::add(Spring spring){
     springs.push_back(spring);
+}
+
+void Structure::add(Damper damper){
+    dampers.push_back(damper);
 }
 
 void Structure::removeBox(int i){
@@ -173,6 +183,15 @@ void Structure::removeSpring(int i){
     springs.pop_back();
 }
 
+void Structure::removeDamper(int i){
+    if(i>int(dampers.size())){
+        cout<<"WARNING : trying to remove a non existent Damper"<<endl;
+        return;
+    }
+    swap(dampers[i],dampers.back());
+    dampers.pop_back();
+}
+
 Vector2D& Structure::getPosition(int type_a, int a){
     if(type_a == 0)
         return boxes[a].pos;
@@ -209,7 +228,7 @@ void Structure::Display(){
     for (unsigned long i = 0; i < springs.size(); i++){
         springs[i].Display(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
     }
-    car.Display(boxes[0].pos);
+    car.Display(boxes[0].pos,boxes[0].angle);
 }
 
 
@@ -226,7 +245,7 @@ void Structure::Erase(){
     for (unsigned long i = 0; i < springs.size(); i++){
         springs[i].Erase(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
     }
-    car.Erase(boxes[0].pos);
+    car.Erase(boxes[0].pos,boxes[0].angle);
 }
 
 
@@ -242,6 +261,7 @@ void Structure::Move(vector<int> keys){
 
 
 void Structure::Accelerate(vector<int> keys){
+
     // effet gravite
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Accelerate();
@@ -249,10 +269,11 @@ void Structure::Accelerate(vector<int> keys){
     for(unsigned long i=0; i<balls.size();i++){
         balls[i].Accelerate();
     }
-    Vector2D pos1,pos2;
+
+    Vector2D pos1,pos2,dir,delta_v;
     double m1,m2;
 
-    // effet des ressorts/elastiques
+    // effet des ressorts
     for(unsigned long i=0; i<springs.size(); i++){
         pos1 = getPosition(springs[i].type_a,springs[i].a);
         pos2 = getPosition(springs[i].type_b,springs[i].b);
@@ -262,7 +283,23 @@ void Structure::Accelerate(vector<int> keys){
         getSpeed(springs[i].type_a,springs[i].a) += -dt*springs[i].k/m1*((pos1-pos2).norme()-springs[i].l0)*(pos1-pos2).normalize();
         getSpeed(springs[i].type_b,springs[i].b) += -dt*springs[i].k/m2*((pos2-pos1).norme()-springs[i].l0)*(pos2-pos1).normalize();
     }
+
+    // mouvement du vehicule
     movement_vehicle(keys);
+
+    // effet des amortisseurs
+    for(unsigned long i=0; i<dampers.size(); i++){
+        pos1 = getPosition(springs[i].type_a,springs[i].a);
+        pos2 = getPosition(springs[i].type_b,springs[i].b);
+        dir = (pos2-pos1).normalize();
+        m1 = getMass(springs[i].type_a,springs[i].a);
+        m2 = getMass(springs[i].type_b,springs[i].b);
+        Vector2D& v1 = getSpeed(springs[i].type_a,springs[i].a);
+        Vector2D& v2 = getSpeed(springs[i].type_b,springs[i].b);
+        delta_v = (v1-v2)*dir*dir;
+        v1 -= min(1/m1*dampers[i].lambda*dt,1.)*delta_v;
+        v2 += min(1/m2*dampers[i].lambda*dt,1.)*delta_v;
+    }
 }
 
 
@@ -359,31 +396,16 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
-    double seuil;
+    double seuil = 2;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
+    double coeff = 1e-1;
     for(unsigned long i=0; i<joints.size(); i++){
         C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
     int n=0;
-    for(unsigned long i=0; i<boxes.size(); i++){
-        for(unsigned long j=i+1; j<boxes.size(); j++){
-            seuil = 0.05;
+    for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
+        for(unsigned long j=i+1; j<boxes.size()+balls.size(); j++){
             if(Coll(i,j)){
-                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
-                n++;
-            }
-        }
-        for(unsigned long j=0; j<balls.size(); j++){
-            if(Coll(i,j+boxes.size())){
-                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
-                n++;
-            }
-        }
-    }
-
-    for(unsigned long i=0; i<balls.size(); i++){
-        for(unsigned long j=i+1; j<balls.size(); j++){
-            if(Coll(i+boxes.size(),j+boxes.size())){
-                C[n+joints.size()] = 5e-2*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = coeff*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
                 n++;
             }
         }
@@ -497,12 +519,15 @@ void Structure::solveConstraints(){
     Vector<Vector2D> Infos(collisionsInfo(Coll));
     if(joints.size()==0 and Infos.size()==0)
         return;
+    int n=0;
+    Vector2D v1,v2,dir,t;
+
+
     Vector<double> C(constructC(Infos,Coll));
     Vector<double> Q(constructQ());
     Matrix<double> J(constructJ(Infos,Coll));
     Matrix<double> M(constructM());
-    int n=0;
-    Vector2D v1,v2,dir,tangente;
+    n=0;
     Vector<double> dV(M*transpose(J)*linSolve(J*M*transpose(J),-J*Q-beta/dt*C));
 
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
@@ -525,7 +550,7 @@ void Structure::solveConstraints(){
             }
         }
     }
-    double coeff = 1.7;
+    double coeff = 1.6;
     for(unsigned long i=0; i<boxes.size(); i++){
         boxes[i].v.x += coeff*dV[3*i];
         boxes[i].v.y += coeff*dV[3*i+1];
