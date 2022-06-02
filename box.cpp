@@ -7,7 +7,7 @@ using namespace Imagine;
 using namespace std;
 
 
-Box::Box(Vector2D pos_,double w_,double h_,double rho_, Color Col_, double angle_, Vector2D v_, double omega_){
+Box::Box(Vector2D pos_, double w_, double h_, double rho_, Color Col_, double angle_, Vector2D v_, double omega_){
     pos=pos_;
     v = v_;
     w = w_;
@@ -18,6 +18,7 @@ Box::Box(Vector2D pos_,double w_,double h_,double rho_, Color Col_, double angle
     Col = Col_;
     stable = false;
     gravity = true;
+    breaking_energy = INFINITY;
 }
 
 Box::Box(){

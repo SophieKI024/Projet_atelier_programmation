@@ -22,6 +22,10 @@ public :
     double m;
     /// Couleur du disque
     Color Col;
+    ////// Energie nécéssaire pour détruire l'objet
+    double breaking_energy;
+    ///
+    bool gravity;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////
 

@@ -10,6 +10,8 @@ double Ball::I(){
 
 void Ball::Display(){
     fillCircle(pos.x,pos.y,r,Col);
+    if(r<10)
+        return;
     Vector2D R = rotation(Vector2D(0.9*r,0),angle);
     Vector2D R2 = rotation(R,M_PI/2);
     Color Col_bis;
@@ -54,6 +56,8 @@ Ball::Ball(Vector2D pos_, double r_, double rho_, Color Col_, Vector2D v_, doubl
     v = v_;
     omega = omega_;
     angle = angle_;
+    breaking_energy = INFINITY;
+    gravity = true;
 }
 
 Ball::Ball(){}

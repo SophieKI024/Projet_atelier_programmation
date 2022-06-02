@@ -27,6 +27,8 @@ public :
     bool stable;
     /// Booléen indiquant si l'objet subit la gravité
     bool gravity;
+    /// Energie nécéssaire pour détruire l'objet
+    double breaking_energy;
 
     ///////////////////////////// CONSTRUCTEURS //////////////////////////
 

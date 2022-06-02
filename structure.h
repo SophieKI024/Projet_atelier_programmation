@@ -133,6 +133,11 @@ public:
     /// Applique les frottements secs
     void Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll);
 
+    /// Detruit les objets qui ont besoin d'être détruits
+    void Solve_destruct(Vector<double>& dV, Matrix<double>& M);
+
+    void Explosion(Vector2D pos, double energy = 1e10);
+
 
 
     //////////////////////////////// AUTRES /////////////////////////////////

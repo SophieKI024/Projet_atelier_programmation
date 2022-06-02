@@ -35,7 +35,9 @@ void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
             Weapon& w = car.arsenal[i];
             v = w.fire_speed*rotation(Vector2D(cos(w.machine.angle),sin(w.machine.angle)),boxes[0].angle);
             pos = rotation(w.pos+w.length*Vector2D(cos(w.machine.angle),sin(w.machine.angle)),boxes[0].angle)+vehicle_pos;
-            add(Ball(pos,w.r_ball,w.m_ball/(M_PI*w.r_ball*w.r_ball),BLACK,v,0));
+            Ball b(pos,w.r_ball,w.m_ball/(M_PI*w.r_ball*w.r_ball),BLACK,v,0);
+            b.breaking_energy = 0;
+            add(b);
             car.arsenal[i].t0=t;
             boxes[0].v -= w.m_ball/boxes[0].m*v;
             // pas forcement interessant etant donne la forme des vehicule
@@ -398,8 +400,8 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
-    double seuil = 0.5;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
-    double coeff = 2e-1;
+    double seuil = 2;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
+    double coeff = 1e-1;
     for(unsigned long i=0; i<joints.size(); i++){
         C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
@@ -582,7 +584,31 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
         }
 
     }
+}
 
+void Structure::Solve_destruct(Vector<double> &dV, Matrix<double>& M){
+    Vector<bool> Destruct(boxes.size()+balls.size());
+    Destruct.fill(false);
+    double energie, energie_seuil;
+    for(long unsigned i=0; i<boxes.size()+balls.size(); i++){
+        energie = 0;
+        for (int j=0; j<3; j++){
+            energie += 0.5*pow(dV[3*i+j],2)/M(3*i+j,3*i+j);
+        }
+        if(i<boxes.size())
+            energie_seuil = boxes[i].breaking_energy;
+        else
+            energie_seuil = balls[i-boxes.size()].breaking_energy;
+        Destruct[i] = energie > energie_seuil;
+    }
+    for(int i=Destruct.size()-1; i>=0; i--){
+        if(Destruct[i]){
+            if(i>=int(boxes.size()))
+                removeBall(i-boxes.size());
+            else
+                removeBox(i);
+        }
+    }
 }
 
 void Structure::solveConstraints(){
@@ -617,5 +643,29 @@ void Structure::solveConstraints(){
         balls[i].v.x += coeff*dV[3*j];
         balls[i].v.y += coeff*dV[3*j+1];
         balls[i].omega += coeff*dV[3*j+2];
+    }
+    Solve_destruct(dV,M);
+}
+
+void Structure::Explosion(Vector2D pos, double energy){
+    Vector2D r,dv;
+    for(unsigned long i=0; i<boxes.size(); i++){
+        Box& b = boxes[i];
+        r = b.minimalDistance(pos);
+        if(r.norme()<1e-2)
+            break;
+        dv = energy/r.norme2()*r.normalize();
+        dv = dv.normalize()*min(0.04*energy,dv.norme());// on limite la force de l'explosion
+        b.v += 1/b.m*dv;
+        b.omega += 1/b.I()*dv*(r+pos-b.pos);
+    }
+    for(unsigned long i=0; i<balls.size(); i++){
+        Ball& b = balls[i];
+        r = (b.pos-pos);
+        if(r.norme()<1e-2)
+            break;
+        dv = energy/r.norme2()*r.normalize();
+        dv = dv.normalize()*min(0.04*energy,dv.norme());
+        b.v += 1/b.m*dv;
     }
 }
