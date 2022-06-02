@@ -11,12 +11,12 @@ class Vehicle{
 public:
     Weapon* arsenal;
     int nb_weapons;
-    double acceleration;
+    double power, v_max;
 
     //////////////////// CONSTRUCTEURS //////////////////////////////////////
 
     /// Constructeur
-    Vehicle(int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0], double acceleration_ = 600);
+    Vehicle(int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0], double power_ = 500, double v_max_ = 500);
 
     //////////////////// AFFICHAGE /////////////////////////////////////////
 

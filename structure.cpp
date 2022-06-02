@@ -21,9 +21,11 @@ Structure::Structure(vector<Box> boxes_){
 }
 
 void Structure::movement_vehicle(vector<int> keys){
-    Box& body = boxes[0];
-    body.v.x += car.acceleration*dt*(isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT));
-    body.v = (1-frottements_fluides*dt)*body.v; //frotements fluides
+    Ball& wheel1 = balls[0];
+    Ball& wheel2 = balls[1];
+    double dir = isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT);
+    wheel1.omega += dt*car.power*(car.v_max-wheel1.omega*wheel1.r*dir)*dir/(wheel1.r*car.v_max);
+    wheel2.omega += dt*car.power*(car.v_max-wheel2.omega*wheel2.r*dir)*dir/(wheel2.r*car.v_max);
 }
 
 void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
@@ -37,7 +39,7 @@ void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
             car.arsenal[i].t0=t;
             boxes[0].v -= w.m_ball/boxes[0].m*v;
             // pas forcement interessant etant donne la forme des vehicule
-            // boxes[0].omega -= rotation(v,-M_PI/2)*(pos-vehicle_pos)*w.m_ball/boxes[0].I();
+            //boxes[0].omega -= rotation(v,-M_PI/2)*(pos-vehicle_pos)*w.m_ball/boxes[0].I();
         }
     }
 }
@@ -396,8 +398,8 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
-    double seuil = 2;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
-    double coeff = 1e-1;
+    double seuil = 0.5;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
+    double coeff = 2e-1;
     for(unsigned long i=0; i<joints.size(); i++){
         C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
@@ -512,6 +514,76 @@ Matrix<double> Structure::constructM(){
     return Diagonal(M);
 }
 
+void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
+    Vector2D pos,t,v1,v2;
+    int n=0;
+    for(unsigned long i=0; i<boxes.size(); i++){
+        for(unsigned long j=i+1; j<boxes.size(); j++){
+            if(Coll(i,j)){
+                Box& b1 = boxes[i];
+                Box& b2 = boxes[j];
+                double coeff1 = b2.m/(b1.m+b2.m);
+                double coeff2 = b2.I()/(b1.I()+b2.I());
+                pos = Infos[2*n];
+                t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
+                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
+                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
+                v1 = v1*t*t;
+                v2 = v2*t*t;
+                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
+                b1.v += coeff1*dv*t;
+                b2.v += (coeff1-1)*dv*t;
+                b1.omega += coeff2*dv/(pos-b1.pos).norme();
+                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                n++;
+            }
+        }
+        for(unsigned long j=0; j<balls.size(); j++){
+            if(Coll(i,j+boxes.size())){
+                Box& b1 = boxes[i];
+                Ball& b2 = balls[j];
+                double coeff1 = b2.m/(b1.m+b2.m);
+                double coeff2 = b2.I()/(b1.I()+b2.I());
+                pos = Infos[2*n];
+                t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
+                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
+                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
+                v1 = v1*t*t;
+                v2 = v2*t*t;
+                double dv = min(10*frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
+                b1.v += coeff1*dv*t;
+                b2.v += (coeff1-1)*dv*t;
+                b1.omega += coeff2*dv/(pos-b1.pos).norme();
+                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                n++;
+            }
+        }
+    }
+    for(unsigned long i=0; i<balls.size(); i++){
+        for(unsigned long j=i+1; j<balls.size(); j++){
+            if(Coll(i+boxes.size(),j+boxes.size())){
+                Ball& b1 = balls[i];
+                Ball& b2 = balls[j];
+                double coeff1 = b2.m/(b1.m+b2.m);
+                double coeff2 = b2.I()/(b1.I()+b2.I());
+                pos = Infos[2*n];
+                t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
+                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
+                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
+                v1 = v1*t*t;
+                v2 = v2*t*t;
+                double dv = min(10*frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
+                b1.v += coeff1*dv*t;
+                b2.v += (coeff1-1)*dv*t;
+                b1.omega += coeff2*dv/(pos-b1.pos).norme();
+                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                n++;
+            }
+        }
+
+    }
+
+}
 
 void Structure::solveConstraints(){
     double beta = 0.1;  // a priori beta=1 ideal mais beta=0.5 limite les potentiels problemes de stabilite
@@ -519,38 +591,21 @@ void Structure::solveConstraints(){
     Vector<Vector2D> Infos(collisionsInfo(Coll));
     if(joints.size()==0 and Infos.size()==0)
         return;
-    int n=0;
-    Vector2D v1,v2,dir,t;
 
+    Friction(Infos,Coll);
 
     Vector<double> C(constructC(Infos,Coll));
     Vector<double> Q(constructQ());
     Matrix<double> J(constructJ(Infos,Coll));
     Matrix<double> M(constructM());
-    n=0;
-    Vector<double> dV(M*transpose(J)*linSolve(J*M*transpose(J),-J*Q-beta/dt*C));
 
-    for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
-        for(unsigned long j=i+1; j<boxes.size()+balls.size(); j++){
-            if(Coll(i,j)){
-                v1 = Vector2D(dV[3*i],dV[3*i+1]);
-                v2 = Vector2D(dV[3*j],dV[3*j+1]);
-                dir = Infos[2*n+1].normalize();
-                double correction =(v1-v2)*dir;
-                if(correction>0){
-                    double ratio = 1/M(3*j,3*j)/(1/M(3*i,3*i)+1/M(3*j,3*j));
-                    v1 -= ratio*correction*dir;
-                    v2 += (1-ratio)*correction*dir;
-                }
-                dV[3*i]=v1.x;
-                dV[3*i+1]=v1.y;
-                dV[3*j]=v2.x;
-                dV[3*j+1]=v2.y;
-                n++;
-            }
-        }
+    Vector<double> E(linSolve(J*M*transpose(J),-J*Q-beta/dt*C));
+    // On permet aux objets en collision de seulement s'écarter
+    for(long unsigned i=joints.size(); i<E.size(); i++){
+        E[i] = min(E[i],0.);
     }
-    double coeff = 1.6;
+    Vector<double> dV(M*transpose(J)*E);
+    double coeff = 1.65;
     for(unsigned long i=0; i<boxes.size(); i++){
         boxes[i].v.x += coeff*dV[3*i];
         boxes[i].v.y += coeff*dV[3*i+1];

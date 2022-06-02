@@ -130,6 +130,9 @@ public:
     /// Modifie les vitesses et vitesses de rotation pour respecter les contraintes
     void solveConstraints();
 
+    /// Applique les frottements secs
+    void Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll);
+
 
 
     //////////////////////////////// AUTRES /////////////////////////////////

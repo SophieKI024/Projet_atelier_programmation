@@ -10,12 +10,14 @@ double Ball::I(){
 
 void Ball::Display(){
     fillCircle(pos.x,pos.y,r,Col);
-    Vector2D R = pos + rotation(Vector2D(0.78*r,0),angle);
+    Vector2D R = rotation(Vector2D(0.9*r,0),angle);
+    Vector2D R2 = rotation(R,M_PI/2);
     Color Col_bis;
-    Col_bis.r() = min(Col.r()+50,255);
-    Col_bis.g() = min(Col.g()+50,255);
-    Col_bis.b() = min(Col.b()+50,255);
-    fillRect(R.x-0.1*r,R.y-0.1*r,0.2*r,0.2*r,Col_bis);
+    Col_bis.r() = 255-Col.r();
+    Col_bis.g() = 255-Col.g();
+    Col_bis.b() = 255-Col.b();
+    drawLine((pos+R).x,(pos+R).y,(pos-R).x,(pos-R).y,Col_bis,0.5+0.1*r);
+    drawLine((pos+R2).x,(pos+R2).y,(pos-R2).x,(pos-R2).y,Col_bis,0.5+0.1*r);
 }
 
 void Ball::Erase(){

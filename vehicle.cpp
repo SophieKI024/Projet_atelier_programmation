@@ -8,10 +8,11 @@
 // Constructeur
 
 
-Vehicle::Vehicle(int nb_weapons_, Weapon* arsenal_, double acceleration_){
+Vehicle::Vehicle(int nb_weapons_, Weapon* arsenal_, double power_, double v_max_){
     nb_weapons = nb_weapons_;
     arsenal = new Weapon[nb_weapons_];
-    acceleration = acceleration_;
+    power = power_;
+    v_max = v_max_;
     for (int i = 0; i < nb_weapons; i++){
         arsenal[i]=arsenal_[i];
     }
