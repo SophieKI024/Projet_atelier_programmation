@@ -5,7 +5,7 @@
 using namespace Imagine;
 using namespace std;
 
-
+///////////////// *** STRUCTURE *** ////////////////////////
 
 Structure::Structure(){
 }

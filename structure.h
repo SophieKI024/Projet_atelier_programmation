@@ -5,9 +5,9 @@
 #include "ball.h"
 #include "joint.h"
 #include "vehicle.h"
+#include "liste_des_skins.h"
 #include <Imagine/LinAlg.h>
 using namespace Imagine;
-
 
 ///////////////// *** STRUCTURE *** ////////////////////////
 

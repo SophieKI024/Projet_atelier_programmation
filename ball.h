@@ -24,7 +24,7 @@ public :
     Color Col;
     ////// Energie nécéssaire pour détruire l'objet
     double breaking_energy;
-    ///
+    /// gravity = false => pas de poids
     bool gravity;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////

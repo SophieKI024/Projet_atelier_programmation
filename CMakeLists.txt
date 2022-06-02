@@ -17,5 +17,6 @@ add_executable(AtelierProg
                liste_des_skins.cpp liste_des_skins.h
                skin.h skin.cpp
                weapon.cpp weapon.h
-               structure.cpp structure.h)
+               structure.cpp structure.h
+               level.cpp level.h)
 ImagineUseModules(AtelierProg Images LinAlg)
