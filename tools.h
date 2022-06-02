@@ -4,6 +4,8 @@
 using namespace Imagine;
 #include<string>
 using namespace std;
+#include <iostream>
+using namespace std;
 
 #include "vector.h"
 
@@ -15,7 +17,7 @@ const double frottements_fluides = 0.5;
 const double frottements_secs = 1000;
 
 // affichage
-const double fps = 24;
+const double fps = 30;
 const int h_ground = 50;
 const int window_width = 1500;
 const int window_height = 800;
