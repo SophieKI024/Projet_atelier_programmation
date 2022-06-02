@@ -5,8 +5,8 @@
 void play(Structure& game, double t_max){
     Structure old_game = game.copy();
     game.Display();
-    cout<<"periode d'affichage = "<<periodDisplay<<endl;
-    cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
+    //cout<<"periode d'affichage = "<<periodDisplay<<endl;
+    //cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
     Timer chrono;
     double t=0;
     vector<int> keys;
@@ -46,7 +46,7 @@ Structure level_1(){
     //On rajoute le vehicule en 1er
     Structure game(Box(Vector2D(x0+500,y0-400),10,10,20,BLUE));
     Weapon* arsenal = new Weapon[1];
-    arsenal[0] = Weapon(Canon_standard(),100,Vector2D(0,0), 1000,-1000,0.5,1800,2,15,3);
+    arsenal[0] = Weapon(Canon_standard(),100,Vector2D(0,0), 1000,-1000,0.7,1800,2,15,3);
     game.car = Vehicle(1,arsenal);
     game.add(Ball(Vector2D(x0+400,y0-325),50,3,RED));
     game.add(Ball(Vector2D(x0+600,y0-325),30,3,RED));
@@ -82,7 +82,7 @@ Structure title_screen(){
     // ********** Pontstructor **********
     Structure title_screen = Pontstructor();
     title_screen.Display();
-    play(title_screen, 5.7);
+    play(title_screen, 4.);
     title_screen.Erase();
     // ********** Select level **********
     Structure game;
@@ -253,7 +253,7 @@ Structure Pontstructor(){
     title_screen.add(R_11);
     title_screen.add(R_12);
 
-    Ball destructor(m + Vector2D(-3*c,3*c), 2*c, 1000,RED, Vector2D(700,0),-3);
+    Ball destructor(m + Vector2D(-3*c,3*c), 2*c, 1000,RED, Vector2D(1000,0),-3);
     destructor.gravity=false;
     title_screen.add(destructor);
     return title_screen;

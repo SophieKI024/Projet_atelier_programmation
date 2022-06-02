@@ -400,8 +400,6 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
-    double seuil = 2;   // seuil au-delà duquel on considère qu'il faut bien écarter les objets
-    double coeff = 1e-1;
     for(unsigned long i=0; i<joints.size(); i++){
         C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
@@ -409,7 +407,7 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
         for(unsigned long j=i+1; j<boxes.size()+balls.size(); j++){
             if(Coll(i,j)){
-                C[n+joints.size()] = coeff*Infos[2*n+1].norme()*atan(Infos[2*n+1].norme()/seuil);
+                C[n+joints.size()] = Infos[2*n+1].norme();
                 n++;
             }
         }
@@ -612,7 +610,7 @@ void Structure::Solve_destruct(Vector<double> &dV, Matrix<double>& M){
 }
 
 void Structure::solveConstraints(){
-    double beta = 0.1;  // a priori beta=1 ideal mais beta=0.5 limite les potentiels problemes de stabilite
+    double beta = 1;  // a priori beta=1 ideal mais beta=0.5 limite les potentiels problemes de stabilite
     SymMatrix<bool> Coll(Collisions());
     Vector<Vector2D> Infos(collisionsInfo(Coll));
     if(joints.size()==0 and Infos.size()==0)
@@ -625,17 +623,22 @@ void Structure::solveConstraints(){
     Matrix<double> J(constructJ(Infos,Coll));
     Matrix<double> M(constructM());
 
-    Vector<double> E(linSolve(J*M*transpose(J),-J*Q-beta/dt*C));
+    Matrix<double> Sol(pseudoInverse(J*M*transpose(J)));
+    Vector<double> E1(Sol*(-J*Q));
     // On permet aux objets en collision de seulement s'écarter
-    for(long unsigned i=joints.size(); i<E.size(); i++){
-        E[i] = min(E[i],0.);
+    for(long unsigned i=joints.size(); i<E1.size(); i++){
+        E1[i] = min(E1[i],0.);
     }
-    Vector<double> dV(M*transpose(J)*E);
-    double coeff = 1.65;
+    Vector<double> dV(M*transpose(J)*E1);
+    Vector<double> dQ(-beta*M*transpose(J)*Sol*C);
+    double coeff = 1.6;
     for(unsigned long i=0; i<boxes.size(); i++){
         boxes[i].v.x += coeff*dV[3*i];
         boxes[i].v.y += coeff*dV[3*i+1];
         boxes[i].omega += coeff*dV[3*i+2];
+        boxes[i].pos.x += dQ[3*i];
+        boxes[i].pos.y += dQ[3*i+1];
+        boxes[i].angle += dQ[3*i+2];
     }
     int j;
     for(unsigned long i=0; i<balls.size(); i++){
@@ -643,6 +646,9 @@ void Structure::solveConstraints(){
         balls[i].v.x += coeff*dV[3*j];
         balls[i].v.y += coeff*dV[3*j+1];
         balls[i].omega += coeff*dV[3*j+2];
+        balls[i].pos.x += dQ[3*j];
+        balls[i].pos.y += dQ[3*j+1];
+        balls[i].angle += dQ[3*j+2];
     }
     Solve_destruct(dV,M);
 }
