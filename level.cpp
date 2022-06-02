@@ -2,9 +2,7 @@
 
 ///////////////// *** PLAY *** ////////////////////////
 
-void play(Structure& game){
-    openWindow(window_width,window_height);
-    setBackGround(backgroundColor);
+void play(Structure& game, double t_max){
     Structure old_game = game.copy();
     game.Display();
     cout<<"periode d'affichage = "<<periodDisplay<<endl;
@@ -13,7 +11,7 @@ void play(Structure& game){
     double t=0;
     vector<int> keys;
     click();
-    for(int timeStep=0; timeStep<10000*periodDisplay; timeStep++){
+    for(int timeStep=0; t<t_max; timeStep++){
         keyboard(keys);
         if(timeStep%periodDisplay==0){
             game.boxes[0].omega=0;
@@ -75,4 +73,188 @@ Structure level_1(){
     game.add(Box(Vector2D(500,y0-360),50,200,2,BLUE));
     game.add(Box(Vector2D(400,y0-490),300,50,2,RED));
     return game;
+}
+
+///////////////// *** TITLE SCREEN *** ////////////////////////
+
+
+Structure title_screen(){
+    // ********** Pontstructor **********
+    Structure title_screen = Pontstructor();
+    title_screen.Display();
+    play(title_screen, 5.7);
+    title_screen.Erase();
+    // ********** Select level **********
+    Structure game;
+    int select_level = 1;
+//    while (select_level < 0){
+//        int x,y;
+//        getMouse(x,y);
+//        select_level = 1;
+//    }
+    if (select_level == 1){
+        game = level_1();
+    }
+    return game;
+}
+
+Structure Pontstructor(){
+    Structure title_screen;
+    int c = window_width/80; // On divise la largeur de l'écran en 80 carreaux
+    Vector2D m(0,10*c); // Marge en haut
+
+    Box P_1(m + Vector2D(10.5*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box P_2(m + Vector2D(11.25*c,0.5*c), 2.5*c, c, 1,BLACK);
+    Box P_3(m + Vector2D(13.5*c,1.25*c), c, 2.5*c, 1,BLACK);
+    Box P_4(m + Vector2D(12.75*c,3.5*c), 2.5*c, c, 1,BLACK);
+    P_1.gravity=false;
+    P_2.gravity=false;
+    P_3.gravity=false;
+    P_4.gravity=false;
+    title_screen.add(P_1);
+    title_screen.add(P_2);
+    title_screen.add(P_3);
+    title_screen.add(P_4);
+
+    Box O_1(m + Vector2D(15.5*c,3*c), c, 3*c, 1, BLACK);
+    Box O_2(m + Vector2D(17*c,0.5*c), 4*c, c, 1,BLACK);
+    Box O_3(m + Vector2D(18.5*c,3*c), c, 3*c, 1,BLACK);
+    Box O_4(m + Vector2D(17*c,5.5*c), 4*c, c, 1,BLACK);
+    O_1.gravity=false;
+    O_2.gravity=false;
+    O_3.gravity=false;
+    O_4.gravity=false;
+    title_screen.add(O_1);
+    title_screen.add(O_2);
+    title_screen.add(O_3);
+    title_screen.add(O_4);
+
+    Box N_1(m + Vector2D(20.5*c,3.75*c), c, 4*c, 1, BLACK);
+    Ball N_2(m + Vector2D(20.5*c,0.5*c), 0.5*c, 1,BLACK);
+    Box N_3(m + Vector2D(22.5*c,3*c), 0.75*c, 4.5*c, 1,BLACK, convert_angle(35));
+    Ball N_4(m + Vector2D(24.5*c,5.5*c), 0.5*c, 1,BLACK);
+    Box N_5(m + Vector2D(24.5*c,2.25*c), 1*c, 4*c, 1,BLACK);
+    N_1.gravity=false;
+    N_2.gravity=false;
+    N_3.gravity=false;
+    N_4.gravity=false;
+    N_5.gravity=false;
+    title_screen.add(N_1);
+    title_screen.add(N_2);
+    title_screen.add(N_3);
+    title_screen.add(N_4);
+    title_screen.add(N_5);
+
+    Box T_1(m + Vector2D(28*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box T_2(m + Vector2D(28*c,0.5*c), 4*c, c, 1,BLACK);
+    T_1.gravity=false;
+    T_2.gravity=false;
+    title_screen.add(T_1);
+    title_screen.add(T_2);
+
+    Box S_1(m + Vector2D(33.75*c,0.5*c), 2.5*c, c, 1, BLACK);
+    Box S_2(m + Vector2D(31.5*c,1*c), c, 2*c, 1,BLACK);
+    Box S_3(m + Vector2D(32.25*c,3*c), 2.5*c, c, 1,BLACK);
+    Box S_4(m + Vector2D(34.5*c,3.5*c), c, 2*c, 1,BLACK);
+    Box S_5(m + Vector2D(33*c,5.5*c), 4*c, c, 1,BLACK);
+    S_1.gravity=false;
+    S_2.gravity=false;
+    S_3.gravity=false;
+    S_4.gravity=false;
+    S_5.gravity=false;
+    title_screen.add(S_1);
+    title_screen.add(S_2);
+    title_screen.add(S_3);
+    title_screen.add(S_4);
+    title_screen.add(S_5);
+
+    Box T_3(m + Vector2D(38*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box T_4(m + Vector2D(38*c,0.5*c), 4*c, c, 1,BLACK);
+    T_3.gravity=false;
+    T_4.gravity=false;
+    title_screen.add(T_3);
+    title_screen.add(T_4);
+
+    Box R_1(m + Vector2D(41.5*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box R_2(m + Vector2D(42.25*c,0.5*c), 2.5*c, c, 1, BLACK);
+    Box R_3(m + Vector2D(44.5*c,c), c, 2*c, 1, BLACK);
+    Box R_4(m + Vector2D(44.25*c,3*c), 1.5*c, c, 1, BLACK);
+    Ball R_5(m + Vector2D(42.75*c,3*c), 0.5*c, 1,BLACK);
+    Box R_6(m + Vector2D(44*c,5*c), 0.75*c, 3*c, 1,BLACK, convert_angle(40));
+    R_1.gravity=false;
+    R_2.gravity=false;
+    R_3.gravity=false;
+    R_4.gravity=false;
+    R_5.gravity=false;
+    R_6.gravity=false;
+    title_screen.add(R_1);
+    title_screen.add(R_2);
+    title_screen.add(R_3);
+    title_screen.add(R_4);
+    title_screen.add(R_5);
+    title_screen.add(R_6);
+
+    Box U_1(m + Vector2D(46.5*c,2.25*c), c, 4.5*c, 1, BLACK);
+    Box U_2(m + Vector2D(48*c,5.5*c), 4*c, c, 1,BLACK);
+    Box U_3(m + Vector2D(49.5*c,2.25*c), c, 4.5*c, 1,BLACK);
+    U_1.gravity=false;
+    U_2.gravity=false;
+    U_3.gravity=false;
+    title_screen.add(U_1);
+    title_screen.add(U_2);
+    title_screen.add(U_3);
+
+    Box C_1(m + Vector2D(53.75*c,0.5*c), 2.5*c, c, 1, BLACK);
+    Box C_2(m + Vector2D(51.5*c,3*c), c, 6*c, 1,BLACK);
+    Box C_3(m + Vector2D(53.75*c,5.5*c), 2.5*c, c, 1,BLACK);
+    C_1.gravity=false;
+    C_2.gravity=false;
+    C_3.gravity=false;
+    title_screen.add(C_1);
+    title_screen.add(C_2);
+    title_screen.add(C_3);
+
+    Box T_5(m + Vector2D(58*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box T_6(m + Vector2D(58*c,0.5*c), 4*c, c, 1,BLACK);
+    T_5.gravity=false;
+    T_6.gravity=false;
+    title_screen.add(T_5);
+    title_screen.add(T_6);
+
+    Box O_5(m + Vector2D(61.5*c,3*c), c, 3*c, 1, BLACK);
+    Box O_6(m + Vector2D(63*c,0.5*c), 4*c, c, 1,BLACK);
+    Box O_7(m + Vector2D(64.5*c,3*c), c, 3*c, 1,BLACK);
+    Box O_8(m + Vector2D(63*c,5.5*c), 4*c, c, 1,BLACK);
+    O_5.gravity=false;
+    O_6.gravity=false;
+    O_7.gravity=false;
+    O_8.gravity=false;
+    title_screen.add(O_5);
+    title_screen.add(O_6);
+    title_screen.add(O_7);
+    title_screen.add(O_8);
+
+    Box R_7(m + Vector2D(66.5*c,3.75*c), c, 4.5*c, 1, BLACK);
+    Box R_8(m + Vector2D(67.25*c,0.5*c), 2.5*c, c, 1, BLACK);
+    Box R_9(m + Vector2D(69.5*c,c), c, 2*c, 1, BLACK);
+    Box R_10(m + Vector2D(69.25*c,3*c), 1.5*c, c, 1, BLACK);
+    Ball R_11(m + Vector2D(67.75*c,3*c), 0.5*c, 1,BLACK);
+    Box R_12(m + Vector2D(69*c,5*c), 0.75*c, 3*c, 1,BLACK, convert_angle(40));
+    R_7.gravity=false;
+    R_8.gravity=false;
+    R_9.gravity=false;
+    R_10.gravity=false;
+    R_11.gravity=false;
+    R_12.gravity=false;
+    title_screen.add(R_7);
+    title_screen.add(R_8);
+    title_screen.add(R_9);
+    title_screen.add(R_10);
+    title_screen.add(R_11);
+    title_screen.add(R_12);
+
+    Ball destructor(m + Vector2D(-3*c,3*c), 2*c, 1000,RED, Vector2D(700,0),-3);
+    destructor.gravity=false;
+    title_screen.add(destructor);
+    return title_screen;
 }

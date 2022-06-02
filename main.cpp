@@ -1,8 +1,10 @@
 #include "level.h"
 
 int main() {
-    Structure game = level_1();
-    play(game);
+    openWindow(window_width,window_height);
+    setBackGround(backgroundColor);
+    Structure game = title_screen();
+    play(game, 10000);
     endGraphics();
     return 0;
 }

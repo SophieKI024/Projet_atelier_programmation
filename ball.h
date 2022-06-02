@@ -22,6 +22,8 @@ public :
     double m;
     /// Couleur du disque
     Color Col;
+    /// Gravité
+    bool gravity;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////
 

@@ -35,7 +35,9 @@ void Ball::stepBack(){
 
 void Ball::Accelerate(){
     v = (1-frottements_fluides*dt)*v;
-    v.y += g*dt;
+    if (gravity){
+        v.y += g*dt;
+    }
 }
 
 bool Ball::Collide(Ball& b){
@@ -54,6 +56,7 @@ Ball::Ball(Vector2D pos_, double r_, double rho_, Color Col_, Vector2D v_, doubl
     v = v_;
     omega = omega_;
     angle = angle_;
+    gravity = true;
 }
 
 Ball::Ball(){}
