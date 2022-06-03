@@ -9,7 +9,7 @@ double Ball::I(){
 }
 
 void Ball::Display(){
-    fillCircle(pos.x,pos.y,r,Col);
+    fillCircle(pos.x+0.5,pos.y+0.5,r,Col);
     if(r<10)
         return;
     Vector2D R = rotation(Vector2D(0.9*r,0),angle);
@@ -23,7 +23,7 @@ void Ball::Display(){
 }
 
 void Ball::Erase(){
-    fillCircle(pos.x,pos.y,r,backgroundColor);
+    fillCircle(pos.x+0.5,pos.y+0.5,r,backgroundColor);
 }
 
 void Ball::Move(){
@@ -43,7 +43,7 @@ void Ball::Accelerate(){
 }
 
 bool Ball::Collide(Ball& b){
-    return (pos-b.pos).norme()<=r+b.r+eps;
+    return (pos-b.pos).norme()<=r+b.r;
 }
 
 double Ball::ballC(Ball b){

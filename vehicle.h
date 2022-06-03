@@ -16,7 +16,7 @@ public:
     //////////////////// CONSTRUCTEURS //////////////////////////////////////
 
     /// Constructeur
-    Vehicle(int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0], double power_ = 1000, double v_max_ = 500);
+    Vehicle(int nb_weapons_=0, Weapon* arsenal_ = new Weapon[0], double power_ = 1200, double v_max_ = 700);
 
     //////////////////// AFFICHAGE /////////////////////////////////////////
 

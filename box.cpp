@@ -154,7 +154,7 @@ bool Box::Collide(Ball& b){
 
     Vector2D v = minimalDistance(b.pos);
     double dist = sgn(v*(pos-b.pos))*v.norme();
-    return dist<=b.r+eps;
+    return dist<=b.r;
 }
 
 void Box::Erase(){

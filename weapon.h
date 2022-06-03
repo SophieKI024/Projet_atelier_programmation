@@ -35,7 +35,7 @@ public:
     /// Constructeur vide
     Weapon();
     Weapon(Box projectile_);
-    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 1800, double rot_speed_=2, double r_ball_ = 10, double rho=10);
+    Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, double angle_max_, double reload_time_, double fire_speed_ = 1500, double rot_speed_=2, double r_ball_ = 10, double rho=10);
 
 
 

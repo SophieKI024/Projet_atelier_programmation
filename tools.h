@@ -10,22 +10,19 @@ using namespace std;
 #include "vector.h"
 
 // simulation physique
-const double dt = 0.003;
+const double dt = 0.002;
 /// Constante gravitationelle de pesanteur
-const double g = 800;
-const double frottements_fluides = 0.3;
-const double frottements_secs = 2000;
+const double g = 600;
+const double frottements_fluides = 0.15;
+const double frottements_secs = 3000;
 
 // affichage
-const double fps = 30;
+const double fps = 24;
 const int h_ground = 50;
 const int window_width = 1300;
 const int window_height = 700;
-const int periodDisplay =1/(fps*dt); // periode d'affichage adaptée
+const double periodDisplay =1/(fps*dt); // periode d'affichage adaptée
 const Color backgroundColor = Color(216,242, 255); // Light Blue
-
-
-const double eps=1; // limite le problème de "collage" pour l'instant
 
 ////////////////////////////// GESTION DU CLAVIER ////////////////////////////
 

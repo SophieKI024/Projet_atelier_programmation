@@ -3,20 +3,21 @@
 ///////////////// *** PLAY *** ////////////////////////
 
 void play(Structure& game, double t_max){
+    Timer chrono;
     Structure old_game = game.copy();
     game.Display();
     //cout<<"periode d'affichage = "<<periodDisplay<<endl;
     //cout<<"nombre d'entites : "<<game.boxes.size()+game.balls.size()+game.joints.size()+game.springs.size()<<endl;
-    Timer chrono;
     double t=0;
     vector<int> keys;
     click();
+    chrono.reset();
     for(int timeStep=0; t<t_max; timeStep++){
         keyboard(keys);
-        if(timeStep%periodDisplay==0){
-            game.boxes[0].omega=0;
-            game.boxes[0].angle=0;
-            double time = chrono.lap();
+        game.boxes[0].omega=0;
+        game.boxes[0].angle=0;
+        if(fmod(timeStep,periodDisplay)<1){
+
             noRefreshBegin();
 
             old_game.Erase();
@@ -26,9 +27,8 @@ void play(Structure& game, double t_max){
             old_game = game.copy();
 
             noRefreshEnd();
-            // on attend exactement ce qu'il faut pour que le jeu s'ecoule a une vitesse coherente
-            milliSleep(max(int(1000*(dt*periodDisplay-time)),0));
-            chrono.reset();
+            // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
+            milliSleep(max(int(1000*(t-chrono.lap())),0));
         }
         game.set_fire(keys,game.boxes[0].pos,t);
         game.Accelerate(keys);
@@ -46,7 +46,7 @@ Structure level_1(){
     //On rajoute le vehicule en 1er
     Structure game(Box(Vector2D(x0+500,y0-400),10,10,20,BLUE));
     Weapon* arsenal = new Weapon[1];
-    arsenal[0] = Weapon(Canon_standard(),100,Vector2D(0,0), 1000,-1000,0.7,1800,2,15,3);
+    arsenal[0] = Weapon(Canon_standard(),100,Vector2D(0,0), 1000,-1000,0.01,1500,2,3,3);
     game.car = Vehicle(1,arsenal);
     game.add(Ball(Vector2D(x0+400,y0-325),50,3,RED));
     game.add(Ball(Vector2D(x0+600,y0-325),30,3,RED));
@@ -82,8 +82,8 @@ Structure title_screen(){
     // ********** Pontstructor **********
     Structure title_screen = Pontstructor();
     title_screen.Display();
-    play(title_screen, 4.);
-    title_screen.Erase();
+    play(title_screen, 6.);
+    title_screen.Erase();   // ne fonctionne pas...
     // ********** Select level **********
     Structure game;
     int select_level = 1;
@@ -253,7 +253,7 @@ Structure Pontstructor(){
     title_screen.add(R_11);
     title_screen.add(R_12);
 
-    Ball destructor(m + Vector2D(-3*c,3*c), 2*c, 1000,RED, Vector2D(1000,0),-3);
+    Ball destructor(m + Vector2D(-3*c,3*c), 2.1*c, 1000,RED, Vector2D(700,0),-5);
     destructor.gravity=false;
     title_screen.add(destructor);
     return title_screen;

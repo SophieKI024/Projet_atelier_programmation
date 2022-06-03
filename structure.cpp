@@ -401,13 +401,13 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
     for(unsigned long i=0; i<joints.size(); i++){
-        C[i] = joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
+        C[i] = 0.8*joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
     }
     int n=0;
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
         for(unsigned long j=i+1; j<boxes.size()+balls.size(); j++){
             if(Coll(i,j)){
-                C[n+joints.size()] = Infos[2*n+1].norme();
+                C[n+joints.size()] = 1.2*Infos[2*n+1].norme();
                 n++;
             }
         }
