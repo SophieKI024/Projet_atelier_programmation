@@ -69,30 +69,22 @@ void Structure::add(Damper damper){
     dampers.push_back(damper);
 }
 
-void Structure::removeBox(int i){
-    int size = boxes.size();
-
-    if(i>size){
-        cout<<"WARNING : trying to remove a non existent Box"<<endl;
-        return;
-    }
-
-    swap(boxes.back(),boxes[i]);
-    boxes.pop_back();
+void Structure::removeObject(int type, int i){
+    int size = boxes.size()*(1-type)+balls.size()*type;
     long unsigned j=0;
     while(j<joints.size()){
 
-        // on supprime les barres qui etaient relies a la boite a supprimer
-        if((joints[j].type_a==0 and joints[j].a==i) or (joints[j].type_b==0 and joints[j].b==i)){
+        // on supprime les barres qui etaient relies a l'objet a supprimer
+        if((joints[j].type_a==type and joints[j].a==i) or (joints[j].type_b==type and joints[j].b==i)){
             removeJoint(j);
             j--;
         }
 
-        // on change les indices des barres reliees a la derniere Box
+        // on change les indices des barres reliees au dernier objet
         else{
-            if((joints[j].type_a==0 and joints[j].a==size))
+            if((joints[j].type_a==type and joints[j].a==size))
                 joints[j].a=i;
-            if((joints[j].type_b==0 and joints[j].b==size))
+            if((joints[j].type_b==type and joints[j].b==size))
                 joints[j].b=i;
         }
         j++;
@@ -103,70 +95,60 @@ void Structure::removeBox(int i){
     while(j<springs.size()){
 
         // on supprime les ressorts qui etaient relies a la boite a supprimer
-        if((springs[j].type_a==0 and springs[j].a==i) or (springs[j].type_b==0 and springs[j].b==i)){
+        if((springs[j].type_a==type and springs[j].a==i) or (springs[j].type_b==type and springs[j].b==i)){
             removeSpring(j);
             j--;
         }
 
         // on change les indices des ressorts reliees a la derniere Box
         else{
-            if((springs[j].type_a==0 and springs[j].a==size-1))
+            if((springs[j].type_a==type and springs[j].a==size))
                 springs[j].a=i;
-            if((springs[j].type_b==0 and springs[j].b==size-1))
+            if((springs[j].type_b==type and springs[j].b==size))
                 springs[j].b=i;
+        }
+        j++;
+    }
+
+    // idem pour les amortisseurs
+    j=0;
+    while(j<dampers.size()){
+
+        // on supprime les ressorts qui etaient relies a la boite a supprimer
+        if((dampers[j].type_a==type and dampers[j].a==i) or (dampers[j].type_b==type and dampers[j].b==i)){
+            removeDamper(j);
+            j--;
+        }
+
+        // on change les indices des ressorts reliees a la derniere Box
+        else{
+            if((dampers[j].type_a==type and dampers[j].a==size))
+                dampers[j].a=i;
+            if((dampers[j].type_b==type and dampers[j].b==size))
+                dampers[j].b=i;
         }
         j++;
     }
 }
 
-void Structure::removeBall(int i){
-    int size = balls.size();
+void Structure::removeBox(int i){
+    if(i>=int(boxes.size())){
+        cout<<"WARNING : trying to remove a non existent Box"<<endl;
+        return;
+    }
+    swap(boxes.back(),boxes[i]);
+    boxes.pop_back();
+    removeObject(0,i);
+}
 
-    if(i>size){
+void Structure::removeBall(int i){
+    if(i>=int(balls.size())){
         cout<<"WARNING : trying to remove a non existent Ball"<<endl;
         return;
     }
-
     swap(balls.back(),balls[i]);
     balls.pop_back();
-    long unsigned j=0;
-    while(j<joints.size()){
-
-        // on supprime les barres qui etaient relies a la boite a supprimer
-        if((joints[j].type_a==1 and joints[j].a==i) or (joints[j].type_b==1 and joints[j].b==i)){
-            removeJoint(j);
-            j--;
-        }
-
-        // on change les indices des barres reliees a la derniere Box
-        else{
-            if((joints[j].type_a==1 and joints[j].a==size-1))
-                joints[j].a=i;
-            if((joints[j].type_b==1 and joints[j].b==size-1))
-                joints[j].b=i;
-        }
-        j++;
-    }
-
-    // idem pour les ressorts
-    j=0;
-    while(j<springs.size()){
-
-        // on supprime les ressorts qui etaient relies a la boite a supprimer
-        if((springs[j].type_a==1 and springs[j].a==i) or (springs[j].type_b==1 and springs[j].b==i)){
-            removeSpring(j);
-            j--;
-        }
-
-        // on change les indices des ressorts reliees a la derniere Box
-        else{
-            if((springs[j].type_a==1 and springs[j].a==size))
-                springs[j].a=i;
-            if((springs[j].type_b==1 and springs[j].b==size))
-                springs[j].b=i;
-        }
-        j++;
-    }
+    removeObject(1,i);
 }
 
 void Structure::removeJoint(int i){
@@ -203,12 +185,33 @@ Vector2D& Structure::getPosition(int type_a, int a){
         return balls[a].pos;
 }
 
-
 Vector2D& Structure::getSpeed(int type_a, int a){
     if(type_a == 0)
         return boxes[a].v;
     else
         return balls[a].v;
+}
+
+double& Structure::getOmega(int type_a, int a){
+    if(type_a == 0)
+        return boxes[a].omega;
+    else
+        return balls[a].omega;
+}
+
+double Structure::getAngle(int type_a, int a){
+    if(type_a ==0)
+            return boxes[a].angle;
+    else
+            return balls[a].angle;
+}
+
+
+double Structure::getInertialMoment(int type_a, int a){
+    if(type_a ==0)
+            return boxes[a].I();
+    else
+            return balls[a].I();
 }
 
 
@@ -220,6 +223,7 @@ double Structure::getMass(int type_a, int a){
 }
 
 void Structure::Display(){
+    Vector2D pos1,pos2;
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Display();
     }
@@ -227,16 +231,22 @@ void Structure::Display(){
         balls[i].Display();
     }
     for (unsigned long i = 0; i < joints.size(); i++){
-        joints[i].Display(getPosition(joints[i].type_a,joints[i].a),getPosition(joints[i].type_b,joints[i].b));
+        pos1 = getPosition(joints[i].type_a,joints[i].a)+ rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
+        pos2 = getPosition(joints[i].type_b,joints[i].b)+ rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
+        joints[i].Display(pos1,pos2);
     }
     for (unsigned long i = 0; i < springs.size(); i++){
-        springs[i].Display(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
+        pos1 = getPosition(springs[i].type_a,springs[i].a)+ rotation(springs[i].pos_a,getAngle(springs[i].type_a,springs[i].a));
+        pos2 = getPosition(springs[i].type_b,springs[i].b)+ rotation(springs[i].pos_b,getAngle(springs[i].type_b,springs[i].b));
+        springs[i].Display(pos1,pos2);
     }
+    // affiche les armes
     car.Display(boxes[0].pos,boxes[0].angle);
 }
 
 
 void Structure::Erase(){
+    Vector2D pos1, pos2;
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Erase();
     }
@@ -244,10 +254,14 @@ void Structure::Erase(){
         balls[i].Erase();
     }
     for (unsigned long i = 0; i < joints.size(); i++){
-        joints[i].Erase(getPosition(joints[i].type_a,joints[i].a),getPosition(joints[i].type_b,joints[i].b));
+        pos1 = getPosition(joints[i].type_a,joints[i].a)+ rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
+        pos2 = getPosition(joints[i].type_b,joints[i].b)+ rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
+        joints[i].Erase(pos1,pos2);
     }
     for (unsigned long i = 0; i < springs.size(); i++){
-        springs[i].Erase(getPosition(springs[i].type_a,springs[i].a),getPosition(springs[i].type_b,springs[i].b));
+        pos1 = getPosition(springs[i].type_a,springs[i].a)+ rotation(springs[i].pos_a,getAngle(springs[i].type_a,springs[i].a));
+        pos2 = getPosition(springs[i].type_b,springs[i].b)+ rotation(springs[i].pos_b,getAngle(springs[i].type_b,springs[i].b));
+        springs[i].Erase(pos1,pos2);
     }
     car.Erase(boxes[0].pos,boxes[0].angle);
 }
@@ -274,18 +288,29 @@ void Structure::Accelerate(vector<int> keys){
         balls[i].Accelerate();
     }
 
-    Vector2D pos1,pos2,dir,delta_v;
-    double m1,m2;
+    Vector2D pos1,pos2,f1,f2,p_f1,p_f2,dir,delta_v;
+    double m1,m2,I1,I2;
 
     // effet des ressorts
     for(unsigned long i=0; i<springs.size(); i++){
-        pos1 = getPosition(springs[i].type_a,springs[i].a);
-        pos2 = getPosition(springs[i].type_b,springs[i].b);
-        m1 = getMass(springs[i].type_a,springs[i].a);
-        m2 = getMass(springs[i].type_b,springs[i].b);
-        // dv1 = -k/m1*(l-l0)*e21
-        getSpeed(springs[i].type_a,springs[i].a) += -dt*springs[i].k/m1*((pos1-pos2).norme()-springs[i].l0)*(pos1-pos2).normalize();
-        getSpeed(springs[i].type_b,springs[i].b) += -dt*springs[i].k/m2*((pos2-pos1).norme()-springs[i].l0)*(pos2-pos1).normalize();
+        Spring& S = springs[i];
+        pos1 = getPosition(S.type_a,S.a);
+        pos2 = getPosition(S.type_b,S.b);
+        p_f1 = pos1 + rotation(S.pos_a,getAngle(S.type_a,S.a));
+        p_f2 = pos2 + rotation(S.pos_b,getAngle(S.type_b,S.b));;
+        m1 = getMass(S.type_a,S.a);
+        m2 = getMass(S.type_b,S.b);
+        I1 = getInertialMoment(S.type_a,S.a);
+        I2 = getInertialMoment(S.type_b,S.b);
+        Vector2D& v1 = getSpeed(S.type_a,S.a);
+        Vector2D& v2 = getSpeed(S.type_b,S.b);
+        double& omega1 = getOmega(S.type_a,S.a);
+        double& omega2 = getOmega(S.type_b,S.b);
+        // f1 = -k*(l-l0)*e21
+        f1 = -S.k*((pos1-pos2).norme()-S.l0)*(pos1-pos2).normalize();
+        f2 = -1*f1;
+        applyForceGeneric(f1,p_f1,pos1,v1,omega1,m1,I1);
+        applyForceGeneric(f2,p_f2,pos2,v2,omega2,m2,I2);
     }
 
     // mouvement du vehicule
@@ -293,16 +318,25 @@ void Structure::Accelerate(vector<int> keys){
 
     // effet des amortisseurs
     for(unsigned long i=0; i<dampers.size(); i++){
-        pos1 = getPosition(springs[i].type_a,springs[i].a);
-        pos2 = getPosition(springs[i].type_b,springs[i].b);
-        dir = (pos2-pos1).normalize();
-        m1 = getMass(springs[i].type_a,springs[i].a);
-        m2 = getMass(springs[i].type_b,springs[i].b);
-        Vector2D& v1 = getSpeed(springs[i].type_a,springs[i].a);
-        Vector2D& v2 = getSpeed(springs[i].type_b,springs[i].b);
-        delta_v = (v1-v2)*dir*dir;
-        v1 -= min(1/m1*dampers[i].lambda*dt,1.)*delta_v;
-        v2 += min(1/m2*dampers[i].lambda*dt,1.)*delta_v;
+        Damper& D = dampers[i];
+        pos1 = getPosition(D.type_a,D.a);
+        pos2 = getPosition(D.type_b,D.b);
+        p_f1 = pos1 + rotation(D.pos_a,getAngle(D.type_a,D.a));
+        p_f2 = pos2 + rotation(D.pos_b,getAngle(D.type_b,D.b));;
+        m1 = getMass(D.type_a,D.a);
+        m2 = getMass(D.type_b,D.b);
+        I1 = getInertialMoment(D.type_a,D.a);
+        I2 = getInertialMoment(D.type_b,D.b);
+        Vector2D& v1 = getSpeed(D.type_a,D.a);
+        Vector2D& v2 = getSpeed(D.type_b,D.b);
+        double& omega1 = getOmega(D.type_a,D.a);
+        double& omega2 = getOmega(D.type_b,D.b);
+        dir = (p_f2-p_f1).normalize();
+        delta_v = (v1+omega1*rotation(p_f1-pos1,M_PI/2)-v2-omega2*rotation(p_f2-pos2,M_PI/2))*dir*dir;
+        f1 = -D.lambda*delta_v;
+        f2 = -1*f1;
+        applyForceGeneric(f1,p_f1,pos1,v1,omega1,m1,I1);
+        applyForceGeneric(f2,p_f2,pos2,v2,omega2,m2,I2);
     }
 }
 
@@ -550,7 +584,7 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
                 v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
                 v1 = v1*t*t;
                 v2 = v2*t*t;
-                double dv = min(10*frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
+                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
                 b1.v += coeff1*dv*t;
                 b2.v += (coeff1-1)*dv*t;
                 b1.omega += coeff2*dv/(pos-b1.pos).norme();
@@ -572,7 +606,7 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
                 v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
                 v1 = v1*t*t;
                 v2 = v2*t*t;
-                double dv = min(10*frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
+                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
                 b1.v += coeff1*dv*t;
                 b2.v += (coeff1-1)*dv*t;
                 b1.omega += coeff2*dv/(pos-b1.pos).norme();

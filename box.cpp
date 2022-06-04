@@ -167,6 +167,10 @@ Box Box::copy(){
     return Box(pos,w,h,m, Col, angle);
 }
 
+void Box::applyForce(Vector2D f, Vector2D p){
+    applyForceGeneric(f,p,pos,v,omega,m,I());
+}
+
 void Box::corners(double x[4], double y[4]){
     double x1 = w/2.*cos(angle),
             x2 = h/2.*sin(angle),

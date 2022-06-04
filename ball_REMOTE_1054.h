@@ -22,9 +22,7 @@ public :
     double m;
     /// Couleur du disque
     Color Col;
-    ////// Energie nécéssaire pour détruire l'objet
-    double breaking_energy;
-    /// gravity = false => pas de poids
+    /// Gravité
     bool gravity;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////
@@ -65,8 +63,6 @@ public :
     /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
 
-    /// Applique la force f au point fp
-    void applyForce(Vector2D f, Vector2D p);
 
 
 

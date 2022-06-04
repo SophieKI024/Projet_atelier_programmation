@@ -62,6 +62,10 @@ Ball::Ball(Vector2D pos_, double r_, double rho_, Color Col_, Vector2D v_, doubl
     gravity = true;
 }
 
+void Ball::applyForce(Vector2D f, Vector2D p){
+    applyForceGeneric(f,p,pos,v,omega,m,I());
+}
+
 Ball::Ball(){}
 
 Ball Ball::copy(){

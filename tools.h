@@ -14,10 +14,10 @@ const double dt = 0.002;
 /// Constante gravitationelle de pesanteur
 const double g = 600;
 const double frottements_fluides = 0.15;
-const double frottements_secs = 3000;
+const double frottements_secs = 8e3;
 
 // affichage
-const double fps = 24;
+const double fps = 30;
 const int h_ground = 50;
 const int window_width = 1300;
 const int window_height = 700;
@@ -37,9 +37,12 @@ bool isPressed(vector<int> keys, int key);
 /// Renvoie 1 si a>0, -1 si a<0, et 0 si a=0
 int sgn(double a);
 
-/// ???
+/// Initialise le générateur de nombre aléatoires
 void InitRandom();
 
 /// resoud un systeme de Cramer 2*2 et renvoie true ssi il y a une unique solution.
 bool solve(double a, double b, double c, double d, double alpha, double beta, double& x, double& y);
+
+/// applique une force à un objet
+void applyForceGeneric(Vector2D f, Vector2D p_f, Vector2D pos, Vector2D& v, double& omega, double m, double I);
 

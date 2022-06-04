@@ -1,4 +1,5 @@
 #include "tools.h"
+#include "vector.h"
 
 /////////////////////////////// GESTION CLAVIER ///////////////////////////////////
 
@@ -62,4 +63,9 @@ bool solve(double a, double b, double c, double d, double alpha, double beta, do
     x = (alpha*d-b*beta)/det;
     y = (a*beta-alpha*c)/det;
     return true;
+}
+
+void applyForceGeneric(Vector2D f, Vector2D p_f, Vector2D pos, Vector2D& v, double& omega, double m, double I){
+    v += dt/m*f;
+    omega += dt/I*(-f.x*(p_f-pos).y+f.y*(p_f-pos).x);
 }

@@ -63,6 +63,9 @@ public:
     /// Ajoute un amortisseur
     void add(Damper damp);
 
+    /// Assure que les indices sont bien reajustes lorsqu'on retire un objet
+    void removeObject(int type, int i);
+
     /// Retire un rectangle de la structure
     void removeBox(int i);
 
@@ -86,9 +89,17 @@ public:
     /// Retourne une reference de la vitesse de l'objet correspondant
     Vector2D& getSpeed(int type_a, int a);
 
+    /// Retourne une reference de la vitesse angulaire de l'objet correspondant
+    double& getOmega(int type_a, int a);
+
     ///Retourne la masse de l'objet correspondant
     double getMass(int type_a, int a);
 
+    /// Retourne l'angle de l'objet correspondant
+    double getAngle(int type_a, int a);
+
+    /// Retourne le moment inertiel de l'objet correspondant
+    double getInertialMoment(int type_a, int a);
 
 
     ///////////////////////////// AFFICHAGE /////////////////////////////////////////

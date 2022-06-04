@@ -65,8 +65,6 @@ public :
     /// Renvoie un booleen indiquant s'il y a une collision avec une Ball b
     bool Collide(Ball& b);
 
-    /// Applique la force f au point fp
-    void applyForce(Vector2D f, Vector2D p);
 
 
 
