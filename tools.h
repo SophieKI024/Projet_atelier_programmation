@@ -13,8 +13,8 @@ using namespace std;
 const double dt = 0.002;
 /// Constante gravitationelle de pesanteur
 const double g = 600;
-const double frottements_fluides = 0.15;
-const double frottements_secs = 8e3;
+const double frottements_fluides = 0.2;
+const double frottements_secs = 2000;
 
 // affichage
 const double fps = 30;

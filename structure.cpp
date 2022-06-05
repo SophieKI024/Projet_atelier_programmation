@@ -434,8 +434,11 @@ Vector<Vector2D> Structure::collisionsInfo(const SymMatrix<bool>& Coll){
 
 Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &Coll){
     Vector<double> C(joints.size()+Infos.size()/2);
+    Vector2D pos1,pos2;
     for(unsigned long i=0; i<joints.size(); i++){
-        C[i] = 0.8*joints[i].C(getPosition(joints[i].type_a,joints[i].a), getPosition(joints[i].type_b,joints[i].b));
+        pos1 = getPosition(joints[i].type_a,joints[i].a) + rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
+        pos2 = getPosition(joints[i].type_b,joints[i].b) + rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
+        C[i] = 0.8*joints[i].C(pos1,pos2);
     }
     int n=0;
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
@@ -470,18 +473,22 @@ Vector<double> Structure::constructQ(){
 
 Matrix<double> Structure::constructJ(Vector<Vector2D>& Infos,SymMatrix<bool>& Coll){
     Matrix<double> J = Matrix<double>::Zero(joints.size()+Infos.size()/2,3*(balls.size()+boxes.size()));
-    Vector2D pos1, pos2, dir,r1,r2;
+    Vector2D pos1, pos2 , OM1,OM2, dir,r1,r2;
     int i1,i2;
     for(unsigned long i=0; i<joints.size(); i++){
-        pos1 = getPosition(joints[i].type_a,joints[i].a);
-        pos2 = getPosition(joints[i].type_b,joints[i].b);
+        pos1 = getPosition(joints[i].type_a,joints[i].a) + rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
+        pos2 = getPosition(joints[i].type_b,joints[i].b) + rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
+        OM1 = rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
+        OM2 = rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
         i1 = joints[i].type_a*boxes.size()+joints[i].a;
         i2 = joints[i].type_b*boxes.size()+joints[i].b;
         dir = (pos1-pos2).normalize();
         J(i,3*i1) = dir.x;
         J(i,3*i1+1) = dir.y;
+        J(i,3*i1+2) = dir*rotation(OM1,M_PI/2);
         J(i,3*i2) = -dir.x;
         J(i,3*i2+1) = -dir.y;
+        J(i,3*i2+2) = -(dir*rotation(OM2,M_PI/2));
     }
     int n=0;
     for(unsigned long i=0; i<boxes.size(); i++){
@@ -548,27 +555,24 @@ Matrix<double> Structure::constructM(){
     return Diagonal(M);
 }
 
-void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
-    Vector2D pos,t,v1,v2;
+void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll, Vector<double>& E){
+    Vector2D f,p_f,N,t,v1,v2;
+    double seuil;
+    double coeff = 0.5;
     int n=0;
     for(unsigned long i=0; i<boxes.size(); i++){
         for(unsigned long j=i+1; j<boxes.size(); j++){
             if(Coll(i,j)){
                 Box& b1 = boxes[i];
                 Box& b2 = boxes[j];
-                double coeff1 = b2.m/(b1.m+b2.m);
-                double coeff2 = b2.I()/(b1.I()+b2.I());
-                pos = Infos[2*n];
+                p_f = Infos[2*n];
                 t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
-                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
-                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
-                v1 = v1*t*t;
-                v2 = v2*t*t;
-                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
-                b1.v += coeff1*dv*t;
-                b2.v += (coeff1-1)*dv*t;
-                b1.omega += coeff2*dv/(pos-b1.pos).norme();
-                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
+                v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
+                seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
+                f  = min(-frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                b1.applyForce(f,p_f);
+                b2.applyForce(-1*f,p_f);
                 n++;
             }
         }
@@ -576,19 +580,15 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
             if(Coll(i,j+boxes.size())){
                 Box& b1 = boxes[i];
                 Ball& b2 = balls[j];
-                double coeff1 = b2.m/(b1.m+b2.m);
-                double coeff2 = b2.I()/(b1.I()+b2.I());
-                pos = Infos[2*n];
-                t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
-                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
-                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
-                v1 = v1*t*t;
-                v2 = v2*t*t;
-                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
-                b1.v += coeff1*dv*t;
-                b2.v += (coeff1-1)*dv*t;
-                b1.omega += coeff2*dv/(pos-b1.pos).norme();
-                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                p_f = Infos[2*n];
+                N = Infos[2*n+1].normalize();
+                t = rotation(N,-M_PI/2);
+                v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
+                v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
+                seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
+                f  = min(-10*frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                b1.applyForce(f,p_f);
+                b2.applyForce(-1*f,p_f);
                 n++;
             }
         }
@@ -598,19 +598,14 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll){
             if(Coll(i+boxes.size(),j+boxes.size())){
                 Ball& b1 = balls[i];
                 Ball& b2 = balls[j];
-                double coeff1 = b2.m/(b1.m+b2.m);
-                double coeff2 = b2.I()/(b1.I()+b2.I());
-                pos = Infos[2*n];
+                p_f = Infos[2*n];
                 t = rotation(Infos[2*n+1].normalize(),-M_PI/2);
-                v1 = b1.v+b1.omega*rotation(pos-b1.pos,M_PI/2);
-                v2 = b2.v+b2.omega*rotation(pos-b2.pos,M_PI/2);
-                v1 = v1*t*t;
-                v2 = v2*t*t;
-                double dv = min(frottements_secs*dt,(v2-v1).norme())*(v2-v1).normalize()*t;
-                b1.v += coeff1*dv*t;
-                b2.v += (coeff1-1)*dv*t;
-                b1.omega += coeff2*dv/(pos-b1.pos).norme();
-                b2.omega += (coeff2-1)*dv/(pos-b2.pos).norme();
+                v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
+                v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
+                seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
+                f  = min(-10*frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                b1.applyForce(f,p_f);
+                b2.applyForce(-1*f,p_f);
                 n++;
             }
         }
@@ -650,8 +645,6 @@ void Structure::solveConstraints(){
     if(joints.size()==0 and Infos.size()==0)
         return;
 
-    Friction(Infos,Coll);
-
     Vector<double> C(constructC(Infos,Coll));
     Vector<double> Q(constructQ());
     Matrix<double> J(constructJ(Infos,Coll));
@@ -663,6 +656,7 @@ void Structure::solveConstraints(){
     for(long unsigned i=joints.size(); i<E1.size(); i++){
         E1[i] = min(E1[i],0.);
     }
+
     Vector<double> dV(M*transpose(J)*E1);
     Vector<double> dQ(-beta*M*transpose(J)*Sol*C);
     double coeff = 1.6;
@@ -684,6 +678,7 @@ void Structure::solveConstraints(){
         balls[i].pos.y += dQ[3*j+1];
         balls[i].angle += dQ[3*j+2];
     }
+    Friction(Infos,Coll,E1);
     Solve_destruct(dV,M);
 }
 

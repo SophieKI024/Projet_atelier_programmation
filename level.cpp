@@ -54,6 +54,7 @@ Structure level_1(){
     game.add(Spring(0,0,1,1,250,0,1000,5e5,5,Color(20,20,20),Vector2D(-95,0)));
     game.add(Spring(0,0,1,0,130,0,1000,5e5,5,Color(20,20,20),Vector2D(-95,0)));
     game.add(Spring(0,0,1,1,200,0,1000,5e5,5,Color(20,20,20),Vector2D(95,0)));
+
     game.add(Joint(1,0,1,1,300,5,BLACK));
     game.add(Damper(0,0,1,0,5e4,Vector2D(95,0)));
     game.add(Damper(0,0,1,1,5e4,Vector2D(-95,0)));
