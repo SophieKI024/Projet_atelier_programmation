@@ -26,6 +26,8 @@ public:
     vector<Spring> springs;
     /// Ensemble des amortisseurs
     vector<Damper> dampers;
+    /// Activation de la gravité
+    bool gravite = true;
 
     ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
 

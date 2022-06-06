@@ -40,8 +40,7 @@ void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
             add(b);
             car.arsenal[i].t0=t;
             boxes[0].v -= w.m_ball/boxes[0].m*v;
-            // pas forcement interessant etant donne la forme des vehicule
-            //boxes[0].omega -= rotation(v,-M_PI/2)*(pos-vehicle_pos)*w.m_ball/boxes[0].I();
+            boxes[0].omega -= rotation(v,-M_PI/2)*(pos-vehicle_pos)*w.m_ball/boxes[0].I();
         }
     }
 }
@@ -281,11 +280,13 @@ void Structure::Move(vector<int> keys){
 void Structure::Accelerate(vector<int> keys){
 
     // effet gravite
+    if(gravite){
     for (unsigned long i = 0; i < boxes.size(); i++){
         boxes[i].Accelerate();
     }
     for(unsigned long i=0; i<balls.size();i++){
         balls[i].Accelerate();
+    }
     }
 
     Vector2D pos1,pos2,f1,f2,p_f1,p_f2,dir,delta_v;
