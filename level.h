@@ -9,5 +9,5 @@ void play(Structure& game, double t_max);
 Structure level_1();
 
 Structure title_screen();
-Structure Pontstructor();
+Structure Pontstructor(int choix);
 

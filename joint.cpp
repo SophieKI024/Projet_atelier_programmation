@@ -5,15 +5,15 @@
 
 //////////////////////////JOINT////////////////////////////////////////////
 
-void Joint::Display(Vector2D pos1, Vector2D pos2){
-    drawLine(pos1.x,pos1.y,pos2.x,pos2.y,Col,e);
+void Joint::Display(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll){
+    drawLine(scale*(pos1.x-scroll.x),scale*(pos1.y-scroll.y),scale*(pos2.x-scroll.x),scale*(pos2.y-scroll.y),Col,scale*e);
 }
 
-void Joint::Erase(Vector2D pos1, Vector2D pos2){
-    drawLine(pos1.x,pos1.y,pos2.x,pos2.y,backgroundColor,e);
+void Joint::Erase(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll){
+    drawLine(scale*(pos1.x-scroll.x),scale*(pos1.y-scroll.y),scale*(pos2.x-scroll.x),scale*(pos2.y-scroll.y),backgroundColor,scale*e);
 }
 
-Joint::Joint(int type_a_, int a_, int type_b_, int b_, double l_, int e_, Color Col_,Vector2D pos_a_, Vector2D pos_b_){
+Joint::Joint(int type_a_, int a_, int type_b_, int b_, double l_, double e_, Color Col_,Vector2D pos_a_, Vector2D pos_b_){
     type_a = type_a_;
     a=a_;
     type_b = type_b_;
@@ -61,14 +61,14 @@ Spring::Spring(int type_a_, int a_, int type_b_, int b_, double l0_, double lmin
 }
 
 
-void Spring::Display(Vector2D pos1, Vector2D pos2){
-    int e = e0*l0/(pos1-pos2).norme()+0.5;
-    drawLine(pos1.x,pos1.y,pos2.x,pos2.y,Col,e);
+void Spring::Display(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll){
+    double e = e0*l0/(pos1-pos2).norme();
+    drawLine(scale*(pos1.x-scroll.x),scale*(pos1.y-scroll.y),scale*(pos2.x-scroll.x),scale*(pos2.y-scroll.y),Col,scale*e);
 }
 
-void Spring::Erase(Vector2D pos1, Vector2D pos2){
-    int e = e0*l0/(pos1-pos2).norme()+0.5;
-    drawLine(pos1.x,pos1.y,pos2.x,pos2.y,backgroundColor,e);
+void Spring::Erase(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll){
+    double e = e0*l0/(pos1-pos2).norme();
+    drawLine(scale*(pos1.x-scroll.x),scale*(pos1.y-scroll.y),scale*(pos2.x-scroll.x),scale*(pos2.y-scroll.y),backgroundColor,scale*e);
 }
 
 ////////////////////////////////////// DAMPER //////////////////////////

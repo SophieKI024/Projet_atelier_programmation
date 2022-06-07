@@ -22,8 +22,8 @@ public:
     ////////////////////// AFFICHAGE /////////////////////////////////
 
     /// Affiche le Skin
-    void Display(Vector2D pos);
+    void Display(Vector2D pos, double scale, Vector2D scroll);
 
     /// Efface le Skin
-    void Erase(Vector2D pos);
+    void Erase(Vector2D pos, double scale, Vector2D scroll);
 };

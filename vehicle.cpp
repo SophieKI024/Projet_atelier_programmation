@@ -21,14 +21,14 @@ Vehicle::Vehicle(int nb_weapons_, Weapon* arsenal_, double power_, double v_max_
 // Fonctions
 
 
-void Vehicle::Display(Vector2D pos, double angle){;
+void Vehicle::Display(Vector2D pos, double angle, double scale, Vector2D scroll){;
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].Display(pos,angle);
+        arsenal[i].Display(pos,angle,scale,scroll);
     }
 }
-void Vehicle::Erase(Vector2D pos, double angle){
+void Vehicle::Erase(Vector2D pos, double angle, double scale, Vector2D scroll){
     for(int i=0; i<nb_weapons; i++){
-        arsenal[i].Erase(pos,angle);
+        arsenal[i].Erase(pos,angle,scale,scroll);
     }
 }
 

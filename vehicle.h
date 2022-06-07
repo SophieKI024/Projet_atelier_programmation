@@ -12,6 +12,7 @@ public:
     Weapon* arsenal;
     int nb_weapons;
     double power, v_max;
+    vector<int> i_wheels;
 
     //////////////////// CONSTRUCTEURS //////////////////////////////////////
 
@@ -21,10 +22,10 @@ public:
     //////////////////// AFFICHAGE /////////////////////////////////////////
 
     /// Affiche le vehicule
-    void Display(Vector2D pos, double angle);
+    void Display(Vector2D pos, double angle, double scale, Vector2D scroll);
 
     /// Efface le vehicule
-    void Erase(Vector2D pos, double angle);
+    void Erase(Vector2D pos, double angle, double scale, Vector2D scroll);
 
 
     ///////////////////////// GESTIONS INPUTS ///////////////////////////////

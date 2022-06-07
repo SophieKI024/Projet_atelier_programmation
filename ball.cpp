@@ -8,22 +8,19 @@ double Ball::I(){
     return 0.5*r*r*m;
 }
 
-void Ball::Display(){
-    fillCircle(pos.x+0.5,pos.y+0.5,r,Col);
+void Ball::Display(double scale, Vector2D scroll){
+    fillCircle(scale*(pos.x-scroll.x),scale*(pos.y-scroll.y),scale*r,Col);
     if(r<10)
         return;
     Vector2D R = rotation(Vector2D(0.9*r,0),angle);
     Vector2D R2 = rotation(R,M_PI/2);
-    Color Col_bis;
-    Col_bis.r() = 255-Col.r();
-    Col_bis.g() = 255-Col.g();
-    Col_bis.b() = 255-Col.b();
-    drawLine((pos+R).x,(pos+R).y,(pos-R).x,(pos-R).y,Col_bis,0.5+0.1*r);
-    drawLine((pos+R2).x,(pos+R2).y,(pos-R2).x,(pos-R2).y,Col_bis,0.5+0.1*r);
+    Color Col_bis = Color(150,150,150);
+    drawLine(scale*((pos+R).x-scroll.x),scale*((pos+R).y-scroll.y),scale*((pos-R).x-scroll.x),scale*((pos-R).y-scroll.y),Col_bis,0.5+0.1*scale*r);
+    drawLine(scale*((pos+R2).x-scroll.x),scale*((pos+R2).y-scroll.y),scale*((pos-R2).x-scroll.x),scale*((pos-R2).y-scroll.y),Col_bis,0.5+0.1*scale*r);
 }
 
-void Ball::Erase(){
-    fillCircle(pos.x+0.5,pos.y+0.5,r,backgroundColor);
+void Ball::Erase(double scale, Vector2D scroll){
+    fillCircle(scale*(pos.x-scroll.x),scale*(pos.y-scroll.y),scale*r,backgroundColor);
 }
 
 void Ball::Move(){

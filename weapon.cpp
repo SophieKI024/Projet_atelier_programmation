@@ -35,15 +35,15 @@ Weapon::Weapon(Skin machine_, double length_, Vector2D pos_, double angle_min_, 
 }
 
 
-void Weapon::Display(Vector2D vehicle_pos,double angle){
+void Weapon::Display(Vector2D vehicle_pos, double angle, double scale, Vector2D scroll){
     machine.angle += angle;
-    machine.Display(rotation(pos,angle) + vehicle_pos);
+    machine.Display(rotation(pos,angle) + vehicle_pos,scale,scroll);
     machine.angle -= angle;
 }
 
-void Weapon::Erase(Vector2D vehicle_pos,double angle){
+void Weapon::Erase(Vector2D vehicle_pos,double angle, double scale, Vector2D scroll){
     machine.angle += angle;
-    machine.Erase(rotation(pos,angle) + vehicle_pos);
+    machine.Erase(rotation(pos,angle) + vehicle_pos,scale,scroll);
     machine.angle -= angle;
 }
 

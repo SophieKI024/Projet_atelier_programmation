@@ -26,6 +26,10 @@ public :
     double breaking_energy;
     /// gravity = false => pas de poids
     bool gravity;
+    /// affichage de la croix
+    bool cross = false;
+    /// coefficient de frottement sec
+    double friction = 150;
 
     /////////////////////////  CONSTRUCTEURS //////////////////////
 
@@ -38,10 +42,10 @@ public :
     ///////////////////////// AFFICHAGE ///////////////////////////
 
     /// Affiche le disque
-    void Display();
+    void Display(double scale, Vector2D scroll);
 
     /// Efface le disque
-    void Erase();
+    void Erase(double scale, Vector2D scroll);
 
 
 

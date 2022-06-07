@@ -29,6 +29,8 @@ public :
     bool gravity;
     /// Energie nécéssaire pour détruire l'objet
     double breaking_energy;
+    /// coefficient de frottement sec
+    double friction = 20;
 
     ///////////////////////////// CONSTRUCTEURS //////////////////////////
 
@@ -42,10 +44,10 @@ public :
     //////////////////////////// AFFICHAGE /////////////////////////////////
 
     /// Affiche le rectangle
-    void Display();
+    void Display(double scale, Vector2D scroll);
 
     /// Efface le rectangle
-    void Erase();
+    void Erase(double scale, Vector2D scroll);
 
 
 

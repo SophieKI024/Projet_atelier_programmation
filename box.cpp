@@ -29,10 +29,26 @@ double Box::I(){
     return m*(h*h+w*w)/12;
 }
 
-void Box::Display(){
-    int x[4], y[4];
+void Box::Display(double scale, Vector2D scroll){
+    double x[4], y[4];
     corners(x,y);
-    fillPoly(x,y,4,Col);
+    int x2[4], y2[4];
+    for(int k=0; k<4;k++){
+        x2[k] = scale*(x[k]-scroll.x);
+        y2[k] = scale*(y[k]-scroll.y);
+    }
+    fillPoly(x2,y2,4,Col);
+}
+
+void Box::Erase(double scale, Vector2D scroll){
+    double x[4], y[4];
+    corners(x,y);
+    int x2[4], y2[4];
+    for(int k=0; k<4;k++){
+        x2[k] = scale*(x[k]-scroll.x);
+        y2[k] = scale*(y[k]-scroll.y);
+    }
+    fillPoly(x2,y2,4,backgroundColor);
 }
 
 void Box::Move(){
@@ -155,12 +171,6 @@ bool Box::Collide(Ball& b){
     Vector2D v = minimalDistance(b.pos);
     double dist = sgn(v*(pos-b.pos))*v.norme();
     return dist<=b.r;
-}
-
-void Box::Erase(){
-    int x[4], y[4];
-    corners(x,y);
-    fillPoly(x,y,4,backgroundColor);
 }
 
 Box Box::copy(){

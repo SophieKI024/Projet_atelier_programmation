@@ -42,10 +42,10 @@ public:
     /////////////////////// AFFICHAGE //////////////////////////////
 
     /// Affiche les armes et les boulets
-    void Display(Vector2D vehicle_pos, double angle);
+    void Display(Vector2D vehicle_pos, double angle, double scale, Vector2D scroll);
 
     /// Efface les armes et les boulets
-    void Erase(Vector2D vehicle_pos, double angle);
+    void Erase(Vector2D vehicle_pos, double angle, double scale, Vector2D scroll);
 
 
     /////////////////////// GESTIONS INPUTS /////////////////////////

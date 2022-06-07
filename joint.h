@@ -22,24 +22,24 @@ public:
     /// Longueur de la barre
     double l;
     /// Epaisseur de la barre
-    int e;
+    double e;
     /// Couleur
     Color Col;
     //////////////////////////// CONSTRUCTEURS ////////////////////////////
 
     /// Constructeur vide
     Joint();
-    Joint(int type_a_, int a_, int type_b_, int b_, double l_, int e_, Color Col_, Vector2D pos_a_ = Vector2D(0,0), Vector2D pos_b_ = Vector2D(0,0));
+    Joint(int type_a_, int a_, int type_b_, int b_, double l_, double e_, Color Col_, Vector2D pos_a_ = Vector2D(0,0), Vector2D pos_b_ = Vector2D(0,0));
 
 
 
     //////////////////////////// AFFICHAGE //////////////////////////////////
 
     /// Affiche la barre
-    void Display(Vector2D pos1, Vector2D pos2);
+    void Display(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll);
 
     /// Efface la barre
-    void Erase(Vector2D pos1, Vector2D pos2);
+    void Erase(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll);
 
 
 
@@ -97,10 +97,10 @@ public:
     ////////////////////////// AFFICHAGE ////////////////////////////////
 
     /// Affiche le ressort avec l'epaisseur variant en fonction de l'etirement
-    void Display(Vector2D pos1, Vector2D pos2);
+    void Display(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll);
 
     /// Efface le ressort
-    void Erase(Vector2D pos1, Vector2D pos2);
+    void Erase(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll);
 };
 
 /// Amortisseur (généralement associé à un ressort)

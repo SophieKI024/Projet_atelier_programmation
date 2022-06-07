@@ -28,6 +28,12 @@ public:
     vector<Damper> dampers;
     /// Activation de la gravité
     bool gravite = true;
+    /// Modification d'échelle
+    double scale = 1;
+    /// Etat du scrolling
+    Vector2D scroll = Vector2D(0,0);
+    /// Activation du scrolling
+    bool scrolling = true;
 
     ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
 

@@ -21,11 +21,11 @@ Structure::Structure(vector<Box> boxes_){
 }
 
 void Structure::movement_vehicle(vector<int> keys){
-    Ball& wheel1 = balls[0];
-    Ball& wheel2 = balls[1];
     double dir = isPressed(keys,KEY_RIGHT)-isPressed(keys,KEY_LEFT);
-    wheel1.omega += dt*car.power*(car.v_max-wheel1.omega*wheel1.r*dir)*dir/(wheel1.r*car.v_max);
-    wheel2.omega += dt*car.power*(car.v_max-wheel2.omega*wheel2.r*dir)*dir/(wheel2.r*car.v_max);
+    for(long unsigned i=0; i<car.i_wheels.size(); i++){
+        Ball& wheel = balls[car.i_wheels[i]];
+        wheel.omega += dt*car.power*(car.v_max-wheel.omega*wheel.r*dir)*dir/(wheel.r*car.v_max);
+    }
 }
 
 void Structure::set_fire(vector<int> keys, Vector2D vehicle_pos, double t){
@@ -200,17 +200,17 @@ double& Structure::getOmega(int type_a, int a){
 
 double Structure::getAngle(int type_a, int a){
     if(type_a ==0)
-            return boxes[a].angle;
+        return boxes[a].angle;
     else
-            return balls[a].angle;
+        return balls[a].angle;
 }
 
 
 double Structure::getInertialMoment(int type_a, int a){
     if(type_a ==0)
-            return boxes[a].I();
+        return boxes[a].I();
     else
-            return balls[a].I();
+        return balls[a].I();
 }
 
 
@@ -224,45 +224,45 @@ double Structure::getMass(int type_a, int a){
 void Structure::Display(){
     Vector2D pos1,pos2;
     for (unsigned long i = 0; i < boxes.size(); i++){
-        boxes[i].Display();
+        boxes[i].Display(scale,scroll);
     }
     for (unsigned long i = 0; i < balls.size(); i++){
-        balls[i].Display();
+        balls[i].Display(scale,scroll);
     }
     for (unsigned long i = 0; i < joints.size(); i++){
         pos1 = getPosition(joints[i].type_a,joints[i].a)+ rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
         pos2 = getPosition(joints[i].type_b,joints[i].b)+ rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
-        joints[i].Display(pos1,pos2);
+        joints[i].Display(pos1,pos2,scale,scroll);
     }
     for (unsigned long i = 0; i < springs.size(); i++){
         pos1 = getPosition(springs[i].type_a,springs[i].a)+ rotation(springs[i].pos_a,getAngle(springs[i].type_a,springs[i].a));
         pos2 = getPosition(springs[i].type_b,springs[i].b)+ rotation(springs[i].pos_b,getAngle(springs[i].type_b,springs[i].b));
-        springs[i].Display(pos1,pos2);
+        springs[i].Display(pos1,pos2,scale,scroll);
     }
     // affiche les armes
-    car.Display(boxes[0].pos,boxes[0].angle);
+    car.Display(boxes[0].pos,boxes[0].angle,scale,scroll);
 }
 
 
 void Structure::Erase(){
     Vector2D pos1, pos2;
     for (unsigned long i = 0; i < boxes.size(); i++){
-        boxes[i].Erase();
+        boxes[i].Erase(scale,scroll);
     }
     for (unsigned long i = 0; i < balls.size(); i++){
-        balls[i].Erase();
+        balls[i].Erase(scale,scroll);
     }
     for (unsigned long i = 0; i < joints.size(); i++){
         pos1 = getPosition(joints[i].type_a,joints[i].a)+ rotation(joints[i].pos_a,getAngle(joints[i].type_a,joints[i].a));
         pos2 = getPosition(joints[i].type_b,joints[i].b)+ rotation(joints[i].pos_b,getAngle(joints[i].type_b,joints[i].b));
-        joints[i].Erase(pos1,pos2);
+        joints[i].Erase(pos1,pos2,scale,scroll);
     }
     for (unsigned long i = 0; i < springs.size(); i++){
         pos1 = getPosition(springs[i].type_a,springs[i].a)+ rotation(springs[i].pos_a,getAngle(springs[i].type_a,springs[i].a));
         pos2 = getPosition(springs[i].type_b,springs[i].b)+ rotation(springs[i].pos_b,getAngle(springs[i].type_b,springs[i].b));
-        springs[i].Erase(pos1,pos2);
+        springs[i].Erase(pos1,pos2,scale,scroll);
     }
-    car.Erase(boxes[0].pos,boxes[0].angle);
+    car.Erase(boxes[0].pos,boxes[0].angle,scale,scroll);
 }
 
 
@@ -281,12 +281,12 @@ void Structure::Accelerate(vector<int> keys){
 
     // effet gravite
     if(gravite){
-    for (unsigned long i = 0; i < boxes.size(); i++){
-        boxes[i].Accelerate();
-    }
-    for(unsigned long i=0; i<balls.size();i++){
-        balls[i].Accelerate();
-    }
+        for (unsigned long i = 0; i < boxes.size(); i++){
+            boxes[i].Accelerate();
+        }
+        for(unsigned long i=0; i<balls.size();i++){
+            balls[i].Accelerate();
+        }
     }
 
     Vector2D pos1,pos2,f1,f2,p_f1,p_f2,dir,delta_v;
@@ -357,6 +357,9 @@ Structure Structure::copy(){
         copy.springs.push_back(springs[i]);
     }
     copy.car = car.copy();
+    copy.scale = scale;
+    copy.scroll = scroll;
+
     return copy;
 }
 
@@ -559,7 +562,7 @@ Matrix<double> Structure::constructM(){
 void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll, Vector<double>& E){
     Vector2D f,p_f,N,t,v1,v2;
     double seuil;
-    double coeff = 0.5;
+    double coeff = 0.7;
     int n=0;
     for(unsigned long i=0; i<boxes.size(); i++){
         for(unsigned long j=i+1; j<boxes.size(); j++){
@@ -571,7 +574,7 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll, Vector<
                 v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
                 v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
                 seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
-                f  = min(-frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                f  = min(-b1.friction*b2.friction*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
                 b1.applyForce(f,p_f);
                 b2.applyForce(-1*f,p_f);
                 n++;
@@ -587,7 +590,7 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll, Vector<
                 v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
                 v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
                 seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
-                f  = min(-10*frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                f  = min(-b1.friction*b2.friction*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
                 b1.applyForce(f,p_f);
                 b2.applyForce(-1*f,p_f);
                 n++;
@@ -604,7 +607,7 @@ void Structure::Friction(Vector<Vector2D>& Infos, SymMatrix<bool>& Coll, Vector<
                 v1 = (b1.v+b1.omega*rotation(p_f-b1.pos,M_PI/2))*t*t;
                 v2 = (b2.v+b2.omega*rotation(p_f-b2.pos,M_PI/2))*t*t;
                 seuil = 1/b1.m+1/b2.m+pow(N*(p_f-b1.pos),2)/b1.I()+pow(N*(p_f-b2.pos),2)/b2.I();
-                f  = min(-10*frottements_secs*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
+                f  = min(-b1.friction*b2.friction*E[n+joints.size()],coeff*(v1-v2).norme()/(dt*seuil))*(v2-v1).normalize();
                 b1.applyForce(f,p_f);
                 b2.applyForce(-1*f,p_f);
                 n++;
@@ -688,20 +691,20 @@ void Structure::Explosion(Vector2D pos, double energy){
     for(unsigned long i=0; i<boxes.size(); i++){
         Box& b = boxes[i];
         r = b.minimalDistance(pos);
-        if(r.norme()<1e-2)
-            break;
-        dv = energy/r.norme2()*r.normalize();
-        dv = dv.normalize()*min(0.04*energy,dv.norme());// on limite la force de l'explosion
-        b.v += 1/b.m*dv;
-        b.omega += 1/b.I()*dv*(r+pos-b.pos);
+        if(r.norme()>1e-2){
+            dv = energy/r.norme2()*r.normalize();
+            dv = dv.normalize()*min(0.04*energy,dv.norme());// on limite la force de l'explosion
+            b.v += 1/b.m*dv;
+            b.omega += 1/b.I()*dv*(r+pos-b.pos);
+        }
     }
     for(unsigned long i=0; i<balls.size(); i++){
         Ball& b = balls[i];
         r = (b.pos-pos);
-        if(r.norme()<1e-2)
-            break;
-        dv = energy/r.norme2()*r.normalize();
-        dv = dv.normalize()*min(0.04*energy,dv.norme());
-        b.v += 1/b.m*dv;
+        if(r.norme()>1e-2){
+            dv = energy/r.norme2()*r.normalize();
+            dv = dv.normalize()*min(0.04*energy,dv.norme());
+            b.v += 1/b.m*dv;
+        }
     }
 }
