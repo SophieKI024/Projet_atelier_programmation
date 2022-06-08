@@ -5,9 +5,12 @@ int main() {
     Window W = openWindow(window_width,window_height);
     setBackGround(backgroundColor);
 
-    Structure game = title_screen();
-    //Structure game = demoStructure();
+    bool stop=false;
+    while(!stop){
+    Structure game = title_screen(stop);
     play(game);
+    setBackGround(backgroundColor);
+    }
 
     closeWindow(W);
     endGraphics();

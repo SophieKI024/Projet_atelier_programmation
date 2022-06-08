@@ -675,7 +675,7 @@ void Structure::Solve_destruct(Vector<double> &dV, Matrix<double>& M){
     double energie, energie_seuil;
     for(long unsigned i=0; i<boxes.size()+balls.size(); i++){
         energie = 0;
-        for (int j=0; j<3; j++){
+        for (int j=0; j<2; j++){
             energie += 0.5*pow(dV[3*i+j],2)/M(3*i+j,3*i+j);
         }
         if(i<boxes.size())

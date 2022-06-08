@@ -25,8 +25,12 @@ Structure demoBall();
 Structure demoStructure();
 
 Structure level_1();
+Structure level_2();
+Structure level_3();
+Structure level_4();
+Structure level_5();
 
-Structure title_screen();
+Structure title_screen(bool& stop);
 Structure Pontstructor(int choix);
 Structure selector();
 
