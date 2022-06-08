@@ -10,7 +10,8 @@ using namespace std;
 #include "vector.h"
 
 // simulation physique
-const double dt = 0.001;
+/// pas de temps
+const double dt = 0.0015;
 /// Constante gravitationelle de pesanteur
 const double g = 600;
 const double frottements_fluides = 0.2;

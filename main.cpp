@@ -6,6 +6,8 @@ int main() {
     setBackGround(backgroundColor);
 
     Structure game = title_screen();
+    //Structure game = demoStructure();
+
     play(game);
 
     closeWindow(W);

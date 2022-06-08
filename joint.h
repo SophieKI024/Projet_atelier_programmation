@@ -96,7 +96,7 @@ public:
 
     ////////////////////////// AFFICHAGE ////////////////////////////////
 
-    /// Affiche le ressort avec l'epaisseur variant en fonction de l'etirement
+    /// Affiche le ressort avec l'epaisseur variant en fonction de l'étirement
     void Display(Vector2D pos1, Vector2D pos2, double scale, Vector2D scroll);
 
     /// Efface le ressort

@@ -412,6 +412,15 @@ SymMatrix<bool> Structure::Collisions(){
             Coll(i+boxes.size(),j+boxes.size()) = balls[i].Collide(balls[j]);
         }
     }
+    for(unsigned long j=1; j<boxes.size(); j++){
+        if(Coll(0,j))
+            you_lose = true;
+    }
+    for(unsigned long j=0; j<balls.size(); j++){
+        Coll(0,j+boxes.size()) = boxes[0].Collide(balls[j]);
+        if(Coll(0,j+boxes.size()))
+            you_lose = true;
+    }
     return Coll;
 }
 
@@ -481,7 +490,7 @@ Vector<double> Structure::constructC(Vector<Vector2D>& Infos, SymMatrix<bool> &C
     for(unsigned long i=0; i<boxes.size()+balls.size(); i++){
         for(unsigned long j=i+1; j<boxes.size()+balls.size(); j++){
             if(Coll(i,j)){
-                C[n+joints.size()] = 1.2*Infos[2*n+1].norme();
+                C[n+joints.size()] = Infos[2*n+1].norme();
                 n++;
             }
         }

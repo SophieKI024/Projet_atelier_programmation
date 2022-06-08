@@ -34,6 +34,10 @@ public:
     Vector2D scroll = Vector2D(0,0);
     /// Activation du scrolling
     bool scrolling = true;
+    /// perdu...
+    bool you_lose = false;
+    /// Indique si l'on est dans une demo du jeu
+    bool demo = false;
     /// Temps de jeu en secondes
     double duration = 10000;
 
