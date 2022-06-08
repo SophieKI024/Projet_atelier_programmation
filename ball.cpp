@@ -10,13 +10,13 @@ double Ball::I(){
 
 void Ball::Display(double scale, Vector2D scroll){
     fillCircle(scale*(pos.x-scroll.x),scale*(pos.y-scroll.y),scale*r,Col);
-    if(r<10)
-        return;
     Vector2D R = rotation(Vector2D(0.9*r,0),angle);
     Vector2D R2 = rotation(R,M_PI/2);
     Color Col_bis = Color(150,150,150);
+    if(cross){
     drawLine(scale*((pos+R).x-scroll.x),scale*((pos+R).y-scroll.y),scale*((pos-R).x-scroll.x),scale*((pos-R).y-scroll.y),Col_bis,0.5+0.1*scale*r);
     drawLine(scale*((pos+R2).x-scroll.x),scale*((pos+R2).y-scroll.y),scale*((pos-R2).x-scroll.x),scale*((pos-R2).y-scroll.y),Col_bis,0.5+0.1*scale*r);
+    }
 }
 
 void Ball::Erase(double scale, Vector2D scroll){
