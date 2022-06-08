@@ -34,6 +34,8 @@ public:
     Vector2D scroll = Vector2D(0,0);
     /// Activation du scrolling
     bool scrolling = true;
+    /// Temps de jeu en secondes
+    double duration = 10000;
 
     ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
 

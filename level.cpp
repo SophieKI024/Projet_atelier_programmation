@@ -3,7 +3,7 @@
 ///////////////// *** PLAY *** ////////////////////////
 
 /// Fait jouer au jeu pendant un temps au plus t_max
-void play(Structure& game, double t_max){
+void play(Structure& game){
     Timer chrono;
     if(game.scrolling)
     game.scroll = game.boxes[0].pos- 1/game.scale*Vector2D(window_width/2.,0.7*window_height);
@@ -14,7 +14,7 @@ void play(Structure& game, double t_max){
     double v_scroll= 3*dt;
 
     chrono.reset();
-    for(int timeStep=0; t<t_max; timeStep++){
+    for(int timeStep=0; t<game.duration; timeStep++){
         keyboard(keys);
         if(fmod(timeStep,periodDisplay)<1){
 
@@ -28,7 +28,9 @@ void play(Structure& game, double t_max){
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
-            milliSleep(max(int(1000*(t-chrono.lap())),0));
+            milliSleep(max(int(1000/fps),0));
+            //milliSleep(max(int(1000*(t - adjust*chrono.lap())),0));
+            cout<<chrono.lap()<<endl;
         }
 
         if(game.scrolling)
@@ -92,7 +94,7 @@ Structure level_1(){
     game.add(Box(Vector2D(500,y0-360),50,200,2,Color(201,80,45)));
     game.add(Box(Vector2D(400,y0-490),300,50,2,Color(142,56,30)));
 
-    game.scale = 0.9;
+    game.scale = 0.7;
     return game;
 }
 
@@ -101,14 +103,53 @@ Structure level_1(){
 
 Structure title_screen(){
 
-    int choix = 2;
+    int choix = 1;
 
     // ********** Pontstructor **********
     Structure title_screen = Pontstructor(choix);
 
     title_screen.Display();
-    click();
-    if(choix==2){
+
+    int button_title = -1;
+    int x,y;
+    Color menu_color_1 = Color(180,200,220);
+    Color font_color = BLACK;
+    int font_size = window_height/18;
+    // Jouer
+    fillRect(window_width/3,
+             2*window_height/3 - window_height/10,
+             window_width/3,
+             window_height/6,
+             menu_color_1);
+    drawString(window_width/3 + window_width/9,
+               2*window_height/3 + window_height/9 - window_height/10,
+               "Jouer",font_color,font_size);
+    // Quitter le jeu
+    fillRect(window_width/3,
+             2*window_height/3 + window_height/10,
+             window_width/3,
+             window_height/6,
+             menu_color_1);
+    drawString(window_width/3 + window_width/20,
+               2*window_height/3 + window_height/9 + window_height/10,
+               "Quitter le jeu",font_color,font_size);
+    // Traitement
+    while (button_title < 0){
+        getMouse(x,y);
+        // Jouer
+        if (x > window_width/3 && x < 2*window_width/3
+                && y > 2*window_height/3 - window_height/10 && y < 2*window_height/3 - window_height/10 + window_height/6){
+            button_title = 1;
+        }
+        // Quitter
+        if (x > window_width/3 && x < 2*window_width/3
+                && y > 2*window_height/3 + window_height/10 && y < 2*window_height/3 + window_height/10 + window_height/6){
+            button_title = 2;
+        }
+    }
+    fillRect(window_width/3, 2*window_height/3 - window_height/10, window_width/3, window_height/6,backgroundColor);
+    fillRect(window_width/3, 2*window_height/3 + window_height/10, window_width/3, window_height/6,backgroundColor);
+    if(button_title==2){
         Vector2D pos = title_screen.balls[2].pos;
         double r = title_screen.balls[2].r;
         for(int i=16; i>4; i--){
@@ -117,22 +158,28 @@ Structure title_screen(){
             fillCircle(pos.x+0.5,pos.y+0.5,r,RED);
             milliSleep(i*max(i,8));
         }
-        fillCircle(window_width/2,window_height/2,10,backgroundColor);
+        fillCircle(pos.x,pos.y,10,backgroundColor);
     }
-    play(title_screen, 6.);
-    title_screen.Erase();
-    // ********** Select level **********
-    Structure game;
-    int select_level = 1;
-    //    while (select_level < 0){
-    //        int x,y;
-    //        getMouse(x,y);
-    //        select_level = 1;
-    //    }
-    if (select_level == 1){
-        game = level_1();
+    if (button_title == 1){
+        play(title_screen);
+        title_screen.Erase();
+        // ********** Select level **********
+        Structure game;
+        int select_level = 1;
+        //    while (select_level < 0){
+        //        int x,y;
+        //        getMouse(x,y);
+        //        select_level = 1;
+        //    }
+        if (select_level == 1){
+            game = level_1();
+        }
+        return game;
     }
-    return game;
+    if (button_title == 2){
+        title_screen = Pontstructor(button_title);
+        return title_screen;
+    }
 }
 
 Structure Pontstructor(int choix){
@@ -220,5 +267,7 @@ Structure Pontstructor(int choix){
     }
     if(choix == 2)
         title_screen.Explosion(title_screen.balls[2].pos,7e8);
+
+    title_screen.duration = 6.;
     return title_screen;
 }

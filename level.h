@@ -2,7 +2,7 @@
 #include "structure.h"
 
 ///////////////// *** PLAY *** ////////////////////////
-void play(Structure& game, double t_max);
+void play(Structure& game);
 
 ///////////////// *** LEVELS *** ////////////////////////
 
