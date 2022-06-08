@@ -301,7 +301,7 @@ Structure title_screen(){
         }
         level_selector.gravite = true;
         level_selector.boxes[select_level].gravity = false;
-        level_selector.duration = 2.;
+        level_selector.duration = 2.5;
         play(level_selector);
         level_selector.Erase();
         fillRect(0,0,window_width,window_height,backgroundColor);
@@ -417,8 +417,9 @@ Structure selector(){
     level_selector.add(Box(Vector2D(2.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
     level_selector.add(Box(Vector2D(6.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
     level_selector.add(Box(Vector2D(10.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
-    level_selector.add(Box(Vector2D(4.5*a,5*b), 3*a, 2*b, 10, menu_color_1));
-    level_selector.add(Box(Vector2D(8.5*a,5*b), 3*a, 2*b, 10, menu_color_1));
+    level_selector.add(Box(Vector2D(4.5*a,5*b), 3*a, 2*b, 1e100, menu_color_1));
+    level_selector.add(Box(Vector2D(8.5*a,5*b), 3*a, 2*b, 1e100, menu_color_1));
 
+    level_selector.demo = true;
     return level_selector;
 }
