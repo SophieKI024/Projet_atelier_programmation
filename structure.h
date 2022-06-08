@@ -36,6 +36,8 @@ public:
     bool scrolling = true;
     /// perdu...
     bool you_lose = false;
+    /// gagné !!!
+    bool you_win = false;
     /// Indique si l'on est dans une demo du jeu
     bool demo = false;
     /// Temps de jeu en secondes

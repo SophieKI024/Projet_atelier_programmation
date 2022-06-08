@@ -16,7 +16,7 @@ void play(Structure& game){
     int t0 = -1000;
 
     chrono.reset();
-    for(int timeStep=0; t<game.duration and (!game.you_lose or game.demo); timeStep++){
+    for(int timeStep=0; t<game.duration and ((!game.you_lose and !game.you_win) or game.demo); timeStep++){
         keyboard(keys);
         if(fmod(timeStep,periodDisplay)<1){
 
@@ -55,7 +55,11 @@ void play(Structure& game){
     milliSleep(2000);
 
     if(game.you_lose)
-        cout<<"You Lose !"<<endl;
+        cout<<"You Lose..."<<endl;
+
+    else if(game.you_win){
+        cout<<"You Win !"<<endl;
+    }
     }
 }
 
@@ -67,6 +71,22 @@ Structure level_1(){
     double y0 = window_height-100;
     //On rajoute le vehicule en 1er
     Structure game(Box(Vector2D(x0+500,y0-150),200,30,2,Color(40,70,40)));
+
+    Box wall1(Vector2D(0.5,700.5),4000,200,1e100,BLACK);
+    Box wall2(Vector2D(-1980.5,-20.5),20,1420,1e100,BLACK);
+    Box wall3(Vector2D(1980.5,-20.5),20,1420,1e100,BLACK);
+    wall1.gravity=false;
+    wall2.gravity=false;
+    wall3.gravity=false;
+    game.add(wall1);
+    game.add(wall2);
+    game.add(wall3);
+
+    Ball objectif(Vector2D(400,y0-550),50,5,RED);
+    objectif.cross = true;
+    objectif.breaking_energy = 1e9;
+    game.add(objectif);
+
     Weapon* arsenal = new Weapon[3];
     arsenal[0] = Weapon(Canon_standard(),100,Vector2D(-100,-40), 1000,-1000,0.1,1500,1,9,3);
     arsenal[1] = Weapon(Canon_standard(),100,Vector2D(0,-40), 1000,-1000,0.1,1500,1,9,3);
@@ -77,38 +97,23 @@ Structure level_1(){
     roue1.cross = true;
     roue2.cross = true;
     game.add(roue1);
-    game.car.i_wheels.push_back(0);
-    game.add(roue2);
     game.car.i_wheels.push_back(1);
-    game.add(Spring(0,0,1,0,300,0,1000,5e5,5,Color(20,30,20),Vector2D(95,0)));
-    game.add(Spring(0,0,1,1,250,0,1000,5e5,5,Color(20,30,20),Vector2D(-95,0)));
-    game.add(Spring(0,0,1,0,130,0,1000,5e5,5,Color(20,30,20),Vector2D(-95,0)));
-    game.add(Spring(0,0,1,1,200,0,1000,5e5,5,Color(20,30,20),Vector2D(95,0)));
+    game.add(roue2);
+    game.car.i_wheels.push_back(2);
+    game.add(Spring(0,0,1,1,300,0,1000,5e5,5,Color(20,30,20),Vector2D(95,0)));
+    game.add(Spring(0,0,1,2,250,0,1000,5e5,5,Color(20,30,20),Vector2D(-95,0)));
+    game.add(Spring(0,0,1,1,130,0,1000,5e5,5,Color(20,30,20),Vector2D(-95,0)));
+    game.add(Spring(0,0,1,2,200,0,1000,5e5,5,Color(20,30,20),Vector2D(95,0)));
 
-    game.add(Joint(1,0,1,1,300,5,BLACK));
-    game.add(Damper(0,0,1,0,5e4,Vector2D(95,0)));
-    game.add(Damper(0,0,1,1,5e4,Vector2D(-95,0)));
-    game.add(Damper(0,0,1,0,5e4,Vector2D(-95,0)));
+    game.add(Joint(1,1,1,2,300,5,BLACK));
     game.add(Damper(0,0,1,1,5e4,Vector2D(95,0)));
+    game.add(Damper(0,0,1,2,5e4,Vector2D(-95,0)));
+    game.add(Damper(0,0,1,1,5e4,Vector2D(-95,0)));
+    game.add(Damper(0,0,1,2,5e4,Vector2D(95,0)));
 
-    Box wall1(Vector2D(0.5,700.5),4000,20,1e100,BLACK);
-    Box wall2(Vector2D(-1980.5,-20.5),20,1420,1e100,BLACK);
-    Box wall3(Vector2D(1980.5,-20.5),20,1420,1e100,BLACK);
-    wall1.gravity=false;
-    wall2.gravity=false;
-    wall3.gravity=false;
-    game.add(wall1);
-    game.add(wall2);
-    game.add(wall3);
+    addTower(game,400,y0,50,200,200,2);
 
-    game.add(Box(Vector2D(300,y0-101),50,200,2,Color(132,46,27)));
-    game.add(Box(Vector2D(500,y0-101),50,200,2,Color(220,85,57)));
-    game.add(Box(Vector2D(400,y0-230),300,50,2,Color(188,73,33)));
-    game.add(Box(Vector2D(300,y0-360),50,200,2,Color(154,66,37)));
-    game.add(Box(Vector2D(500,y0-360),50,200,2,Color(201,80,45)));
-    game.add(Box(Vector2D(400,y0-490),300,50,2,Color(142,56,30)));
-
-    game.scale = 0.9;
+    game.scale = 0.5;
     return game;
 }
 
@@ -135,28 +140,39 @@ Structure demoBall(){
     return Demo;
 }
 
+int r_base =164;
+int g_base =116;
+int b_base =73;
+int r_var = 60;
+int g_var = 40;
+int b_var = 30;
+
+Color aleatColor(){
+    return Color(r_base+(rand()%r_var-0.5*r_var),g_base+(rand()%g_var-0.5*g_var),b_base+(rand()%b_var-0.5*b_var));
+}
+
 void addPyramid(Structure& game, double x0, double y0, double w, double h, double espacement, int taille){
     for(int i=0; i<taille; i++){
         for(int j=taille-i; j>=0; j--){
-            game.add(Box(Vector2D((j-(taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
+            game.add(Box(Vector2D((j-(taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(1.2,taille-i),aleatColor()));
         }
-        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement*(taille-i),w,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
+        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement*(taille-i),w,pow(1.2,taille-i),aleatColor()));
     }
 }
 
 void addPyramid2(Structure& game, double x0, double y0, double w, double h, double espacement, int taille){
     for(int i=0; i<taille; i++){
-        game.add(Box(Vector2D(((taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
-        game.add(Box(Vector2D((-(taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
-        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement*(taille-i),w,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
+        game.add(Box(Vector2D(((taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(1.2,taille-i),aleatColor()));
+        game.add(Box(Vector2D((-(taille-i)/2.)*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(1.2,taille-i),aleatColor()));
+        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement*(taille-i),w,pow(1.2,taille-i),aleatColor()));
     }
 }
 
 void addTower(Structure& game, double x0, double y0, double w, double h, double espacement, int taille){
     for(int i=0; i<taille;i++){
-        game.add(Box(Vector2D(0.5*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
-        game.add(Box(Vector2D(-0.5*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
-        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement,w,pow(2,taille-i),Color(rand()%255,rand()%255,rand()%255)));
+        game.add(Box(Vector2D(0.5*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(1.2,taille-i),aleatColor()));
+        game.add(Box(Vector2D(-0.5*espacement+x0,y0-0.5*h-(w+h+0.5)*i),w,h,pow(1.2,taille-i),aleatColor()));
+        game.add(Box(Vector2D(x0,y0-h-w/2.-(h+w+.5)*i),1.5*w+espacement,w,pow(1.2,taille-i),aleatColor()));
     }
 }
 
@@ -344,7 +360,8 @@ Structure Pontstructor(int choix){
 
     if(choix == 1){
         Ball destructor(m + Vector2D(-3*c,3*c), 2.1*c, 1000,RED, Vector2D(700,0),-5);
-        destructor.gravity=false;
+        destructor.gravity = false;
+        destructor.cross = true;
         title_screen.add(destructor);
     }
     if(choix == 2)

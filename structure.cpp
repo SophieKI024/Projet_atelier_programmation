@@ -158,6 +158,10 @@ void Structure::removeBall(int i){
         cout<<"WARNING : trying to remove a non existent Ball"<<endl;
         return;
     }
+    if(i==0){
+        you_lose = true;
+        return;
+    }
     swap(balls.back(),balls[i]);
     balls.pop_back();
     removeObject(1,i);
@@ -412,6 +416,8 @@ SymMatrix<bool> Structure::Collisions(){
             Coll(i+boxes.size(),j+boxes.size()) = balls[i].Collide(balls[j]);
         }
     }
+
+    // test pour savoir si l'on a perdu
     for(unsigned long j=1; j<boxes.size(); j++){
         if(Coll(0,j))
             you_lose = true;
@@ -421,6 +427,10 @@ SymMatrix<bool> Structure::Collisions(){
         if(Coll(0,j+boxes.size()))
             you_lose = true;
     }
+
+    // test pour savoir si on a gagné
+    if(Coll(1,boxes.size()))
+        you_win =true;
     return Coll;
 }
 
