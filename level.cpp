@@ -2,21 +2,21 @@
 
 ///////////////// *** PLAY *** ////////////////////////
 
+/// Fait jouer au jeu pendant un temps au plus t_max
 void play(Structure& game, double t_max){
     Timer chrono;
+    if(game.scrolling)
+    game.scroll = game.boxes[0].pos- 1/game.scale*Vector2D(window_width/2.,0.7*window_height);
     Structure old_game = game.copy();
     game.Display();
     double t=0;
     vector<int> keys;
+    double v_scroll= 3*dt;
 
     chrono.reset();
     for(int timeStep=0; t<t_max; timeStep++){
         keyboard(keys);
         if(fmod(timeStep,periodDisplay)<1){
-
-            double v_scroll=0.08;
-            if(game.scrolling)
-            game.scroll = (1-v_scroll)*game.scroll + v_scroll*(game.boxes[0].pos - 1/game.scale*Vector2D(window_width/2.,0.7*window_height));
 
             noRefreshBegin();
 
@@ -30,6 +30,10 @@ void play(Structure& game, double t_max){
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
             milliSleep(max(int(1000*(t-chrono.lap())),0));
         }
+
+        if(game.scrolling)
+        game.scroll = (1-v_scroll)*game.scroll + v_scroll*(game.boxes[0].pos + Vector2D(sgn(game.boxes[0].v.x)*min(0.004*pow(game.boxes[0].v.x,2),0.4*window_width/game.scale),sgn(game.boxes[0].v.x)*min(0.004*pow(game.boxes[0].v.y,2),0.4*window_height/game.scale)) - 1/game.scale*Vector2D(window_width/2.,0.7*window_height));
+
         game.set_fire(keys,game.boxes[0].pos,t);
         game.Accelerate(keys);
         game.solveConstraints();
@@ -88,7 +92,7 @@ Structure level_1(){
     game.add(Box(Vector2D(500,y0-360),50,200,2,Color(201,80,45)));
     game.add(Box(Vector2D(400,y0-490),300,50,2,Color(142,56,30)));
 
-    game.scale = 0.8;
+    game.scale = 0.9;
     return game;
 }
 

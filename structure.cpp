@@ -128,6 +128,19 @@ void Structure::removeObject(int type, int i){
         }
         j++;
     }
+
+    // on vérifie si c'est une roue qui a été effacée
+    if(type==1){
+        j=0;
+        while(j<car.i_wheels.size()){
+            if(car.i_wheels[j]==i){
+                swap(car.i_wheels[j],car.i_wheels.back());
+                car.i_wheels.pop_back();
+                break;
+            }
+            j++;
+        }
+    }
 }
 
 void Structure::removeBox(int i){
@@ -164,6 +177,18 @@ void Structure::removeSpring(int i){
         cout<<"WARNING : trying to remove a non existent Spring"<<endl;
         return;
     }
+    Spring& S = springs[i];
+
+    // on vérifie si un amortisseur y était associé
+    for(long unsigned j=0; j<dampers.size(); j++){
+        Damper &D = dampers[j];
+        if(D.type_a==S.type_a and D.a==S.a and D.type_b==S.type_b and D.b==S.b){
+            removeDamper(j);
+            j--;
+        }
+
+    }
+
     swap(springs[i],springs.back());
     springs.pop_back();
 }
@@ -297,21 +322,29 @@ void Structure::Accelerate(vector<int> keys){
         Spring& S = springs[i];
         pos1 = getPosition(S.type_a,S.a);
         pos2 = getPosition(S.type_b,S.b);
-        p_f1 = pos1 + rotation(S.pos_a,getAngle(S.type_a,S.a));
-        p_f2 = pos2 + rotation(S.pos_b,getAngle(S.type_b,S.b));;
-        m1 = getMass(S.type_a,S.a);
-        m2 = getMass(S.type_b,S.b);
-        I1 = getInertialMoment(S.type_a,S.a);
-        I2 = getInertialMoment(S.type_b,S.b);
-        Vector2D& v1 = getSpeed(S.type_a,S.a);
-        Vector2D& v2 = getSpeed(S.type_b,S.b);
-        double& omega1 = getOmega(S.type_a,S.a);
-        double& omega2 = getOmega(S.type_b,S.b);
-        // f1 = -k*(l-l0)*e21
-        f1 = -S.k*((pos1-pos2).norme()-S.l0)*(pos1-pos2).normalize();
-        f2 = -1*f1;
-        applyForceGeneric(f1,p_f1,pos1,v1,omega1,m1,I1);
-        applyForceGeneric(f2,p_f2,pos2,v2,omega2,m2,I2);
+        // cas où l'on ne dépasse pas les limites du ressort
+        if(S.lmin < (pos1-pos2).norme() and (pos1-pos2).norme()<S.lmax){
+            p_f1 = pos1 + rotation(S.pos_a,getAngle(S.type_a,S.a));
+            p_f2 = pos2 + rotation(S.pos_b,getAngle(S.type_b,S.b));;
+            m1 = getMass(S.type_a,S.a);
+            m2 = getMass(S.type_b,S.b);
+            I1 = getInertialMoment(S.type_a,S.a);
+            I2 = getInertialMoment(S.type_b,S.b);
+            Vector2D& v1 = getSpeed(S.type_a,S.a);
+            Vector2D& v2 = getSpeed(S.type_b,S.b);
+            double& omega1 = getOmega(S.type_a,S.a);
+            double& omega2 = getOmega(S.type_b,S.b);
+            // f1 = -k*(l-l0)*e21
+            f1 = -S.k*((pos1-pos2).norme()-S.l0)*(pos1-pos2).normalize();
+            f2 = -1*f1;
+            applyForceGeneric(f1,p_f1,pos1,v1,omega1,m1,I1);
+            applyForceGeneric(f2,p_f2,pos2,v2,omega2,m2,I2);
+        }
+        // limite du ressort dépassée
+        else{
+            removeSpring(i);
+            i--;
+        }
     }
 
     // mouvement du vehicule
