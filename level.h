@@ -28,4 +28,5 @@ Structure level_1();
 
 Structure title_screen();
 Structure Pontstructor(int choix);
+Structure selector();
 

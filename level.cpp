@@ -30,8 +30,7 @@ void play(Structure& game){
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
-
-            milliSleep(max(int(1000*(t-chrono.lap())),0));   
+            milliSleep(max(int(1000*(t-chrono.lap())),0));
         }
         if(isPressed(keys,'g') and t-t0>5){
             game.gravite = false;
@@ -242,12 +241,12 @@ Structure title_screen(){
         // Quitter
         if (x > window_width/3 && x < 2*window_width/3
                 && y > 2*window_height/3 + window_height/10 && y < 2*window_height/3 + window_height/10 + window_height/6){
-            button_title = 2;
+            button_title = 0;
         }
     }
     fillRect(window_width/3, 2*window_height/3 - window_height/10, window_width/3, window_height/6,backgroundColor);
     fillRect(window_width/3, 2*window_height/3 + window_height/10, window_width/3, window_height/6,backgroundColor);
-    if(button_title==2){
+    if(button_title==0){
         Vector2D pos = title_screen.balls[2].pos;
         double r = title_screen.balls[2].r;
         for(int i=20; i>4; i--){
@@ -261,20 +260,54 @@ Structure title_screen(){
     if (button_title == 1){
         play(title_screen);
         title_screen.Erase();
+
+        Structure level_selector = selector();
+        level_selector.Display();
+        int a = window_width/13;
+        int b = window_height/7;
+        drawString(4.6*a,0.6*b,"Choix du niveau",font_color,font_size);
+
         // ********** Select level **********
         Structure game;
-        int select_level = 1;
-        //    while (select_level < 0){
-        //        int x,y;
-        //        getMouse(x,y);
-        //        select_level = 1;
-        //    }
-        if (select_level == 1){
-            game = level_1();
+        int select_level = -1;
+        while (select_level < 0){
+            int x,y;
+            getMouse(x,y);
+            // Level 1
+            if (x > a && x < 4*a && y > b && y < 3*b){
+                select_level = 0;
+                game = level_1();
+            }
+            // Level 2
+            if (x > 5*a && x < 8*a && y > b && y < 3*b){
+                select_level = 1;
+                game = level_1();
+            }
+            // Level 3
+            if (x > 9*a && x < 12*a && y > b && y < 3*b){
+                select_level = 2;
+                game = level_1();
+            }
+            // Level 4
+            if (x > 3*a && x < 6*a && y > 4*b && y < 6*b){
+                select_level = 3;
+                game = level_1();
+            }
+            // Level 5
+            if (x > 7*a && x < 10*a && y > 4*b && y < 6*b){
+                select_level = 4;
+                game = level_1();
+            }
         }
+        level_selector.gravite = true;
+        level_selector.boxes[select_level].gravity = false;
+        level_selector.duration = 2.;
+        play(level_selector);
+        level_selector.Erase();
+        fillRect(0,0,window_width,window_height,backgroundColor);
         return game;
     }
-    if (button_title == 2){
+    if (button_title == 0){
         title_screen = Pontstructor(button_title);
         return title_screen;
     }
@@ -363,10 +396,29 @@ Structure Pontstructor(int choix){
         destructor.gravity = false;
         destructor.cross = true;
         title_screen.add(destructor);
+        title_screen.duration = 6.;
     }
-    if(choix == 2)
+    if(choix == 0)
         title_screen.Explosion(title_screen.balls[2].pos,7e8);
+        title_screen.duration = 4.;
 
-    title_screen.duration = 6.;
     return title_screen;
+}
+
+Structure selector(){
+    Structure level_selector;
+    level_selector.gravite = false;
+    level_selector.scrolling = false;
+    int a = window_width/13;
+    int b = window_height/7;
+
+    Color menu_color_1 = Color(180,200,220);
+
+    level_selector.add(Box(Vector2D(2.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
+    level_selector.add(Box(Vector2D(6.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
+    level_selector.add(Box(Vector2D(10.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
+    level_selector.add(Box(Vector2D(4.5*a,5*b), 3*a, 2*b, 10, menu_color_1));
+    level_selector.add(Box(Vector2D(8.5*a,5*b), 3*a, 2*b, 10, menu_color_1));
+
+    return level_selector;
 }
