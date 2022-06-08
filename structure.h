@@ -38,6 +38,8 @@ public:
     bool you_lose = false;
     /// Indique si l'on est dans une demo du jeu
     bool demo = false;
+    /// Temps de jeu en secondes
+    double duration = 10000;
 
     ////////////////////////////// GESTION INPUTS ////////////////////////////////////////
 
