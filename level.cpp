@@ -7,7 +7,7 @@
 void play(Structure& game){
     Timer chrono;
     if(game.scrolling)
-    game.scroll = game.boxes[0].pos- 1/game.scale*Vector2D(window_width/2.,0.7*window_height);
+        game.scroll = game.boxes[0].pos- 1/game.scale*Vector2D(window_width/2.,0.7*window_height);
     Structure old_game = game.copy();
     game.Display();
     double t=0;
@@ -41,7 +41,7 @@ void play(Structure& game){
             game.gravite = (t>t0+5);
         }
         if(game.scrolling and t>1)
-        game.scroll = (1-v_scroll)*game.scroll + v_scroll*(game.boxes[0].pos + Vector2D(sgn(game.boxes[0].v.x)*min(0.004*pow(game.boxes[0].v.x,2),0.4*window_width/game.scale),sgn(game.boxes[0].v.y)*min(0.004*pow(game.boxes[0].v.y,2),0.4*window_height/game.scale)) - 1/game.scale*Vector2D(window_width/2.,(0.7-0.5*(game.boxes[0].v.y>300))*window_height));
+            game.scroll = (1-v_scroll)*game.scroll + v_scroll*(game.boxes[0].pos + Vector2D(sgn(game.boxes[0].v.x)*min(0.004*pow(game.boxes[0].v.x,2),0.4*window_width/game.scale),sgn(game.boxes[0].v.y)*min(0.004*pow(game.boxes[0].v.y,2),0.4*window_height/game.scale)) - 1/game.scale*Vector2D(window_width/2.,(0.7-0.5*(game.boxes[0].v.y>300))*window_height));
 
         game.set_fire(keys,game.boxes[0].pos,t);
         game.Accelerate(keys);
@@ -65,12 +65,15 @@ void play(Structure& game){
 
 ///////////////// *** LEVELS *** ////////////////////////
 
-/// Default level
-Structure level_1(){
+Structure begin_level(){
     double x0 = 600;
     double y0 = window_height-100;
-    //On rajoute le vehicule en 1er
     Structure game(Box(Vector2D(x0+500,y0-150),200,30,2,Color(40,70,40)));
+
+    Ball objectif(Vector2D(400,y0-550),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.add(objectif);
 
     Box wall1(Vector2D(0.5,700.5),4000,200,1e100,BLACK);
     Box wall2(Vector2D(-1980.5,-20.5),20,1420,1e100,BLACK);
@@ -81,12 +84,6 @@ Structure level_1(){
     game.add(wall1);
     game.add(wall2);
     game.add(wall3);
-
-    Ball objectif(Vector2D(400,y0-550),50,5,RED);
-    objectif.cross = true;
-    objectif.breaking_energy = 1e9;
-    game.add(objectif);
-
     Weapon* arsenal = new Weapon[3];
     arsenal[0] = Weapon(Canon_standard(),100,Vector2D(-100,-40), 1000,-1000,0.1,1500,1,9,3);
     arsenal[1] = Weapon(Canon_standard(),100,Vector2D(0,-40), 1000,-1000,0.1,1500,1,9,3);
@@ -110,8 +107,104 @@ Structure level_1(){
     game.add(Damper(0,0,1,2,5e4,Vector2D(-95,0)));
     game.add(Damper(0,0,1,1,5e4,Vector2D(-95,0)));
     game.add(Damper(0,0,1,2,5e4,Vector2D(95,0)));
+    return game;
+}
 
-    addTower(game,400,y0,50,200,200,2);
+/// Default level
+Structure level_1(){
+    double x0 = 600;
+    double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game = begin_level();
+
+    Ball objectif(Vector2D(400,y0-550),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.balls[0] = objectif;
+
+    addPyramid2(game,400,y0,50,200,200,2);
+
+    game.scale = 0.5;
+    return game;
+}
+
+Structure level_2(){
+    double x0 = 600;
+    double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game = begin_level();
+
+    Ball objectif(Vector2D(400,y0-550),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.balls[0] = objectif;
+
+    addTower(game,400,y0,50,200,200,3);
+
+    game.scale = 0.5;
+    return game;
+}
+
+Structure level_3(){
+    double x0 = 600;
+    double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game = begin_level();
+
+    Ball objectif(Vector2D(400,y0-550),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.balls[0] = objectif;
+
+    game.boxes[1].friction = 1.5;
+    game.boxes[1].Col = Color(0,207,255);
+
+    addPyramid2(game,400,y0,50,200,200,3);
+
+    game.scale = 0.5;
+    return game;
+}
+
+Structure level_4(){
+    double x0 = 600;
+    double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game = begin_level();
+
+    Ball objectif(Vector2D(400,y0-600),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.balls[0] = objectif;
+
+
+    addTower(game,400,y0,50,200,200,3);
+    game.add(Spring(0,game.boxes.size()-1,1,0,100,0,200,5e5,10,BLACK));
+    game.add(Damper(0,game.boxes.size()-1,1,0,5e4));
+    game.add(Spring(0,game.boxes.size()-2,1,0,100,0,200,5e5,10,BLACK));
+    game.add(Damper(0,game.boxes.size()-2,1,0,5e4));
+    game.add(Spring(0,game.boxes.size()-3,1,0,100,0,200,5e5,10,BLACK));
+    game.add(Damper(0,game.boxes.size()-3,1,0,5e4));
+    game.add(Spring(0,game.boxes.size()-4,1,0,100,0,200,5e5,10,BLACK));
+    game.add(Damper(0,game.boxes.size()-4,1,0,5e4));
+
+
+    game.scale = 0.5;
+    return game;
+}
+
+Structure level_5(){
+    double x0 = 600;
+    double y0 = window_height-100;
+    //On rajoute le vehicule en 1er
+    Structure game = begin_level();
+
+    Ball objectif(Vector2D(400,y0-1350),50,5,golden_egg);
+    objectif.cross = true;
+    objectif.breaking_energy = 2e9;
+    game.balls[0] = objectif;
+
+
+    addTower(game,400,y0,50,200,200,5);
 
     game.scale = 0.5;
     return game;
@@ -198,7 +291,7 @@ Structure demoStructure(){
 ///////////////// *** TITLE SCREEN *** ////////////////////////
 
 
-Structure title_screen(){
+Structure title_screen(bool &stop){
 
     int choix = 1;
 
@@ -212,7 +305,7 @@ Structure title_screen(){
     int x,y;
     Color menu_color_1 = Color(180,200,220);
     Color font_color = BLACK;
-    int font_size = window_height/18;
+    int font_size = window_height/25;
     // Jouer
     fillRect(window_width/3,
              2*window_height/3 - window_height/10,
@@ -259,6 +352,7 @@ Structure title_screen(){
         fillCircle(pos.x,pos.y,10,backgroundColor);
     }
     if (button_title == 1){
+        stop = false;
         play(title_screen);
         title_screen.Erase();
 
@@ -282,22 +376,22 @@ Structure title_screen(){
             // Level 2
             if (x > 5*a && x < 8*a && y > b && y < 3*b){
                 select_level = 1;
-                game = level_1();
+                game = level_2();
             }
             // Level 3
             if (x > 9*a && x < 12*a && y > b && y < 3*b){
                 select_level = 2;
-                game = level_1();
+                game = level_3();
             }
             // Level 4
             if (x > 3*a && x < 6*a && y > 4*b && y < 6*b){
                 select_level = 3;
-                game = level_1();
+                game = level_4();
             }
             // Level 5
             if (x > 7*a && x < 10*a && y > 4*b && y < 6*b){
                 select_level = 4;
-                game = level_1();
+                game = level_5();
             }
         }
         level_selector.gravite = true;
@@ -309,6 +403,7 @@ Structure title_screen(){
         return game;
     }
     if (button_title == 0){
+        stop = true;
         title_screen = Pontstructor(button_title);
         return title_screen;
     }
@@ -319,6 +414,7 @@ Structure Pontstructor(int choix){
     Structure title_screen;
     title_screen.gravite = false;
     title_screen.scrolling = false;
+    title_screen.demo = true;
     int c = window_width/80; // On divise la largeur de l'écran en 80 carreaux
     Vector2D m(0,10*c); // Marge en haut
 
@@ -393,7 +489,7 @@ Structure Pontstructor(int choix){
     title_screen.add(Box(m + Vector2D(69*c,5*c), 0.75*c, 3*c, 1,BLACK, convert_angle(40)));
 
     if(choix == 1){
-        Ball destructor(m + Vector2D(-3*c,3*c), 2.1*c, 1000,RED, Vector2D(700,0),-5);
+        Ball destructor(m + Vector2D(-3*c,3*c), 2.1*c, 1000,golden_egg, Vector2D(700,0),-5);
         destructor.gravity = false;
         destructor.cross = true;
         title_screen.add(destructor);
@@ -401,7 +497,7 @@ Structure Pontstructor(int choix){
     }
     if(choix == 0)
         title_screen.Explosion(title_screen.balls[2].pos,7e8);
-        title_screen.duration = 4.;
+    title_screen.duration = 4.;
 
     return title_screen;
 }

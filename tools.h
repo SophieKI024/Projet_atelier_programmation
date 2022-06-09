@@ -24,6 +24,7 @@ const int window_width = 1300;
 const int window_height = 700;
 const double periodDisplay =1/(fps*dt); // periode d'affichage adaptée
 const Color backgroundColor = Color(216,242, 255); // Light Blue
+const Color golden_egg = Color(255,215,0);
 
 ////////////////////////////// GESTION DU CLAVIER ////////////////////////////
 
