@@ -20,8 +20,8 @@ const double frottements_secs = 700;
 // affichage
 const double fps = 30;
 const int h_ground = 50;
-const int window_width = 1300;
-const int window_height = 700;
+const int window_width = 1900;
+const int window_height = 1000;
 const double periodDisplay =1/(fps*dt); // periode d'affichage adaptée
 const Color backgroundColor = Color(216,242, 255); // Light Blue
 const Color golden_egg = Color(255,215,0);

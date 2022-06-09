@@ -66,7 +66,7 @@ void play(Structure& game){
 
 Structure begin_level(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     Structure game(Box(Vector2D(x0+500,y0-150),200,30,2,Color(40,70,40)));
 
     Ball objectif(Vector2D(400,y0-550),50,5,golden_egg);
@@ -112,7 +112,7 @@ Structure begin_level(){
 /// Default level
 Structure level_1(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     //On rajoute le vehicule en 1er
     Structure game = begin_level();
 
@@ -123,13 +123,13 @@ Structure level_1(){
 
     addPyramid2(game,400,y0,50,200,200,2);
 
-    game.scale = 0.5;
+    game.scale = 0.6;
     return game;
 }
 
 Structure level_2(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     //On rajoute le vehicule en 1er
     Structure game = begin_level();
 
@@ -140,13 +140,13 @@ Structure level_2(){
 
     addTower(game,400,y0,50,200,200,3);
 
-    game.scale = 0.5;
+    game.scale = 0.6;
     return game;
 }
 
 Structure level_3(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     //On rajoute le vehicule en 1er
     Structure game = begin_level();
 
@@ -160,13 +160,13 @@ Structure level_3(){
 
     addPyramid2(game,400,y0,50,200,200,3);
 
-    game.scale = 0.5;
+    game.scale = 0.6;
     return game;
 }
 
 Structure level_4(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     //On rajoute le vehicule en 1er
     Structure game = begin_level();
 
@@ -185,13 +185,13 @@ Structure level_4(){
     game.add(Damper(0,game.boxes.size()-3,1,0,5e4));
 
 
-    game.scale = 0.5;
+    game.scale = 0.6;
     return game;
 }
 
 Structure level_5(){
     double x0 = 600;
-    double y0 = window_height-100;
+    double y0 = 600;
     //On rajoute le vehicule en 1er
     Structure game = begin_level();
 
@@ -203,7 +203,7 @@ Structure level_5(){
 
     addTower(game,400,y0,50,200,200,5);
 
-    game.scale = 0.5;
+    game.scale = 0.6;
     return game;
 }
 
@@ -493,7 +493,7 @@ Structure Pontstructor(int choix){
         title_screen.duration = 6.;
     }
     if(choix == 0)
-        title_screen.Explosion(title_screen.balls[2].pos,7e8);
+        title_screen.Explosion(title_screen.balls[2].pos,5.2e6*c*c);
     title_screen.duration = 4.;
 
     return title_screen;
