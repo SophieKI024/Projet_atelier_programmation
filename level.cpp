@@ -30,8 +30,7 @@ void play(Structure& game){
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
-            //milliSleep(max(int(1000*(t-chrono.lap())),0));
-            milliSleep(max(int(1000/fps),0));
+            milliSleep(max(int(1000*(t-chrono.lap())),0));
         }
         if(isPressed(keys,'g') and t-t0>5){
             game.gravite = false;
@@ -184,8 +183,6 @@ Structure level_4(){
     game.add(Damper(0,game.boxes.size()-2,1,0,5e4));
     game.add(Spring(0,game.boxes.size()-3,1,0,100,0,200,5e5,10,BLACK));
     game.add(Damper(0,game.boxes.size()-3,1,0,5e4));
-    game.add(Spring(0,game.boxes.size()-4,1,0,100,0,200,5e5,10,BLACK));
-    game.add(Damper(0,game.boxes.size()-4,1,0,5e4));
 
 
     game.scale = 0.5;
