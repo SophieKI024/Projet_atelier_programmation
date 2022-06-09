@@ -30,7 +30,8 @@ void play(Structure& game){
 
             noRefreshEnd();
             // on attend exactement ce qu'il faut pour que le jeu s'ecoule à une vitesse cohérente
-            milliSleep(max(int(1000*(t-chrono.lap())),0));
+            //milliSleep(max(int(1000*(t-chrono.lap())),0));
+            milliSleep(max(int(1000/fps),0));
         }
         if(isPressed(keys,'g') and t-t0>5){
             game.gravite = false;
@@ -51,14 +52,14 @@ void play(Structure& game){
     old_game.Erase();
     game.Display();
     if(!game.demo){
-    milliSleep(2000);
-
-    if(game.you_lose)
-        cout<<"You Lose..."<<endl;
+    if(game.you_lose){
+        drawString(window_width/3,window_height/2,"Perdu ...",RED,72);
+    }
 
     else if(game.you_win){
-        cout<<"You Win !"<<endl;
+        drawString(window_width/3,window_height/2,"Gagné !",GREEN,72);
     }
+    milliSleep(5000);
     }
 }
 
@@ -413,12 +414,16 @@ Structure selector(){
     int b = window_height/7;
 
     Color menu_color_1 = Color(180,200,220);
+    Color menu_color_2 = Color(190,180,200);
+    Color menu_color_3 = Color(200,160,180);
+    Color menu_color_4 = Color(210,140,160);
+    Color menu_color_5 = Color(220,120,140);
 
     level_selector.add(Box(Vector2D(2.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
-    level_selector.add(Box(Vector2D(6.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
-    level_selector.add(Box(Vector2D(10.5*a,2*b), 3*a, 2*b, 1, menu_color_1));
-    level_selector.add(Box(Vector2D(4.5*a,5*b), 3*a, 2*b, 1e100, menu_color_1));
-    level_selector.add(Box(Vector2D(8.5*a,5*b), 3*a, 2*b, 1e100, menu_color_1));
+    level_selector.add(Box(Vector2D(6.5*a,2*b), 3*a, 2*b, 1, menu_color_2));
+    level_selector.add(Box(Vector2D(10.5*a,2*b), 3*a, 2*b, 1, menu_color_3));
+    level_selector.add(Box(Vector2D(4.5*a,5*b), 3*a, 2*b, 1e100, menu_color_4));
+    level_selector.add(Box(Vector2D(8.5*a,5*b), 3*a, 2*b, 1e100, menu_color_5));
 
     level_selector.demo = true;
     return level_selector;
